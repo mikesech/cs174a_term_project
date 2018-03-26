@@ -13,5 +13,5 @@
 #include "GL/freeglut_ext.h"
 #include "IL/il.h"
 #include "Angel.h"
-#include "obj_loader\objLoader.h"
+#include "obj_loader/objLoader.h"
 #endif

@@ -10,7 +10,7 @@
 */
 //#include "GL\glew.h"
 //#include "GL\glut.h"
-#include "IL\il.h"
+#include "IL/il.h"
 #include "SoundPlayer.h"
 #include "General.h"
 #include <cstring>
