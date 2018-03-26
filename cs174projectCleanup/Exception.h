@@ -11,10 +11,10 @@ class CException : public std::exception
 {
 public:
 	/** @brief Gets the error message. */
-	const char* what() const  { return m_strMessage.c_str(); }
+	const char* what() const throw() { return m_strMessage.c_str(); }
 
 	CException(const std::string& strMessage="") : m_strMessage(strMessage)  { }
-	virtual ~CException()  { }
+	virtual ~CException() throw() { }
 
 	std::string m_strMessage; ///< the error message
 };
