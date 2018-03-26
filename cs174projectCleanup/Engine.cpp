@@ -178,7 +178,7 @@ namespace Globals
 			val[4*i+3]=1.0;
 		}
 		glUniform4fv(loc_lightPos,num,val);
-		delete val;
+		delete[] val;
 	}
 	void setLightColors(Angel::vec3* lightCol,GLuint num){
 		float* val=new GLfloat[num*4];
@@ -189,7 +189,7 @@ namespace Globals
 			val[4*i+3]=1.0;
 		}
 		glUniform4fv(loc_lightColor,num,val);
-		delete val;
+		delete[] val;
 	}
 	void setLightFalloff(float* lightFO, GLuint num){
 		glUniform1fv(loc_lightFalloff,num,lightFO);
@@ -223,10 +223,10 @@ namespace Globals
 		setLightFalloff(lFallOff,num);
 		setLightBrightness(lBrightness, num);
 
-		delete lPos;
-		delete lCol;
-		delete lFallOff;
-		delete lBrightness;
+		delete[] lPos;
+		delete[] lCol;
+		delete[] lFallOff;
+		delete[] lBrightness;
 
 	}
 
