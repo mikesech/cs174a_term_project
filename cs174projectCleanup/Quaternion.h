@@ -17,7 +17,7 @@ public:
 	*/
 	Quaternion operator* (const Quaternion &rq) const;
 	/** @brief Deep copy constructor */
-	Quaternion& Quaternion::operator=(const Quaternion &q)
+	Quaternion& operator=(const Quaternion &q)
 	{
 		x = q.x;
 		y = q.y;
@@ -32,20 +32,20 @@ public:
 
 	/** @brief Convert from Axis Angle to quaternion
 	*/
-	void Quaternion::FromAxis(const vec3 &v, float angle);
+	void FromAxis(const vec3 &v, float angle);
 	
 	/** @brief Generate and return a local quaternion based on the vector to rotate about and angle to rotate by
 	* this function is outdated and needs to be removed.
 	*/
-	Quaternion Quaternion::getLocalQuaternion(const vec3 &v, float angle);
+	Quaternion getLocalQuaternion(const vec3 &v, float angle);
 
 	/**@brief Convert to Axis/Angles
 	*/
-	void Quaternion::getAxisAngle(vec3& axis, float& angle);
+	void getAxisAngle(vec3& axis, float& angle);
 
 	/** @brief Convert quaternion to Matrix
 	*/
-	mat4 Quaternion::getMatrix() const;
+	mat4 getMatrix() const;
 
 
 private:
