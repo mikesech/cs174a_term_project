@@ -124,7 +124,7 @@ namespace Globals
 
 	template<typename T>
 	static inline void deleteAll(T& container) {
-		for(T::iterator i = container.begin(); i != container.end(); ++i)
+		for(typename T::iterator i = container.begin(); i != container.end(); ++i)
 			delete *i;
 	}
 
