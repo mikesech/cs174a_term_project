@@ -132,8 +132,8 @@ int mai2n(int argc, char **argv)
 		
 		printf(" reflect: %.2f\n", mtl->reflect);
 		printf(" trans: %.2f\n", mtl->trans);
-		printf(" glossy: %i\n", mtl->glossy);
-		printf(" shiny: %i\n", mtl->shiny);
+		printf(" glossy: %.2f\n", mtl->glossy);
+		printf(" shiny: %.2f\n", mtl->shiny);
 		printf(" refact: %.2f\n", mtl->refract_index);
 
 		printf(" texture: %s\n", mtl->texture_filename);
