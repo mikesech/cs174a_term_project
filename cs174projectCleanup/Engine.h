@@ -83,15 +83,15 @@ namespace Globals
 	void setHasTexture(bool t);
 	void setShininess(float f);
 	//void setUseNormalMap(GLuint i);
-	void setUseNormalMap(char* t);
+	void setUseNormalMap(const char* t);
 	void setNormalMapDepth(float f);
 
 	void setUseTexture(GLuint i);
-	void setUseTexture(char* t);
+	void setUseTexture(const char* t);
 	void setDiffuseColor(vec3 c);
 	void setAlpha(float a);
 
-	void drawModel(char* m);
+	void drawModel(const char* m);
 
 	//Light setting functions
 	void setAmbientLightColor(vec3 v);

@@ -136,14 +136,14 @@ namespace Globals
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D,i);
 	}
-	void setUseTexture(char* t){
+	void setUseTexture(const char* t){
 		glActiveTexture(GL_TEXTURE0);
 		CTextureManager::GetInstance()->GetTexture(t)->Bind();
 	}
 /*	void setUseNormalMap(GLuint i){
 
 	}*/
-	void setUseNormalMap(char* t){
+	void setUseNormalMap(const char* t){
 		glActiveTexture(GL_TEXTURE1);
 		CTextureManager::GetInstance()->GetTexture(t)->Bind();
 	}
@@ -158,7 +158,7 @@ namespace Globals
 		glUniform1f(loc_alpha,a);
 	}
 
-	void drawModel(char* m){
+	void drawModel(const char* m){
 		CRenderObjectManager::GetInstance()->GetRenderObject(m)->draw();
 	}
 

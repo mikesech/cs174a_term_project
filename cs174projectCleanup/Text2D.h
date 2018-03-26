@@ -18,8 +18,8 @@ class Text2D
 {
 	public:
 		Text2D(void);
-		void print_bitmap_string(void* font, char* s);
-		void draw_stuff(char* s, vec4 color, GLfloat location_x, GLfloat location_y );
+		void print_bitmap_string(void* font, const char* s);
+		void draw_stuff(const char* s, vec4 color, GLfloat location_x, GLfloat location_y );
 
 };
 

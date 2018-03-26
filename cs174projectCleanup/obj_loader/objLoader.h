@@ -13,7 +13,7 @@ public:
 		delete_obj_data(&data);
 	}
 
-	int load(char *filename);
+	int load(const char *filename);
 
 	obj_vector **vertexList;
 	obj_vector **normalList;

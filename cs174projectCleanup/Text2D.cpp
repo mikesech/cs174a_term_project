@@ -5,7 +5,7 @@ Text2D::Text2D(void)
 {}
 
 void
-Text2D::print_bitmap_string(void* font, char* s)
+Text2D::print_bitmap_string(void* font, const char* s)
 {
    if (s && strlen(s)) {
       while (*s) {
@@ -17,11 +17,11 @@ Text2D::print_bitmap_string(void* font, char* s)
 
 
 void
-Text2D::draw_stuff(char* s, vec4 color, GLfloat location_x, GLfloat location_y )
+Text2D::draw_stuff(const char* s, vec4 color, GLfloat location_x, GLfloat location_y )
 {
    void* bitmap_fonts = GLUT_BITMAP_9_BY_15;
 
-   char* bitmap_font_names = s;
+   const char* bitmap_font_names = s;
      
 
    GLfloat x, y;

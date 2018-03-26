@@ -278,7 +278,7 @@ NEXT_J:
 			n.draw_stuff("HEALTH",vec4(1,1,1,1), -0.495*(resolution.x/resolution.y), .4725 );
 			n.draw_stuff("SHIELD",vec4(1,1,1,1), -0.495*(resolution.x/resolution.y), .449 );
 
-			char* weaponText="";
+			const char* weaponText="";
 			switch(getPlayer()->getWeapon()){
 			case 2:
 				weaponText="CURVY BULLET";
