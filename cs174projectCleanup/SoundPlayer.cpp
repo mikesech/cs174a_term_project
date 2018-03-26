@@ -10,7 +10,7 @@ static Mix_Music* background = NULL;
 typedef std::map<std::string, Mix_Chunk*> ChunkMap;
 static ChunkMap chunks;
 static Mix_Chunk* fetchSound(const std::string& path) {
-	if(!initialized) return false;
+	if(!initialized) return NULL;
 
 	Mix_Chunk* sound = chunks[path];
 	if(sound)
