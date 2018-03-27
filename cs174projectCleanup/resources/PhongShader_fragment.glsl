@@ -1,4 +1,4 @@
-#version 150
+#version 150 core
 
 //Constants: samplers
 uniform sampler2D diffuseMap;
@@ -60,11 +60,11 @@ void main(){
 	//viewVec_tbn      =  (normalize(viewVec)); //in tbn space
 
 	// some texture color
-	vec4 texColor = texture2D(diffuseMap, fUV); //fUV has offset and stuff already applied.
+	vec4 texColor = texture(diffuseMap, fUV); //fUV has offset and stuff already applied.
 
 	// Local normal, in tangent space. V tex coordinate is inverted because normal map is in TGA (not in DDS)
-	//vec4 TextureNormal_tangentspace = vec4(normalize(texture2D( NormalMap, vec2(fUV.x,-fUV.y) ).rgb * 2.0 - 1.0), 0);
-	vec4 TextureNormal_tangentspace = vec4(normalize(texture2D( NormalMap, vec2(fUV.x, fUV.y) ).rgb * 2.0 - 1.0), 0);
+	//vec4 TextureNormal_tangentspace = vec4(normalize(texture( NormalMap, vec2(fUV.x,-fUV.y) ).rgb * 2.0 - 1.0), 0);
+	vec4 TextureNormal_tangentspace = vec4(normalize(texture( NormalMap, vec2(fUV.x, fUV.y) ).rgb * 2.0 - 1.0), 0);
 
 	vec4 n = normalize(normalMapDepth*TextureNormal_tangentspace+(1.0-normalMapDepth)*vec4(0,0,1,0));
 	/////////

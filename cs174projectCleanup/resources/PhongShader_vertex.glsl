@@ -1,4 +1,4 @@
-#version 130
+#version 150 core
 
 //Input: vertex attributes these are in modelspace
 in vec4 vPosition;
