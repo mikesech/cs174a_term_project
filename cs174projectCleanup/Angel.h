@@ -10,8 +10,13 @@
 #endif
 
 #include "GL/glew.h"
-#include "GL/freeglut.h"
-#include "GL/freeglut_ext.h"
+#ifdef __APPLE__
+// freeglut doesn't work well on osx. We'll use the Apple-provided original GLUT instead.
+#	include "GLUT/glut.h"
+#else
+#	include "GL/freeglut.h"
+#	include "GL/freeglut_ext.h"
+#endif
 
 // Define a helpful macro for handling offsets into buffer objects
 #define BUFFER_OFFSET( offset )   ((GLvoid*) (offset))

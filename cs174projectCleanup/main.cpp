@@ -15,13 +15,16 @@
 #include "General.h"
 #include <cstring>
 
-
 using namespace Globals;
 
 void initGlut(int& argc, char** argv)
 {
 	glutInit(&argc, argv);
+#ifdef __APPLE__
+	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_3_2_CORE_PROFILE);
+#else
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+#endif
 	glutInitWindowPosition(100, 50);
 	glutInitWindowSize(600, 600);
 	glutCreateWindow("G Test");
@@ -45,6 +48,7 @@ void initCallbacks()
 int main(int argc, char** argv){
 	//initialize glut and glew
 	initGlut(argc, argv);
+	glewExperimental = GL_TRUE;
 	glewInit();
 	ilInit();
 	initApp();

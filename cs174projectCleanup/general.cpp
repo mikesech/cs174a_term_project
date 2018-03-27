@@ -360,7 +360,19 @@ NEXT_J:
 		}
 	}
 	void callbackKeyboard(unsigned char key, int x, int y){
-		if(key == 27) glutLeaveMainLoop();//exit(0); quit on esc. need the function othwerise the sound handler object acts wonky.
+		if(key == 27)
+#ifdef FREEGLUT
+			glutLeaveMainLoop(); // quit on esc. need the function othwerise the sound handler object acts wonky.
+#else
+			// On Apple, we're forced to use GLUT because FreeGLUT doesn't work well on macOS.
+			// Unfortunately, GLUT doesn't provide glutLeaveMainLoop(). As a workaround, we'll
+			// just quit directly. This isn't ideal because it won't give a chance for our
+			// (and our libraries') code to cleanup, but that hopefully doesn't really matter.
+			//
+			// Ultimately, this is a bit of a moot point. I plan to switch away from GLUT soon,
+			// partly for this reason.
+			exit(0);
+#endif
 		else setKey(key, true);
 	}
 	void callbackKeyboardUp(unsigned char key, int x, int y){

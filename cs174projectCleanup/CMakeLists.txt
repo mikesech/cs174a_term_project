@@ -61,4 +61,3 @@ file(INSTALL resources DESTINATION .)
 #   sdl_mixer
 #   glew
 #   devil
-#   freeglut
