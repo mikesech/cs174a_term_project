@@ -87,7 +87,14 @@ void CTexture::Bind() const
 		//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 		// Finally, generate the texture data in OpenGL.
-		glTexImage2D(GL_TEXTURE_2D, 0, 4, m_TextData.nWidth, m_TextData.nHeight,
+		// Note that beginning with (it seems) OpenGL 3.0, internalformat
+		// can't simply be the number of channels in the texture (which, in
+		// this case, would be 4: R, G, B, A). Instead, it has to be a proper constant
+		// defined in the documentation. In our case, the right internal format is
+		// GL_RGBA8. We used to simply specify 4, which was allowed by OpenGL 2 and
+		// worked on some platforms but led to improperly-loaded textures on, at the
+		// very least, OS X.
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_TextData.nWidth, m_TextData.nHeight,
 					0,GL_RGBA,GL_UNSIGNED_BYTE,m_TextData.pData);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
