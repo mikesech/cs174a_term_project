@@ -28,7 +28,7 @@ static int soundChannel = -1;
 
 namespace SoundPlayer {
 	bool init() {
-		SDL_Init(SDL_INIT_AUDIO);
+		SDL_InitSubSystem(SDL_INIT_AUDIO);
 
 		if(Mix_OpenAudio(22050, AUDIO_S16, 2, 4096))
 			return false;
@@ -49,7 +49,7 @@ namespace SoundPlayer {
 
 		///< need these two to be disabled otherwise the release verion of code fails here(debug works fines).
 		Mix_CloseAudio();   
-		SDL_Quit();
+		SDL_QuitSubSystem(SDL_INIT_AUDIO);
 	}
 
 	bool playBackground(const char* path, int loop) {
