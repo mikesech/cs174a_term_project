@@ -18,11 +18,11 @@ public:
 		:GameEntity(ID_WALL)
 	{
 		setModel(DrawableEntity("Resources/mechTexture.png","Resources/cube.obj"));
-		getModel().rotate(0,-90,0);
-		getModel().setUVScale(20,20);
-		getModel().setNormalMap("Resources/mechNormal2.jpg");
-		getModel().setNormalMapDepth(1);
-		getModel().setShininess(5000);
+		getModel()->rotate(0,-90,0);
+		getModel()->setUVScale(20,20);
+		getModel()->setNormalMap("Resources/mechNormal2.jpg");
+		getModel()->setNormalMapDepth(1);
+		getModel()->setShininess(5000);
 	}
 	/** @brief walls do not usually need to update*/
 	void update(){}

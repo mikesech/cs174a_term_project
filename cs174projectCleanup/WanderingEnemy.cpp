@@ -11,15 +11,15 @@ WanderingEnemy::WanderingEnemy(vec3 pos) : MobileEntity(ID_WANDERING_EMEMY), _wa
 	setModel(DrawableEntity("resources/wanderingTexture.png","resources/wanderingBase.obj"));
 	setModel(DrawableEntity(NULL,NULL),1);
 	setModel(DrawableEntity("resources/wanderingTexture.png","resources/wanderingTop.obj"),2);
-	getModel(2).setRotate(0,135,0);
-	getModel().rotate(0,45,0);
-	DrawableEntity& nose = getModel(1);
+	getModel(2)->setRotate(0,135,0);
+	getModel()->rotate(0,45,0);
+	DrawableEntity* nose = getModel(1);
 	scale(3,3,3);
 
-	getModel().translate(0,-.5,0);
-	getModel(1).translate(0,-.5,0);
-	getModel(2).translate(0,-.5,0);
-	//getModel(1).scale(1,2,1);
+	getModel()->translate(0,-.5,0);
+	getModel(1)->translate(0,-.5,0);
+	getModel(2)->translate(0,-.5,0);
+	//getModel(1)->scale(1,2,1);
 
 	CollisionBox b=CollisionBox(vec3(1.5,2.5,1.5));
 	setHitbox(b);
@@ -76,7 +76,7 @@ void WanderingEnemy::wander() {
 	} else
 		_wanderCount--;
 
-	//getModel().setDiffuseColor(0,0,1);
+	//getModel()->setDiffuseColor(0,0,1);
 }
 
 void WanderingEnemy::lockOnPlayer(double xz, double distance, double currentXZ) {
@@ -96,14 +96,14 @@ void WanderingEnemy::lockOnPlayer(double xz, double distance, double currentXZ) 
 	const vec4 direction = RotateY(currentXZ) * local;
 	const vec3 dirNorm = normalize(vec3(direction.x, direction.y, direction.z));
 	if(!_bulletDelay) {
-		Globals::addBullet(ID_BULLET_STRAIGHT,0,5, dirNorm, getModel(1).getTranslate() + .75*dirNorm);
+		Globals::addBullet(ID_BULLET_STRAIGHT,0,5, dirNorm, getModel(1)->getTranslate() + .75*dirNorm);
 
 		_bulletDelay = BULLET_DELAY;
 	} else
 		_bulletDelay--;
 
 	//Set locked-on color.
-	//getModel().setDiffuseColor(1,0,0);
+	//getModel()->setDiffuseColor(1,0,0);
 }
 
 const double WanderingEnemy::FOV = 270 * DegreesToRadians;
@@ -162,7 +162,7 @@ void WanderingEnemy::update() {
 
 	//Move towards desired heading
 	setRotate(0, nextDegree(currentXZ, _desiredHeading, MAX_ROTATE), 0);
-	getModel().setRotate(0, -nextDegree(currentXZ, _desiredHeading, MAX_ROTATE), 0);
+	getModel()->setRotate(0, -nextDegree(currentXZ, _desiredHeading, MAX_ROTATE), 0);
 	//Check health
 	if(getHealth()<0){
 		setDelete();

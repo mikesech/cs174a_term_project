@@ -26,10 +26,10 @@ public:
 
 		setModel(DrawableEntity(NULL,"Resources/grenade.obj"));
 		scale(.75,.75,.75);
-		getModel().setDiffuseColor(1,0,0);
-		getModel().scale(.75,.75,.75);
-		getModel().setShininess(100);
-		getModel().setHighlightColor(.5,0,0);
+		getModel()->setDiffuseColor(1,0,0);
+		getModel()->scale(.75,.75,.75);
+		getModel()->setShininess(100);
+		getModel()->setHighlightColor(.5,0,0);
 
 		this->setHitbox(CollisionBox(vec3(1.5,1.5,1.5)));
 		
@@ -61,11 +61,11 @@ public:
 		_lifeCount++;
 
 		if(_lifeCount%6<3){
-			getModel().setHighlightColor(.25,0,0);
+			getModel()->setHighlightColor(.25,0,0);
 			p->setBrightness(1);
 		}
 		else{
-			getModel().setHighlightColor(.75,0,0);
+			getModel()->setHighlightColor(.75,0,0);
 			p->setBrightness(5);
 		}
 	}

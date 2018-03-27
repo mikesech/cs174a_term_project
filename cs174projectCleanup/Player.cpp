@@ -33,12 +33,12 @@ void Player::update()
 	rotate(0,-xDelta/10,0);
 	//rotate(-yDelta/10,0,0);
 
-	getModel(1).rotate(-yDelta/10,0,0);
+	getModel(1)->rotate(-yDelta/10,0,0);
 
-	if(getModel(1).getRotate().x<0){
-		getModel(1).setRotate(0,0,0);
-	}else if(getModel(1).getRotate().x>45){
-		getModel(1).setRotate(45,0,0);
+	if(getModel(1)->getRotate().x<0){
+		getModel(1)->setRotate(0,0,0);
+	}else if(getModel(1)->getRotate().x>45){
+		getModel(1)->setRotate(45,0,0);
 	}
 
 	increaseVel(Globals::grav);
@@ -91,8 +91,8 @@ void Player::update()
 
 	//if(Globals::MOUSE_EDGE_LEFT) {
 		/// so that it doesn't instantly collide with its creator.
-		vec4 dir=normalize((getModel(1).getTransformationMatrix()*vec4(0,0,-1,0)));
-		vec4 dirR=normalize((getModel(1).getTransformationMatrix()*vec4(-1,0,0,0)));
+		vec4 dir=normalize((getModel(1)->getTransformationMatrix()*vec4(0,0,-1,0)));
+		vec4 dirR=normalize((getModel(1)->getTransformationMatrix()*vec4(-1,0,0,0)));
 
 
 		if(bulletDelay>0)bulletDelay--;
@@ -100,22 +100,22 @@ void Player::update()
 		switch(_currentWeapon){
 		case 0: //straight
 			if(!Globals::MOUSE_LEFT||bulletDelay!=0)break;
-			Globals::addBullet(ID_BULLET_STRAIGHT, 0, 4, vec3(dir.x,dir.y,dir.z), getModel(1).getTranslate()-vec3(dirR.x,dirR.y,dirR.z)*.6+1*vec3(dir.x,dir.y,dir.z), 2, 10);
-			Globals::addBullet(ID_BULLET_STRAIGHT, 0, 4, vec3(dir.x,dir.y,dir.z), getModel(1).getTranslate()+vec3(dirR.x,dirR.y,dirR.z)*.6+1*vec3(dir.x,dir.y,dir.z), 2, 10);
+			Globals::addBullet(ID_BULLET_STRAIGHT, 0, 4, vec3(dir.x,dir.y,dir.z), getModel(1)->getTranslate()-vec3(dirR.x,dirR.y,dirR.z)*.6+1*vec3(dir.x,dir.y,dir.z), 2, 10);
+			Globals::addBullet(ID_BULLET_STRAIGHT, 0, 4, vec3(dir.x,dir.y,dir.z), getModel(1)->getTranslate()+vec3(dirR.x,dirR.y,dirR.z)*.6+1*vec3(dir.x,dir.y,dir.z), 2, 10);
 			SoundPlayer::playSound("resources/fireball.wav",1);
 			bulletDelay=MAX_DELAY;
 			break;
 		case 1: //grenade
 			if(!Globals::MOUSE_LEFT||bulletDelay!=0)break;
-			Globals::addBullet(ID_BULLET_GRENADE, 0, 2.5, vec3(dir.x,dir.y,dir.z), getModel(1).getTranslate()+vec3(dir.x,dir.y,dir.z)*3.5, 0, 5);
+			Globals::addBullet(ID_BULLET_GRENADE, 0, 2.5, vec3(dir.x,dir.y,dir.z), getModel(1)->getTranslate()+vec3(dir.x,dir.y,dir.z)*3.5, 0, 5);
 			SoundPlayer::playSound("resources/cannon.wav",1);
 			bulletDelay=MAX_DELAY*2;
 			break;
 		case 2: //other?
 			if(!Globals::MOUSE_LEFT||bulletDelay!=0)break;
 			SoundPlayer::playSound("resources/curvy.wav",1);
-			Globals::addBullet(ID_BULLET_CURVY  , 0, 2.5, vec3(dir.x,dir.y,dir.z), getModel(1).getTranslate()+vec3(dir.x,dir.y,dir.z)*2, 0, 0);
-			Globals::addBullet(ID_BULLET_CURVY  , 0, 2.5, vec3(dir.x,dir.y,dir.z), getModel(1).getTranslate()+vec3(dir.x,dir.y,dir.z)*3, 0, 0);
+			Globals::addBullet(ID_BULLET_CURVY  , 0, 2.5, vec3(dir.x,dir.y,dir.z), getModel(1)->getTranslate()+vec3(dir.x,dir.y,dir.z)*2, 0, 0);
+			Globals::addBullet(ID_BULLET_CURVY  , 0, 2.5, vec3(dir.x,dir.y,dir.z), getModel(1)->getTranslate()+vec3(dir.x,dir.y,dir.z)*3, 0, 0);
 			bulletDelay=MAX_DELAY;
 			break;
 		}
@@ -135,8 +135,8 @@ void Player::update()
 
 	float damageRatio=(MAX_HEALTH/2-getHealth())/MAX_HEALTH*5;
 	if(damageRatio<0)damageRatio=0;
-	getModel().setNormalMapDepth(damageRatio);
-	getModel(1).setNormalMapDepth(damageRatio);
+	getModel()->setNormalMapDepth(damageRatio);
+	getModel(1)->setNormalMapDepth(damageRatio);
 
 
 	//swap first person/third person view

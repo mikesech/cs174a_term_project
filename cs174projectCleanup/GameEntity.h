@@ -35,7 +35,7 @@ private:
 protected:
 	/** @brief Allows access to any DrawableEntity for animations
 	*/
-	DrawableEntity& getModel(int num=0) const;
+	DrawableEntity* getModel(int num=0) const;
 	/** @brief Sets the delete flag so that Globals::animate() will delete this
 	  *  object ASAP.
 	  */
@@ -52,7 +52,7 @@ public:
 	~GameEntity();
 	/** @brief Allows access to any DrawableEntity for read only
 	*/
-	inline const DrawableEntity& getModelConst(int num=0) const{return getModel(num);}
+	inline const DrawableEntity* getModelConst(int num=0) const{return getModel(num);}
 
 	/** @brief returns the id of the entity
 	 */

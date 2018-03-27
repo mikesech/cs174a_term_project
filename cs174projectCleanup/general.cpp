@@ -185,12 +185,12 @@ NEXT_J:
 	static void drawOpaqueEntities(const Globals::GameEntityList& list, TransparencyQueue& transparencyQueue) {
 		for(Globals::GameEntityList::const_iterator i = list.begin(); i != list.end(); ++i) {
 			for(int c = 0; c < GameEntity::MAX_MODELS; c++) {
-				const DrawableEntity& model = (*i)->getModelConst(c);
-				if(&model != NULL) {
-					if(model.isAlphaRequired())
-						transparencyQueue.push(&model);
+				const DrawableEntity* model = (*i)->getModelConst(c);
+				if(model) {
+					if(model->isAlphaRequired())
+						transparencyQueue.push(model);
 					else
-						model.draw();
+						model->draw();
 				}
 			}
 		}

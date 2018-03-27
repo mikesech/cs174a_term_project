@@ -36,19 +36,19 @@ public:
 	{
 		//creates the models and sets the parameters for them
 		setModel(DrawableEntity("resources/tankTexture.png","resources/tankBase.obj",this));
-		getModel().scale(.5,.5,.5);
-		getModel().setShininess(50);
+		getModel()->scale(.5,.5,.5);
+		getModel()->setShininess(50);
 
 		setModel(DrawableEntity("resources/tankTexture.png","resources/tankTop.obj",this),1);
-		getModel(1).translate(0,.65,.5);
-		getModel(1).scale(.5,.5,.5);
-		getModel(1).setShininess(1000);
+		getModel(1)->translate(0,.65,.5);
+		getModel(1)->scale(.5,.5,.5);
+		getModel(1)->setShininess(1000);
 
-		getModel().setNormalMap("resources/floorNormal.jpg");
-		getModel(1).setNormalMap("resources/floorNormal.jpg");
+		getModel()->setNormalMap("resources/floorNormal.jpg");
+		getModel(1)->setNormalMap("resources/floorNormal.jpg");
 
-		getModel().setNormalMapDepth(0);
-		getModel(1).setNormalMapDepth(0);
+		getModel()->setNormalMapDepth(0);
+		getModel(1)->setNormalMapDepth(0);
 
 		//Create a new hitbox for the player entity
 		CollisionBox b;
@@ -57,7 +57,7 @@ public:
 		GameEntity::setHitbox(b);
 
 		//initialize the camera to a resonable location
-		_playerCamera.setParent(&getModel(1));
+		_playerCamera.setParent(getModel(1));
 
 		_playerCamera.translate(0,7,7);
 		_playerCamera.rotate(-15,0,0);

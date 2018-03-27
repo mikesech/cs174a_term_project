@@ -30,9 +30,9 @@ public:
 		MobileEntity::setVel(initialVelMag*direction);
 
 		GameEntity::setModel(DrawableEntity(NULL,"Resources/sphere.obj",this));
-		getModel().setDiffuseColor(1,.25,0);
+		getModel()->setDiffuseColor(1,.25,0);
 		scale(.35,.35,.35);
-		getModel().setHighlightColor(.5,.25,0);
+		getModel()->setHighlightColor(.5,.25,0);
 	}
 	/** @brief update the position of the bullet. the bullet accelerates for numOfAcclUpdate updates
 	* before switching to a constant velocity. Each update adds the acc to current vel which is then 

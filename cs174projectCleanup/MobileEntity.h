@@ -19,8 +19,9 @@ protected:
 		if(f<=0)return;
 
 		for(int i=0;i<MAX_MODELS;i++){
-			if((&getModel(i))!=NULL)
-				getModel(i).setHighlightColor(1,.1,.1);
+			DrawableEntity* model = getModel(i);
+			if(model)
+				model->setHighlightColor(1,.1,.1);
 		}
 	}
 	/** @brief resets the drawableobjects to use no highlight
@@ -29,8 +30,9 @@ protected:
 	*/
 	void resetHightlight(){
 		for(int i=0;i<MAX_MODELS;i++){
-			if((&getModel(i))!=NULL)
-				getModel(i).setHighlightColor(0,0,0);
+			DrawableEntity* model = getModel(i);
+			if(model)
+				model->setHighlightColor(0,0,0);
 		}
 	}
 	void setHealth(float f){

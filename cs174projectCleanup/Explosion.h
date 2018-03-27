@@ -23,10 +23,10 @@ public:
 	{
 		setModel(DrawableEntity(NULL,"resources/sphere.obj"));
 		scale(0,0,0);
-		getModel().setDiffuseColor(1,1,1);
-		getModel().setHighlightColor(.5,.5,.5);
-		getModel().setNormalMap("resources/floorNormal.jpg");
-		getModel().setNormalMapDepth(.1);
+		getModel()->setDiffuseColor(1,1,1);
+		getModel()->setHighlightColor(.5,.5,.5);
+		getModel()->setNormalMap("resources/floorNormal.jpg");
+		getModel()->setNormalMapDepth(.1);
 	}
 	/** @brief Updates the entity to expand and become more transparent over time
 	*/
@@ -34,7 +34,7 @@ public:
 		float scaleVal=((float)_currTime/_frameTime);
 		float radiusVal=scaleVal*_maxRadius+3; ///calculates the scale modifier based off of the current time vs life time
 		setScale(radiusVal,radiusVal,radiusVal);
-		getModel().setAlpha((1-scaleVal)*.6);
+		getModel()->setAlpha((1-scaleVal)*.6);
 
 		//if it has been long enough, the explosion should be harmless
 		if((_currTime/_frameTime)>.5){

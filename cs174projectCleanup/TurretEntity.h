@@ -26,10 +26,10 @@ public:
 		translate(pos);
 		setModel(DrawableEntity("resources/turretTexture.png","resources/turretBase.obj"));	
 		setModel(DrawableEntity("resources/turretTexture.png","resources/turretTop.obj"),1);
-		getModel(1).setTranslate(0,.75,0);
+		getModel(1)->setTranslate(0,.75,0);
 		setModel(DrawableEntity("resources/turretTexture.png","resources/turretBarrel.obj"),2);
-		getModel(2).setTranslate(.5,0,0);
-		getModel(2).setParent(&getModel(1));
+		getModel(2)->setTranslate(.5,0,0);
+		getModel(2)->setParent(getModel(1));
 
 		CollisionBox b;
 		b.setDim(1,2,1);
@@ -58,42 +58,42 @@ public:
 		resetHightlight();
 
 		//find the direction to the player and if the player is in range
-		vec3 dir=p->getTranslate()-getModel(1).getTranslate();
+		vec3 dir=p->getTranslate()-getModel(1)->getTranslate();
 		if(dot(dir,dir)>pow(80.0,2)&&!_isBoss)return;
 		else if(dot(dir,dir)>pow(130.0,2)&&_isBoss)return;
 		vec3 dirNorm=normalize(dir);
 
 		float yRotate=-(atan2(0.0,1.0)-atan2(dir.x,dir.z))-M_PI/2;
 
-		getModel(1).setRotate(0,yRotate*(360/(2*M_PI))-getRotate().y,0);
+		getModel(1)->setRotate(0,yRotate*(360/(2*M_PI))-getRotate().y,0);
 
 		//count down to the next bullet firing
 		_bulletDelay--;
 
 		//fire the bullet at the appropriate interval - varies if it is a "boss" type
 		if(_bulletDelay==0){
-			Globals::addBullet(ID_BULLET_STRAIGHT,0,3.5, normalize(p->getTranslate()-(getModel(1).getTranslate()+2*vec3(dirNorm.x*getScale().x,0,dirNorm.z*getScale().z))),getModel(1).getTranslate()+2*vec3(dirNorm.x*getScale().x,0,dirNorm.z*getScale().z));
+			Globals::addBullet(ID_BULLET_STRAIGHT,0,3.5, normalize(p->getTranslate()-(getModel(1)->getTranslate()+2*vec3(dirNorm.x*getScale().x,0,dirNorm.z*getScale().z))),getModel(1)->getTranslate()+2*vec3(dirNorm.x*getScale().x,0,dirNorm.z*getScale().z));
 			_bulletDelay=10;
 			if(_isBoss){
-				if(getHealth()<75)Globals::addBullet(ID_BULLET_GRENADE,0,3.5, normalize(p->getTranslate()-(getModel(1).getTranslate()+2*vec3(dirNorm.x*getScale().x,0,dirNorm.z*getScale().z))),getModel(1).getTranslate()+2*vec3(dirNorm.x*getScale().x,0,dirNorm.z*getScale().z));
+				if(getHealth()<75)Globals::addBullet(ID_BULLET_GRENADE,0,3.5, normalize(p->getTranslate()-(getModel(1)->getTranslate()+2*vec3(dirNorm.x*getScale().x,0,dirNorm.z*getScale().z))),getModel(1)->getTranslate()+2*vec3(dirNorm.x*getScale().x,0,dirNorm.z*getScale().z));
 				_bulletDelay=14;
 			}
 		}else if(_isBoss&&_bulletDelay==7&&getHealth()<50){
 			
-			vec4 angle=normalize(p->getTranslate()-(getModel(1).getTranslate()+2*vec3(dirNorm.x*getScale().x,0,dirNorm.z*getScale().z)));
+			vec4 angle=normalize(p->getTranslate()-(getModel(1)->getTranslate()+2*vec3(dirNorm.x*getScale().x,0,dirNorm.z*getScale().z)));
 			vec4 angleLeft=RotateY(5)*angle;
 			vec4 angleRight=RotateY(-5)*angle;
 
-			Globals::addBullet(ID_BULLET_CURVY,0,3.5, vec3(angleLeft.x,angleLeft.y,angleLeft.z),getModel(1).getTranslate()+2*vec3(dirNorm.x*getScale().x,0,dirNorm.z*getScale().z));
-			Globals::addBullet(ID_BULLET_CURVY,0,3.5, vec3(angleRight.x,angleRight.y,angleRight.z),getModel(1).getTranslate()+2*vec3(dirNorm.x*getScale().x,0,dirNorm.z*getScale().z));
+			Globals::addBullet(ID_BULLET_CURVY,0,3.5, vec3(angleLeft.x,angleLeft.y,angleLeft.z),getModel(1)->getTranslate()+2*vec3(dirNorm.x*getScale().x,0,dirNorm.z*getScale().z));
+			Globals::addBullet(ID_BULLET_CURVY,0,3.5, vec3(angleRight.x,angleRight.y,angleRight.z),getModel(1)->getTranslate()+2*vec3(dirNorm.x*getScale().x,0,dirNorm.z*getScale().z));
 
 			/*if(getHealth()<25){
 			
 			angleLeft=RotateY(10)*angle;
 			angleRight=RotateY(-10)*angle;
 
-			Globals::addBullet(ID_BULLET_CURVY,0,3.5, vec3(angleLeft.x,angleLeft.y,angleLeft.z),getModel(1).getTranslate()+2*vec3(dirNorm.x*getScale().x,0,dirNorm.z*getScale().z));
-			Globals::addBullet(ID_BULLET_CURVY,0,3.5, vec3(angleRight.x,angleRight.y,angleRight.z),getModel(1).getTranslate()+2*vec3(dirNorm.x*getScale().x,0,dirNorm.z*getScale().z));
+			Globals::addBullet(ID_BULLET_CURVY,0,3.5, vec3(angleLeft.x,angleLeft.y,angleLeft.z),getModel(1)->getTranslate()+2*vec3(dirNorm.x*getScale().x,0,dirNorm.z*getScale().z));
+			Globals::addBullet(ID_BULLET_CURVY,0,3.5, vec3(angleRight.x,angleRight.y,angleRight.z),getModel(1)->getTranslate()+2*vec3(dirNorm.x*getScale().x,0,dirNorm.z*getScale().z));
 			}*/
 		}
 	}

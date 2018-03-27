@@ -34,7 +34,7 @@ public:
 		setModel(d);
 		setModel(d,1);
 		setModel(d,2);
-		getModel(1).scale(.5,.5,.5);
+		getModel(1)->scale(.5,.5,.5);
 		scale(6,6,6);
 	}
 
@@ -44,7 +44,7 @@ public:
 		case ID_BULLET_CURVY:
 		case ID_BULLET_STRAIGHT:
 		case ID_BULLET_GRENADE:
-			getModel().setHighlightColor(1,1,0);
+			getModel()->setHighlightColor(1,1,0);
 		}
 	}
 
@@ -54,17 +54,17 @@ public:
 		float scaleFactor=((float)_currTime)/_lifeTime;
 		float radiusFactor=(_maxSize)*scaleFactor+2;
 
-		getModel().setAlpha((1-scaleFactor)*.5);
-		getModel(1).setAlpha((1-scaleFactor)*.5);
-		getModel(2).setAlpha((1-scaleFactor)*.5);
+		getModel()->setAlpha((1-scaleFactor)*.5);
+		getModel(1)->setAlpha((1-scaleFactor)*.5);
+		getModel(2)->setAlpha((1-scaleFactor)*.5);
 
-		getModel().setScale(radiusFactor/6,radiusFactor/6,radiusFactor/6);
-		getModel(1).setScale(radiusFactor/6*.9,radiusFactor/6*.9,radiusFactor/6*.9);
-		getModel(2).setScale(radiusFactor/6*.8,radiusFactor/6*.8,radiusFactor/6*.8);
+		getModel()->setScale(radiusFactor/6,radiusFactor/6,radiusFactor/6);
+		getModel(1)->setScale(radiusFactor/6*.9,radiusFactor/6*.9,radiusFactor/6*.9);
+		getModel(2)->setScale(radiusFactor/6*.8,radiusFactor/6*.8,radiusFactor/6*.8);
 
 		_currTime++;
 		if(_currTime>_lifeTime)setDelete();
-		getModel().setHighlightColor(0,1,.5);
+		getModel()->setHighlightColor(0,1,.5);
 	}
 
 

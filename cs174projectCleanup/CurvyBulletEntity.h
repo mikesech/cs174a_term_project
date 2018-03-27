@@ -31,13 +31,13 @@ public:
 		setModel(DrawableEntity(NULL,"Resources/sphere.obj"),1);
 
 		scale(.75f,.75f,.75f);
-		getModel().setDiffuseColor(0.9f,0.3f,0.4f);
-		getModel().scale(.75f,.75f,.75f);
-		getModel().setShininess(60);
-		getModel().setHighlightColor(.25f,.7f,.2f);
+		getModel()->setDiffuseColor(0.9f,0.3f,0.4f);
+		getModel()->scale(.75f,.75f,.75f);
+		getModel()->setShininess(60);
+		getModel()->setHighlightColor(.25f,.7f,.2f);
 
-		getModel(1).setAlpha(.5);
-		getModel(1).setHighlightColor(.5,1,.5);
+		getModel(1)->setAlpha(.5);
+		getModel(1)->setHighlightColor(.5,1,.5);
 
 		this->setHitbox(CollisionBox(vec3(1.5f,1.5f,1.5f)));
 		rotation.FromAxis(dir, DegreesToRadians*2);
