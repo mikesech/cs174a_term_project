@@ -95,10 +95,10 @@ public:
 	/** @brief sets the shininess of the object*/
 	inline void setShininess(float f){_shininess=f;}
 	/** @brief sets the texture used for the object */
-	inline void setTexture(const char* t){useTexId=false;_texName=t;if(t=="")_texName=NULL;}
+	inline void setTexture(const char* t){useTexId=false;_texName=t;if(!(t&&*t))_texName=NULL;}
 	inline void setTexture(GLuint id){useTexId=true;_texId=id;}
 	/** @brief sets the normal map used for the object */
-	inline void setNormalMap(const char* t){_normalMapName=t;if(t=="")_normalMapName=NULL;else setNormalMapDepth(1.0);}
+	inline void setNormalMap(const char* t){_normalMapName=t;if(!(t&&*t))_normalMapName=NULL;else setNormalMapDepth(1.0);}
 	inline void setNormalMapDepth(float f){_normalMapDepth=f;}
 
 	/** @brief sets the transparency used for the object */
@@ -118,7 +118,7 @@ public:
 	inline void setHighlightColor(float r, float g, float b){setHighlightColor(vec3(r,g,b));}
 
 	/** @brief sets the model used to draw for the object */
-	inline void setModel(const char* m){_modelName=m;if(m=="")_modelName=NULL;}
+	inline void setModel(const char* m){_modelName=m;if(!(m&&*m))_modelName=NULL;}
 
 	/** @brief Sets how far to offset the UV coordinates for the object */
 	inline void setUVOffset(float u, float v){_uvOffset=vec2(u,v);}
