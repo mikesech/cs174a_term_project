@@ -79,6 +79,10 @@ namespace Globals
 		wScenes[currentLevel]->setup();
 
 		Globals::setHasFog(true);
+		// Using the new texture-based text writing routine in Text2D, text rendering
+		// should be reliable for all platforms. Consequently, the command-line option
+		// has been removed and text rendering has been permanently enabled.
+		Globals::useText = true;
 	}
 
 	static void updateEntities(GameEntityList& list) {

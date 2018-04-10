@@ -55,14 +55,6 @@ int main(int argc, char** argv){
 
 	initCallbacks();
 
-	//Enable text if command line parameter present
-	for(int i = 1; i < argc; ++i) {
-		if(strcmp(argv[i], "--text") == 0) {
-			Globals::useText = true;
-			break;
-		}
-	}
-
 	SoundPlayerGuard spg;
 	if(spg.initialized) {
 			if(!SoundPlayer::playBackground("resources/cl1.midi"))
