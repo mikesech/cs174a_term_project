@@ -1,31 +1,29 @@
 #ifndef _TEXT2D
 #define _TEXT2D
 
-#ifdef WIN32
-#include <windows.h>
-#endif
-
-#include "GL/glew.h"
-#ifdef __APPLE__
-// freeglut doesn't work well on osx. We'll use the Apple-provided original GLUT instead.
-#	include "GLUT/glut.h"
-#else
-#	include "GL/freeglut.h"
-#	include "GL/freeglut_ext.h"
-#endif
 #include "mat.h"
-#include "vec.h"
-#include "Angel.h"
 
-/** @brief Helper class for 2-D text display. Doesn't work on some computers
+/** @brief Helper namepsace for 2-D text display.
 */
-class Text2D
-{
-	public:
-		Text2D(void);
-		void print_bitmap_string(void* font, const char* s);
-		void draw_stuff(const char* s, vec4 color, GLfloat location_x, GLfloat location_y );
-
-};
+namespace Text2D {
+		/** Draws relatively unchanging (static) text on the screen.
+		 * 
+		 * @note This function will initialize SDL_TTF if it has not been already.
+		 * 
+		 * @attention This function should be used to draw text that doesn't change often. For every different
+		 * input string @c s, a texture is generated and cached. Texture generation is somewhat
+		 * expensive, and cached textures are never cleaned up. Consequently, using this function
+		 * for many different strings could easily lead to poor performance or resource exhaustion.
+		 * 
+		 * @todo Properly implement non-white colored text.
+		 * 
+		 * @param s The string to draw.
+		 * @param color The color with which to render the text. (Note: this parameter is currently ignored;
+		 *   the text is always white.)
+		 * @param location_x The X coordinate of the upper-left corner of the drawn text, normalized between 0 and 1.
+		 * @param location_x The Y coordinate of the upper-left corner of the drawn text, normalized between 0 and 1.
+		 */
+		void drawStaticText(const char* s, vec4 color, GLfloat location_x, GLfloat location_y);
+}
 
 #endif

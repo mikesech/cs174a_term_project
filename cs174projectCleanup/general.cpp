@@ -274,9 +274,8 @@ NEXT_J:
 		//Draw UI Text
 		if(useText) {
 			Globals::setModelTransMatrix(mat4());
-			Text2D n; 
-			n.draw_stuff("HEALTH",vec4(1,1,1,1), -0.495*(resolution.x/resolution.y), .4725 );
-			n.draw_stuff("SHIELD",vec4(1,1,1,1), -0.495*(resolution.x/resolution.y), .449 );
+			Text2D::drawStaticText("HEALTH",vec4(1,1,1,1), -0.495*(resolution.x/resolution.y), .4725 );
+			Text2D::drawStaticText("SHIELD",vec4(1,1,1,1), -0.495*(resolution.x/resolution.y), .449 );
 
 			const char* weaponText="";
 			switch(getPlayer()->getWeapon()){
@@ -291,11 +290,11 @@ NEXT_J:
 				break;
 
 			}
-			n.draw_stuff(weaponText,vec4(1,1,1,1), -0.495*(resolution.x/resolution.y), .449-(.4725-.449) );
+			Text2D::drawStaticText(weaponText,vec4(1,1,1,1), -0.495*(resolution.x/resolution.y), .449-(.4725-.449) );
 
 			if(wScenes[currentLevel]->_beaten){
-				n.draw_stuff("You Won!!",vec4(1,1,1,1),-.025,.05);
-				n.draw_stuff("Press 'esc' to quit",vec4(1,1,1,1),-.1,0);
+				Text2D::drawStaticText("You Won!!",vec4(1,1,1,1),-.025,.05);
+				Text2D::drawStaticText("Press 'esc' to quit",vec4(1,1,1,1),-.1,0);
 			}
 		}
 

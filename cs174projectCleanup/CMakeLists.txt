@@ -17,6 +17,7 @@ set(sources
 include(FindPkgConfig)
 pkg_search_module(SDL       REQUIRED sdl)
 pkg_search_module(SDL_MIXER REQUIRED SDL_mixer)
+pkg_search_module(SDL_TTF   REQUIRED SDL_ttf)
 pkg_search_module(GLEW      REQUIRED glew)
 pkg_search_module(IL        REQUIRED IL)
 find_package     (OpenGL    REQUIRED)
@@ -28,6 +29,7 @@ include_directories(
   ${GLUT_INCLUDE_DIR}
   ${GLEW_INCLUDE_DIRS}
   ${SDL_MIXER_INCLUDE_DIRS}
+  ${SDL_TTF_INCLUDE_DIRS}
   ${IL_INCLUDE_DIRS}
 )
 
@@ -40,6 +42,7 @@ target_link_libraries(${PROJECT_NAME}
   ${GLUT_LIBRARIES}
   ${GLEW_LDFLAGS}
   ${SDL_MIXER_LDFLAGS}
+  ${SDL_TTF_LDFLAGS}
   ${IL_LDFLAGS}
 )
 
@@ -53,11 +56,13 @@ file(INSTALL resources DESTINATION .)
 #   libglew-dev
 #   libsdl1.2-dev
 #   libsdl-mixer1.2-dev
+#   libsdl-ttf2.0-dev
 
 # brew packages
 #   cmake
 #   pkg-config
 #   sdl
 #   sdl_mixer
+#   sdl_ttf
 #   glew
 #   devil
