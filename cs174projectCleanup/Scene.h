@@ -543,8 +543,12 @@ namespace Globals{
 			}
 
 			if(_beaten) {
-				Teleporter::setPair(insideTele1, outsideTele2);
-				Teleporter::setPair(outsideTele1, insideTele2);
+				static bool oneshot = false;
+				if (!oneshot) {
+					Teleporter::setPair(insideTele1, outsideTele2);
+					Teleporter::setPair(outsideTele1, insideTele2);
+					oneshot = true;
+				}
 			}
 
 		}
