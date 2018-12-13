@@ -15,11 +15,8 @@ namespace Text2D {
 		 * expensive, and cached textures are never cleaned up. Consequently, using this function
 		 * for many different strings could easily lead to poor performance or resource exhaustion.
 		 * 
-		 * @todo Properly implement non-white colored text.
-		 * 
 		 * @param s The string to draw.
-		 * @param color The color with which to render the text. (Note: this parameter is currently ignored;
-		 *   the text is always white.)
+		 * @param color The color with which to render the text.
 		 * @param location_x The X coordinate of the upper-left corner of the drawn text, normalized between 0 and 1.
 		 * @param location_x The Y coordinate of the upper-left corner of the drawn text, normalized between 0 and 1.
 		 */

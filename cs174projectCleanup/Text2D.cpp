@@ -40,7 +40,7 @@ Text2D::drawStaticText(const char* s, vec4 color, GLfloat location_x, GLfloat lo
     TextTextureCache::iterator i = cache.find(s);
     if (i == cache.end()) {
         TTF_Font* const font = ttf_font();
-        SDL_Color c = {static_cast<Uint8>(color.x * 255), static_cast<Uint8>(color.y * 255), static_cast<Uint8>(color.z * 255)};
+        SDL_Color c = {255, 255, 255};  // color is implemented by setting the ambient light accordingly when rendering
         SDL_Surface* surface = TTF_RenderText_Blended(font, s, c);
         textTexture.width = surface->w;
         textTexture.height = surface->h;
@@ -73,21 +73,16 @@ Text2D::drawStaticText(const char* s, vec4 color, GLfloat location_x, GLfloat lo
     // to render text on the screen. Ideally, we'd use a different shader with a couple of polygons,
     // all purpose-built for this purpose. However, the core engine wasn't written to support multiple
     // shader programs, and the hack suffices for our purposes.
-    //
-    // It should be noted, however, that a consequence of this hack is the inability to reliably render
-    // colors accurately. This is further explained in an XXX comment below.
 
     glEnable(GL_BLEND);
 
-    // XXX: Using an ambient light at full power makes the text always white.
-    //      However, using a less intense ambient light might cause the text
-    //      to be less intense than the color parameter would otherwise indicate.
-    setAmbientLightColor(vec3(1,1,1));
+    setAmbientLightColor(vec3(color.x, color.y, color.z));
     setCameraTransMatrix(mat4());
     setPerspectiveMatrix(currentCamera->getOrthographicMatrix());
     setCameraPosition(vec3(0,0,.5));
 
     DrawableEntity d(NULL,"Resources/cube.obj");
+    d.setAlpha(color.w);
     d.setTexture(textTexture.ref);
     const float aspectRatio = static_cast<float>(textTexture.width)/textTexture.height;
     const float xScale = FONT_SCALE * aspectRatio;
