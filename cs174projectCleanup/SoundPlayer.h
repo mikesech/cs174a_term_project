@@ -31,8 +31,6 @@ namespace SoundPlayer {
 	  * be loaded from disk.
 	  *
 	  * The file type may be WAVE, MOD, MIDI, OGG, MP3, or FLAC.
-	  * Please don't use MOD or MIDI; I have a feeling they won't
-	  * work well, but you can certainly try.
 	  * 
 	  * @param path Path to the song.
 	  * @param loop Loop count. -1 for infinite loop. 0 for no play.
