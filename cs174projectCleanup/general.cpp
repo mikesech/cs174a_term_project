@@ -3,6 +3,9 @@
 #include "Engine.h"
 #include "BulletEntity.h"
 #include "TVScreen.h"
+#include "SDL_mouse.h"
+#include "SDL_events.h"
+#include "SDL_timer.h"
 
 #include <queue>
 #include <cassert>
@@ -70,8 +73,7 @@ namespace Globals
 		}
 
 		//viewFullscreen();
-		glutWarpPointer(glutGet(GLUT_WINDOW_WIDTH)/2,glutGet(GLUT_WINDOW_HEIGHT)/2);
-		glutSetCursor(GLUT_CURSOR_NONE);
+		SDL_SetRelativeMouseMode(SDL_TRUE);
 
 		//setup scenes
 		wScenes[0]=new Scene_1();
@@ -302,7 +304,7 @@ NEXT_J:
 			}
 		}
 
-		glutSwapBuffers();
+		SDL_GL_SwapWindow(mainWindow);
 	}
 
 	void callbackReshape(int width, int height){
@@ -363,20 +365,13 @@ NEXT_J:
 		}
 	}
 	void callbackKeyboard(unsigned char key, int x, int y){
-		if(key == 27)
-#ifdef FREEGLUT
-			glutLeaveMainLoop(); // quit on esc. need the function othwerise the sound handler object acts wonky.
-#else
-			// On Apple, we're forced to use GLUT because FreeGLUT doesn't work well on macOS.
-			// Unfortunately, GLUT doesn't provide glutLeaveMainLoop(). As a workaround, we'll
-			// just quit directly. This isn't ideal because it won't give a chance for our
-			// (and our libraries') code to cleanup, but that hopefully doesn't really matter.
-			//
-			// Ultimately, this is a bit of a moot point. I plan to switch away from GLUT soon,
-			// partly for this reason.
-			exit(0);
-#endif
-		else setKey(key, true);
+		if(key == 27)  {
+			SDL_Event e;
+			e.quit.type = SDL_QUIT;
+			// e.quit.timestamp is set by SDL_PushEvent
+			SDL_PushEvent(&e);
+		} else
+			setKey(key, true);
 	}
 	void callbackKeyboardUp(unsigned char key, int x, int y){
 		setKey(key, false);
@@ -388,31 +383,32 @@ NEXT_J:
 
 	}
 	void callbackMouse(int button, int state, int x, int y){
-		const bool down = (state == GLUT_DOWN);
+		const bool down = (state == SDL_PRESSED);
 		switch(button) {
-		case GLUT_LEFT_BUTTON:
+		case SDL_BUTTON_LEFT:
 			MOUSE_EDGE_LEFT = down && !MOUSE_LEFT;
 			MOUSE_LEFT = down;
 			break;
-		case GLUT_RIGHT_BUTTON:
+		case SDL_BUTTON_RIGHT:
 			MOUSE_EDGE_RIGHT = down && !MOUSE_RIGHT;
 			MOUSE_RIGHT = down;
 			break;
 		}
 	}
 	void callbackMotion(int x, int y){
-		Globals::mouseX = x;
-		Globals::mouseY = y;
+		Globals::mouseX += x;
+		Globals::mouseY += y;
 	}
 	void callbackPassiveMotion(int x, int y){
-		Globals::mouseX = x;
-		Globals::mouseY = y;
+		Globals::mouseX += x;
+		Globals::mouseY += y;
 	}
-	void callbackIdle(){}
 	void callbackTimer(int) // Called when the timer expires
 	{
-		glutTimerFunc(1000/30, callbackTimer, 0);
 		animate();
-		glutPostRedisplay();
+		// Unlike with GLUT, SDL doesn't seem to have the concept of
+		// requesting a redisplay. Instead, we call the display callback
+		// directly.
+		callbackDisplay();
 	}
 }

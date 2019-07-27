@@ -21,20 +21,12 @@ pkg_check_modules(SDL2_TTF   REQUIRED IMPORTED_TARGET SDL2_ttf)
 pkg_check_modules(GLEW       REQUIRED IMPORTED_TARGET glew)
 pkg_check_modules(IL         REQUIRED IMPORTED_TARGET IL)
 find_package     (OpenGL     REQUIRED)
-find_package     (GLUT       REQUIRED)
-
-# XXX: We aren't adding the non-include cflags. Is that a problem?
-
-include_directories(
-  ${GLUT_INCLUDE_DIR}
-)
 
 set(CMAKE_BUILD_TYPE RelWithDebInfo) # add debugging information, optimize
 
 add_executable(${PROJECT_NAME} ${sources})
 target_link_libraries(${PROJECT_NAME}
   OpenGL::GL
-  ${GLUT_LIBRARIES}
   PkgConfig::SDL2
   PkgConfig::SDL2_MIXER
   PkgConfig::SDL2_TTF
@@ -47,7 +39,6 @@ file(INSTALL resources DESTINATION .)
 # apt-get packages
 #   cmake
 #   pkg-config
-#   freeglut3-dev
 #   libdevil-dev
 #   libglew-dev
 #   libsdl2-dev

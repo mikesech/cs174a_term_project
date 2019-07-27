@@ -23,7 +23,6 @@ namespace Globals
 	void callbackMouse(int button, int state, int x, int y);
 	void callbackMotion(int x, int y);
 	void callbackPassiveMotion(int x, int y);
-	void callbackIdle();
 	void callbackTimer(int);
 }
 #endif //_GENERAL

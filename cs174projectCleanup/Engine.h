@@ -7,8 +7,11 @@
 #include "CameraEntity.h"
 #include "PointLight.h"
 
+struct SDL_Window;
+
 namespace Globals
 {
+	extern SDL_Window* mainWindow;
 	extern bool useText;
 
 	//ENGINE BASICS//

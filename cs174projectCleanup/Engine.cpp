@@ -1,7 +1,9 @@
 #include "Engine.h"
+#include "SDL_video.h"
 
 namespace Globals
 {	
+	SDL_Window* mainWindow;
 	bool useText = false;
 
 //ENGINE BASICS//
@@ -42,11 +44,12 @@ namespace Globals
 		setResolution(vec2(width,height));
 	}
 	void viewWindowed(int x, int y, int width, int height){
-		glutPositionWindow(x,y);
-		glutReshapeWindow(width,height);
+		SDL_SetWindowFullscreen(mainWindow, 0);
+		SDL_SetWindowPosition(mainWindow, x, y);
+		SDL_SetWindowSize(mainWindow, width, height);
 	}
 	void viewFullscreen(){
-		glutFullScreen();
+		SDL_SetWindowFullscreen(mainWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
 	}
 
 	vec3 _ambColor;

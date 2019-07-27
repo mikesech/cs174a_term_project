@@ -6,9 +6,6 @@
 #include "SoundPlayer.h"
 #include "Teleporter.h"
 #include <iostream>
-#ifdef __APPLE__
-#include <ApplicationServices/ApplicationServices.h>
-#endif
 void Player::update()
 {
 	if(getTranslate().y<-50)setHealth(0);
@@ -28,23 +25,10 @@ void Player::update()
 	const float MAX_VEL=1;
 	const float ACCEL_AMOUNT=.15;
 
-	int xDelta=Globals::mouseX-glutGet(GLUT_WINDOW_WIDTH)/2;
-	int yDelta=Globals::mouseY-glutGet(GLUT_WINDOW_HEIGHT)/2;
-
-#ifdef __APPLE__
-	// At every frame, after reading the position of the mouse, we recenter it in the frame.
-	// GLUT provides a function, glutWarpPointer(), to do this. However, it does not work well
-	// on macOS. As it turns out, when warping the pointer using that function, the Quartz
-	// event system suppresses mouse events for around 0.25 seconds. That is not good.
-	//
-	// Instead, we can use this macOS-specific set of function calls to warp the mouse.
-	// See https://stackoverflow.com/a/17547015 for more information.
-	CGPoint warpPoint = CGPointMake(glutGet(GLUT_WINDOW_X)+glutGet(GLUT_WINDOW_WIDTH)/2,glutGet(GLUT_WINDOW_Y)+glutGet(GLUT_WINDOW_HEIGHT)/2);
-	CGWarpMouseCursorPosition(warpPoint);
-	CGAssociateMouseAndMouseCursorPosition(true);
-#else
-	glutWarpPointer(glutGet(GLUT_WINDOW_WIDTH)/2,glutGet(GLUT_WINDOW_HEIGHT)/2);
-#endif
+	int xDelta=Globals::mouseX;//-glutGet(GLUT_WINDOW_WIDTH)/2;
+	int yDelta=Globals::mouseY;//-glutGet(GLUT_WINDOW_HEIGHT)/2;
+	Globals::mouseX = 0;
+	Globals::mouseY = 0;
 
 	rotate(0,-xDelta/10,0);
 	//rotate(-yDelta/10,0,0);
