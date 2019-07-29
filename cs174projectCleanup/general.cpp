@@ -208,7 +208,6 @@ NEXT_J:
 
 		glEnable( GL_BLEND );
 
-		currentCamera->setAspectRatio(resolution.x/resolution.y);
 		setCameraTransMatrix(currentCamera->getCameraTransformationMatrix());
 		setPerspectiveMatrix(currentCamera->getPerspectiveMatrix());
 		setCameraPosition(currentCamera->getTranslate());
@@ -248,6 +247,8 @@ NEXT_J:
 			(*i)->framebuffer.render(&render, 160, 160);
 		}
 		currentCamera = originalCamera;
+		
+		currentCamera->setAspectRatio(resolution.x/resolution.y);
 
 		//Render to the screen.
 		render();
