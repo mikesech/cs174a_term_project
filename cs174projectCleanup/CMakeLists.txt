@@ -15,9 +15,9 @@ set(sources
 # Source files omitted: obj_loader/objTester.cpp test_main.cpp
 
 include(FindPkgConfig)
-pkg_check_modules(SDL        REQUIRED IMPORTED_TARGET sdl)
-pkg_check_modules(SDL_MIXER  REQUIRED IMPORTED_TARGET SDL_mixer)
-pkg_check_modules(SDL_TTF    REQUIRED IMPORTED_TARGET SDL_ttf)
+pkg_check_modules(SDL2       REQUIRED IMPORTED_TARGET sdl2)
+pkg_check_modules(SDL2_MIXER REQUIRED IMPORTED_TARGET SDL2_mixer)
+pkg_check_modules(SDL2_TTF   REQUIRED IMPORTED_TARGET SDL2_ttf)
 pkg_check_modules(GLEW       REQUIRED IMPORTED_TARGET glew)
 pkg_check_modules(IL         REQUIRED IMPORTED_TARGET IL)
 find_package     (OpenGL     REQUIRED)
@@ -35,9 +35,9 @@ add_executable(${PROJECT_NAME} ${sources})
 target_link_libraries(${PROJECT_NAME}
   OpenGL::GL
   ${GLUT_LIBRARIES}
-  PkgConfig::SDL
-  PkgConfig::SDL_MIXER
-  PkgConfig::SDL_TTF
+  PkgConfig::SDL2
+  PkgConfig::SDL2_MIXER
+  PkgConfig::SDL2_TTF
   PkgConfig::GLEW
   PkgConfig::IL
 )
@@ -50,15 +50,15 @@ file(INSTALL resources DESTINATION .)
 #   freeglut3-dev
 #   libdevil-dev
 #   libglew-dev
-#   libsdl1.2-dev
-#   libsdl-mixer1.2-dev
-#   libsdl-ttf2.0-dev
+#   libsdl2-dev
+#   libsdl2-mixer-dev
+#   libsdl2-ttf-dev
 
 # brew packages
 #   cmake
 #   pkg-config
-#   sdl
-#   sdl_mixer
-#   sdl_ttf
+#   sdl2
+#   sdl2_mixer
+#   sdl2_ttf
 #   glew
 #   devil
