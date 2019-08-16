@@ -61,6 +61,16 @@ public:
 	/** @brief Gets the total translation vector. 
 	  * @return The local translation vector concatenated with the
 	  *         ancestors'.
+	  * 
+	  * @warning This function's return value is computed once per frame
+	  *      and cached for subsequent calls. However, it's totally possible
+	  *      for the object's position to change in between calls to this function
+	  *      during the same frame. That is to say, this function will return the
+	  *      entity's location from some time between the beginning of this frame
+	  *      until this function's call.
+	  * 
+	  *      It might make sense to rename this function to @c getApproximateTranslate
+	  *      or @c getCachedTranslate and provide a new, non-cached function if needed.
 	  */
 	vec3 getTranslate() const;
 	/** @brief Gets the local translation vector. */
@@ -78,6 +88,12 @@ public:
 	/** @brief Gets the total rotation vector. 
 	  * @return The local rotation vector concatenated with the
 	  *         ancestors'.
+	  * 
+	  * @bug This function just adds the roll, pitch, and yaw
+	  *      factors to that of its parent's (and grandparent's
+	  *      and so on). That's not how the transformation matrix actually
+	  *      works because the rotation of each ancestor changes the rotational
+	  *      axes.
 	  */
 	vec3 getRotate() const;
 	/** @brief Gets the local rotation vector. */
@@ -95,6 +111,12 @@ public:
 	/** @brief Gets the total scale vector. 
 	  * @return The local scale vector concatenated with the
 	  *         ancestors'.
+	  * 
+	  * @bug This function doesn't really make any sense. If the object
+	  *   is scaled in directions other than the axes, then there will
+	  *   be skew. Skew cannot be described simply as a scale vector.
+	  *   This function concatenates the scale factors assuming there's
+	  *   no rotation, which can be significantly incorrect.
 	  */
 	vec3 getScale() const;
 	/** @brief Gets the local scale vector. */

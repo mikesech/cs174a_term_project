@@ -8,6 +8,11 @@
   *
   * As a WorldEntity, the box's positon and orientation is controlled
   * through the WorldEntity interface.
+  * 
+  * @bug CollisionBox ignores its WorldEntity's global rotation.
+  *   This makes the math simpler, because a CollisionBox is always
+  *   axis-aligned. However, it might lead to some strange behavior
+  *   when sufficently oblong objects are rotated.
   */
 class CollisionBox:public WorldEntity{
 private:
