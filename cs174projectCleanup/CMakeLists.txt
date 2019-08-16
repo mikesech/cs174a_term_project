@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 3.6)
 project (cs174a_term_project)
 
 set(sources
@@ -15,35 +15,31 @@ set(sources
 # Source files omitted: obj_loader/objTester.cpp test_main.cpp
 
 include(FindPkgConfig)
-pkg_search_module(SDL       REQUIRED sdl)
-pkg_search_module(SDL_MIXER REQUIRED SDL_mixer)
-pkg_search_module(SDL_TTF   REQUIRED SDL_ttf)
-pkg_search_module(GLEW      REQUIRED glew)
-pkg_search_module(IL        REQUIRED IL)
-find_package     (OpenGL    REQUIRED)
-find_package     (GLUT      REQUIRED)
+pkg_check_modules(SDL        REQUIRED IMPORTED_TARGET sdl)
+pkg_check_modules(SDL_MIXER  REQUIRED IMPORTED_TARGET SDL_mixer)
+pkg_check_modules(SDL_TTF    REQUIRED IMPORTED_TARGET SDL_ttf)
+pkg_check_modules(GLEW       REQUIRED IMPORTED_TARGET glew)
+pkg_check_modules(IL         REQUIRED IMPORTED_TARGET IL)
+find_package     (OpenGL     REQUIRED)
+find_package     (GLUT       REQUIRED)
+
+# XXX: We aren't adding the non-include cflags. Is that a problem?
 
 include_directories(
-  ${SDL_INCLUDE_DIRS}
-  ${OPENGL_INCLUDE_DIR}
   ${GLUT_INCLUDE_DIR}
-  ${GLEW_INCLUDE_DIRS}
-  ${SDL_MIXER_INCLUDE_DIRS}
-  ${SDL_TTF_INCLUDE_DIRS}
-  ${IL_INCLUDE_DIRS}
 )
 
 set(CMAKE_BUILD_TYPE RelWithDebInfo) # add debugging information, optimize
 
 add_executable(${PROJECT_NAME} ${sources})
 target_link_libraries(${PROJECT_NAME}
-  ${SDL_LDFLAGS}
-  ${OPENGL_LIBRARIES}
+  OpenGL::GL
   ${GLUT_LIBRARIES}
-  ${GLEW_LDFLAGS}
-  ${SDL_MIXER_LDFLAGS}
-  ${SDL_TTF_LDFLAGS}
-  ${IL_LDFLAGS}
+  PkgConfig::SDL
+  PkgConfig::SDL_MIXER
+  PkgConfig::SDL_TTF
+  PkgConfig::GLEW
+  PkgConfig::IL
 )
 
 file(INSTALL resources DESTINATION .)
