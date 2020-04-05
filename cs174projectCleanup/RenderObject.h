@@ -3,6 +3,7 @@
 #include "GlobalIncludes.h"
 #include <vector>
 #include <map>
+#include <cstring>
 
 typedef vec4 point4;
 class CRenderObjectManager;

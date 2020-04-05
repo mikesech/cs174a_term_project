@@ -1,5 +1,7 @@
 
 #include "Angel.h"
+#include <limits>
+#include <cstring>
 
 namespace Angel {
 // wait() function
