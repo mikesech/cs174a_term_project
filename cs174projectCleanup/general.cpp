@@ -262,7 +262,7 @@ NEXT_J:
 		setCameraPosition(vec3(0,0,.5));
 
 		Wall w=Wall();
-		w.translate(-(.4)*(resolution.x/resolution.y),.48,-10);
+		w.translate(-(.495)*(resolution.x/resolution.y)+.095,.48,-10);
 		w.scale((Globals::getPlayer()->getHealth()/Player::MAX_HEALTH)*.5,.025,.1);
 
 		DrawableEntity d=DrawableEntity(NULL,"Resources/cube.obj");
