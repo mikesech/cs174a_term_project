@@ -46,6 +46,7 @@ namespace Globals
 	void setResolution(int width, int height);
 	void viewWindowed(int x, int y, int width, int height);
 	void viewFullscreen();
+	void toggleFullscreen();
 
 	extern vec3 _ambColor;
 	

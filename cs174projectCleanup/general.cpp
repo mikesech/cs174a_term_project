@@ -341,7 +341,8 @@ NEXT_J:
 			Globals::KEY_SPACE = val;
 			break;
 		case ';':
-			viewFullscreen();
+			if (!val)
+				toggleFullscreen();
 			break;
 		case '\'':
 			if(!val)firstPerson=!firstPerson;

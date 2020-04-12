@@ -51,6 +51,12 @@ namespace Globals
 	void viewFullscreen(){
 		SDL_SetWindowFullscreen(mainWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
 	}
+	void toggleFullscreen() {
+		if (SDL_GetWindowFlags(mainWindow) & SDL_WINDOW_FULLSCREEN_DESKTOP)
+			SDL_SetWindowFullscreen(mainWindow, 0);
+		else
+			SDL_SetWindowFullscreen(mainWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	}
 
 	vec3 _ambColor;
 
