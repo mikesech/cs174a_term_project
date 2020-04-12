@@ -30,10 +30,10 @@ void Player::update()
 	Globals::mouseX = 0;
 	Globals::mouseY = 0;
 
-	rotate(0,-xDelta/10,0);
-	//rotate(-yDelta/10,0,0);
+	rotate(0,-xDelta/10.f,0);
+	//rotate(-yDelta/10.f,0,0);
 
-	getModel(1)->rotate(-yDelta/10,0,0);
+	getModel(1)->rotate(-yDelta/10.f,0,0);
 
 	if(getModel(1)->getRotate().x<0){
 		getModel(1)->setRotate(0,0,0);
