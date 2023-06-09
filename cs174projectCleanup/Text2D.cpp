@@ -3,6 +3,7 @@
 #include "SDL_ttf.h"
 #include <map>
 #include <string>
+#include <cassert>
 
 #include "General.h"
 using namespace Globals;
@@ -54,8 +55,18 @@ Text2D::drawStaticText(const char* s, vec4 color, GLfloat location_x, GLfloat lo
             glBindTexture(GL_TEXTURE_2D,textTexture.ref);
 
             // Finally, generate the texture data in OpenGL.
+            // On some platforms (e.g., my new M2 Mac running Ventura), the length of each row
+            // in bytes is not equal to the number of pixels per row times the number of bytes
+            // per pixels. This might have something to do with alignment or other platform
+            // optimization concerns. The surface's pitch is the number of bytes per row;
+            // we can use it to calculate the size of each row in pixels and provide it to OpenGL.
+            assert(surface->pitch % surface->format->BytesPerPixel == 0);
+            int oldGLUnpackRowLength;
+            glGetIntegerv(GL_UNPACK_ROW_LENGTH, &oldGLUnpackRowLength);
+            glPixelStorei(GL_UNPACK_ROW_LENGTH, surface->pitch / surface->format->BytesPerPixel);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, surface->w, surface->h,
                         0,GL_RGBA,GL_UNSIGNED_BYTE,surface->pixels);
+            glPixelStorei(GL_UNPACK_ROW_LENGTH, oldGLUnpackRowLength);
             
             glGenerateMipmap(GL_TEXTURE_2D);
         }
