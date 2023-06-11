@@ -36,6 +36,15 @@ target_link_libraries(${PROJECT_NAME}
 
 file(INSTALL resources DESTINATION .)
 
+# nix packages
+#   cmake
+#   pkg-config
+#   libdevil-nox
+#   glew
+#   SDL2
+#   SDL2_mixer
+#   SDL2_ttf
+
 # apt-get packages
 #   cmake
 #   pkg-config
