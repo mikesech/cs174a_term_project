@@ -45,16 +45,16 @@ void initSDL() {
 }
 
 int main(int argc, char** argv){
-	if (argc > 0) {
-		int i;
-		for(i = std::strlen(argv[0]) - 1; i >= 0; --i)
-			if (argv[0][i] == '/')
-				break;
-		std::string base(argv[0], i);
-		chdir(base.c_str());
+	initSDL();
+
+	{
+		char* basePath = SDL_GetBasePath();
+		if (basePath) {
+			chdir(basePath);
+			SDL_free(basePath);
+		}
 	}
 
-	initSDL();
 	//initialize glew
 	glewExperimental = GL_TRUE;
 	const GLenum glewStatus = glewInit();
