@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.6)
+cmake_minimum_required (VERSION 3.12)
 project (cs174a_term_project)
 
 set(sources
@@ -34,7 +34,14 @@ target_link_libraries(${PROJECT_NAME}
   PkgConfig::IL
 )
 
-file(INSTALL resources DESTINATION .)
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  file(INSTALL resources DESTINATION .)
+else()
+  include(GNUInstallDirs)
+  add_compile_definitions(CMAKE_INSTALL_FULL_DATADIR="${CMAKE_INSTALL_FULL_DATADIR}")
+  install(TARGETS ${PROJECT_NAME} RUNTIME)
+  install(DIRECTORY resources TYPE DATA)
+endif()
 
 # nix packages
 #   cmake
