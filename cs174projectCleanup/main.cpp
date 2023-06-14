@@ -47,6 +47,9 @@ void initSDL() {
 int main(int argc, char** argv){
 	initSDL();
 
+#ifdef CMAKE_INSTALL_FULL_DATADIR
+	chdir(CMAKE_INSTALL_FULL_DATADIR);
+#else
 	{
 		char* basePath = SDL_GetBasePath();
 		if (basePath) {
@@ -54,6 +57,7 @@ int main(int argc, char** argv){
 			SDL_free(basePath);
 		}
 	}
+#endif
 
 	//initialize glew
 	glewExperimental = GL_TRUE;
