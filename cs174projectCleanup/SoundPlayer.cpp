@@ -25,8 +25,6 @@ static Mix_Chunk* fetchSound(const std::string& path) {
 	return sound;
 }
 
-static int soundChannel = -1;
-
 namespace SoundPlayer {
 	bool init() {
 		SDL_InitSubSystem(SDL_INIT_AUDIO);
@@ -82,19 +80,17 @@ namespace SoundPlayer {
 	}
 
 	bool playSound(const std::string& path, int loop) {
-		stopSound();
-
 		Mix_Chunk* sound = fetchSound(path);
 		if(!sound)
 			return false;
-		soundChannel = Mix_PlayChannel(-1, sound, loop - 1);
+
+		Mix_PlayChannel(-1, sound, loop - 1);
 		return true;
 	}
 
+	// TODO rename to stopSounds
 	void stopSound() {
-		if(soundChannel >= 0) {
-			Mix_HaltChannel(soundChannel);
-			soundChannel = -1;
-		}
+		if(initialized)
+			Mix_HaltChannel(-1); // -1 means all channels
 	}
 }
