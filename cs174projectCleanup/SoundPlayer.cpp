@@ -17,6 +17,7 @@ static Mix_Chunk* fetchSound(const std::string& path) {
 		return sound;
 
 	sound = Mix_LoadWAV(path.c_str());
+	Mix_VolumeChunk(sound, 32); // TODO better way to set volume
 	if(!sound)
 		return NULL;
 
