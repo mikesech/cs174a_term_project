@@ -41,7 +41,19 @@ Text2D::drawStaticText(const char* s, vec4 color, GLfloat location_x, GLfloat lo
     TextTextureCache::iterator i = cache.find(s);
     if (i == cache.end()) {
         TTF_Font* const font = ttf_font();
-        SDL_Color c = {255, 255, 255};  // color is implemented by setting the ambient light accordingly when rendering
+        if (!font) throw "no font";
+        // Color is implemented by setting the ambient light accordingly when rendering.
+        // The final color of a fragment is the ambient color plus the object's specular
+        // and diffuse lighting, both of which are dependent on the scene's lighting.
+        // We'll set the shininess to zero to remove specular lighting from the equation.
+        // With a textured object, the object's diffuse color is the texture color, which
+        // is then illuminated by each scene light to make the final diffuse lighting value.
+        //
+        // We'll play a trick here. We set the text's color to be black so it won't contribute
+        // any R, G, or B to the final color. However, it will contribute its alpha value.
+        // Consequently, where the text is black (i.e, present), the ambient color will be use.
+        // Where the text is not present, the alpha will be zero and nothing will be rendered.
+        SDL_Color c = {0, 0, 0, 255};
         SDL_Surface* surface = TTF_RenderText_Blended(font, s, c);
         textTexture.width = surface->w;
         textTexture.height = surface->h;
