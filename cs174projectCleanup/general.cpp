@@ -45,6 +45,28 @@ namespace {
 	};
 	/** A max-heap for transparent models to enable drawing them from farthest to nearest. */
 	typedef std::priority_queue<const DrawableEntity*, std::vector<const DrawableEntity*>, DepthComparator> TransparencyQueue;
+
+	class FPSCounter {
+	public:
+		Uint32 recordFrame() {
+			const Uint32 tick = SDL_GetTicks();
+			if (tick >= _lastSecond + 1000) {
+				_framesLastSecond = (tick >= _lastSecond + 2000) ? 0
+					: _framesThisSecond;
+				_framesThisSecond = 1;
+				_lastSecond = (tick / 1000) * 1000;
+
+			} else
+				++_framesThisSecond;
+			return _framesLastSecond;
+		}
+
+	private:
+		Uint32 _lastSecond = 0;
+		Uint32 _framesLastSecond = 0;
+		Uint32 _framesThisSecond = 0;
+	};
+
 }
 
 namespace Globals
@@ -298,6 +320,10 @@ NEXT_J:
 
 			}
 			Text2D::drawStaticText(weaponText,vec4(1,1,1,1), -0.495*(resolution.x/resolution.y), .449-(.4725-.449) );
+
+			static FPSCounter fpsCounter;
+			const Uint32 framesLastSecond = fpsCounter.recordFrame();
+			Text2D::drawStaticText(("FPS: " + std::to_string(framesLastSecond) + " [target: " + std::to_string(1000/(1000/30)) + ']').c_str(), vec4(1, 0.5, 1, 1), -0.495 * (resolution.x / resolution.y), .449 - 2* (.4725 - .449));
 
 			if(wScenes[currentLevel]->_beaten){
 				Text2D::drawStaticText("You Won!!",vec4(1,1,1,1),-.025,.05);
