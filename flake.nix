@@ -1,10 +1,13 @@
 {
   description = "Fall 2011 UCLA 174A Graphics I Term Project";
+  inputs = {
+    flake-utils.url = "github:numtide/flake-utils";
+  };
 
-  outputs = { self, nixpkgs }: {
-
-    packages.aarch64-darwin.cs174a_term_project =
-      with nixpkgs.legacyPackages.aarch64-darwin;
+  outputs = { self, nixpkgs, flake-utils }:
+  flake-utils.lib.eachDefaultSystem (system: {
+    packages.cs174a_term_project =
+      with nixpkgs.legacyPackages.${system};
       stdenv.mkDerivation {
         name = "cs174a_term_project";
         src = ./cs174projectCleanup;
@@ -21,8 +24,7 @@
         ];
       };
 
-    packages.aarch64-darwin.default =
-      self.packages.aarch64-darwin.cs174a_term_project;
-
-  };
+    packages.default =
+      self.packages.${system}.cs174a_term_project;
+  });
 }
