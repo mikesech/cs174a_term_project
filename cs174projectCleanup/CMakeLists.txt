@@ -18,8 +18,8 @@ include(FindPkgConfig)
 pkg_check_modules(SDL2       REQUIRED IMPORTED_TARGET sdl2)
 pkg_check_modules(SDL2_MIXER REQUIRED IMPORTED_TARGET SDL2_mixer)
 pkg_check_modules(SDL2_TTF   REQUIRED IMPORTED_TARGET SDL2_ttf)
+pkg_check_modules(SDL2_IMAGE REQUIRED IMPORTED_TARGET SDL2_image)
 pkg_check_modules(GLEW       REQUIRED IMPORTED_TARGET glew)
-pkg_check_modules(IL         REQUIRED IMPORTED_TARGET IL)
 find_package     (OpenGL     REQUIRED)
 
 set(CMAKE_BUILD_TYPE RelWithDebInfo) # add debugging information, optimize
@@ -30,8 +30,8 @@ target_link_libraries(${PROJECT_NAME}
   PkgConfig::SDL2
   PkgConfig::SDL2_MIXER
   PkgConfig::SDL2_TTF
+  PkgConfig::SDL2_IMAGE
   PkgConfig::GLEW
-  PkgConfig::IL
 )
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
@@ -46,20 +46,20 @@ endif()
 # nix packages
 #   cmake
 #   pkg-config
-#   libdevil-nox
 #   glew
 #   SDL2
 #   SDL2_mixer
 #   SDL2_ttf
+#   SDL2_image
 
 # apt-get packages
 #   cmake
 #   pkg-config
-#   libdevil-dev
 #   libglew-dev
 #   libsdl2-dev
 #   libsdl2-mixer-dev
 #   libsdl2-ttf-dev
+#   libsdl2-image-dev
 
 # brew packages
 #   cmake
@@ -67,5 +67,5 @@ endif()
 #   sdl2
 #   sdl2_mixer
 #   sdl2_ttf
+#   sdl2_image
 #   glew
-#   devil

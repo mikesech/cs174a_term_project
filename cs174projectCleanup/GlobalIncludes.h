@@ -9,7 +9,6 @@
 #include<iostream>
 #include "Exception.h"
 #include "GL/glew.h"
-#include "IL/il.h"
 #include "Angel.h"
 #include "obj_loader/objLoader.h"
 #endif

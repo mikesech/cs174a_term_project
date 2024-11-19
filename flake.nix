@@ -16,11 +16,11 @@
           pkg-config
         ];
         buildInputs = [
-          libdevil-nox
           glew
           SDL2
           SDL2_mixer
           SDL2_ttf
+          SDL2_image
         ];
       };
 

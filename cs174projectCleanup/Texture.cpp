@@ -1,3 +1,5 @@
+#include <SDL_image.h>
+
 #include "Texture.h"
 #include "TextureManager.h"
 #include "Exception.h"
@@ -25,31 +27,31 @@ CTexture::~CTexture()
 
 void CTexture::LoadFile(const std::string& strFileName)
 {
-	// Generate a new image Id and bind it with the
-	// current image.
-	ILuint imgId;
-	ilGenImages(1,&imgId);
-	ilBindImage(imgId);
-
-	// Load the file data in the current image.
-	if (!ilLoadImage(strFileName.c_str()))
+	// Load the file data.
+	SDL_Surface* surface = IMG_Load(strFileName.c_str());
+        if (!surface)
 	{
 		printf("The image failed to load\n" ) ;
-		ILenum err = ilGetError() ;
+		const char* err = IMG_GetError();
+		err = err ? err : "unknown";
 		std::cout<< "the error: " << err << std::endl;
-		string strError = "Failed to load file: " + strFileName + "error:" + ilGetString( err );
+		string strError = "Failed to load file: " + strFileName + "error:" + err;
 		throw CException(strError);
 	}
 	// Store the data in our STextureData structure.
-	m_TextData.nWidth	= ilGetInteger(IL_IMAGE_WIDTH);
-	m_TextData.nHeight	= ilGetInteger(IL_IMAGE_HEIGHT);
+	m_TextData.nWidth	= surface->w;
+	m_TextData.nHeight	= surface->h;
 
 	unsigned int size = m_TextData.nWidth * m_TextData.nHeight * 4;
 	m_TextData.pData = new unsigned char[size];
-	ilCopyPixels(0, 0, 0, m_TextData.nWidth, m_TextData.nHeight,
-		1, IL_RGBA, IL_UNSIGNED_BYTE, m_TextData.pData);
-	// Finally, delete the DevIL image data.
-	ilDeleteImage(imgId);
+	// TODO: error check
+	SDL_LockSurface(surface);
+	SDL_ConvertPixels(surface->w, surface->h, surface->format->format,
+		surface->pixels, surface->pitch, SDL_PIXELFORMAT_RGBA32,
+		m_TextData.pData, surface->w * 4);
+	SDL_UnlockSurface(surface);
+	// Finally, delete the SDL image data.
+	SDL_FreeSurface(surface);
 }
 
 void CTexture::AddReference()

@@ -10,7 +10,6 @@
 */
 //#include "GL\glew.h"
 //#include "GL\glut.h"
-#include "IL/il.h"
 #include "SoundPlayer.h"
 #include "General.h"
 #include "SDL.h"
@@ -65,7 +64,6 @@ int main(int argc, char** argv){
 		std::cerr << "Error initializing GLEW library: " << glewGetErrorString(glewStatus) << '\n';
 		return 1;
 	}
-	ilInit();
 	initApp();
 
 	SoundPlayerGuard spg;

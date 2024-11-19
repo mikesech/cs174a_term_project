@@ -1,17 +1,18 @@
+#include <SDL_image.h>
+
 #include "TextureManager.h"
 #include "Exception.h"
 
 using namespace std;
 
+static int sdlImageRefCount = 0;
+
 CTextureManager::CTextureManager() : m_Textures()
 {
-	// Initialize DevIL
-	ilInit();
-
-	// Set the first loaded point to the 
-	// upper-left corner.
-	ilOriginFunc(IL_ORIGIN_UPPER_LEFT);
-	ilEnable(IL_ORIGIN_SET);
+	// Initialize SDL_image
+        // XXX maybe do this in main?
+	if (sdlImageRefCount++ == 0)
+		IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
 }
 
 CTextureManager::~CTextureManager()
@@ -22,6 +23,8 @@ CTextureManager::~CTextureManager()
 		if (iter->second)
 			delete iter->second;
 	}
+	if (--sdlImageRefCount == 0)
+		IMG_Quit();
 }
 
 CTextureManager* CTextureManager::GetInstance()
