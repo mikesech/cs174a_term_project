@@ -100,8 +100,8 @@ namespace Globals{
 
 			//large floor
 			//Grass
-			DrawableEntity floor=DrawableEntity("resources/grassTexture.jpg","Resources/cube.obj");
-			floor.setNormalMap("Resources/floorNormal.jpg");
+			DrawableEntity floor=DrawableEntity("resources/grassTexture.jpg","resources/cube.obj");
+			floor.setNormalMap("resources/floorNormal.jpg");
 			//grass.setDiffuseColor(.4,.75,.4);
 			floor.setUVScale(45,45);
 			floor.setShininess(500);
@@ -156,8 +156,8 @@ namespace Globals{
 			
 			//first hall
 			//left
-			DrawableEntity dWall=DrawableEntity("Resources/mechTexture.png","resources/wall.obj");
-			dWall.setNormalMap("Resources/mechNormal2.jpg");
+			DrawableEntity dWall=DrawableEntity("resources/mechTexture.png","resources/wall.obj");
+			dWall.setNormalMap("resources/mechNormal2.jpg");
 			dWall.setShininess(5000);
 			dWall.setScale(1,1,.27);
 			dWall.setUVScale(2,2);
@@ -241,8 +241,8 @@ namespace Globals{
 			addWall(w);
 
 			//cieling
-			dWall=DrawableEntity("Resources/mechTexture.png","resources/cube.obj");
-			dWall.setNormalMap("Resources/mechNormal2.jpg");
+			dWall=DrawableEntity("resources/mechTexture.png","resources/cube.obj");
+			dWall.setNormalMap("resources/mechNormal2.jpg");
 			dWall.setShininess(5000);
 		//	dWall.setScale(1,1,1);
 			dWall.setUVScale(200,.5);
@@ -262,7 +262,7 @@ namespace Globals{
 			w=new Wall();
 			w->setHitbox(CollisionBox(vec3(6,20,8)));
 			w->translate(-20,10,20);
-			DrawableEntity d1=DrawableEntity(NULL,"Resources/rockTall.obj");
+			DrawableEntity d1=DrawableEntity(NULL,"resources/rockTall.obj");
 			d1.setDiffuseColor(.5,.5,.5);
 			w->setModel(d1);
 			addWall(w);
@@ -329,7 +329,7 @@ namespace Globals{
 			w->setModel(d1);
 			addWall(w);
 
-			d1=DrawableEntity(NULL,"Resources/rockMed.obj");
+			d1=DrawableEntity(NULL,"resources/rockMed.obj");
 			d1.setDiffuseColor(.35,.35,.35);
 
 			w=new Wall();
@@ -354,7 +354,7 @@ namespace Globals{
 			w->scale(2,2,2);
 			addWall(w);
 
-			d1=DrawableEntity(NULL,"Resources/rockFlat.obj");
+			d1=DrawableEntity(NULL,"resources/rockFlat.obj");
 			d1.setDiffuseColor(.5,.5,.5);
 
 			w=new Wall();
@@ -369,7 +369,7 @@ namespace Globals{
 
 			//Trees
 
-			DrawableEntity d= DrawableEntity("Resources/treesTest.png","Resources/plane.obj");
+			DrawableEntity d= DrawableEntity("resources/treesTest.png","resources/plane.obj");
 			d.setHighlightColor(.1,.05,.1);
 			d.rotate(-90,0,0);
 			d.setAlphaRequired(true);

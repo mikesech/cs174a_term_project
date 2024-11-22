@@ -25,7 +25,7 @@ public:
 	{
 		setParent(p);
 
-		DrawableEntity d=DrawableEntity(NULL,"Resources/sphere.obj");
+		DrawableEntity d=DrawableEntity(NULL,"resources/sphere.obj");
 		d.setAlpha(.5);
 
 		d.setDiffuseColor(0,0,0);

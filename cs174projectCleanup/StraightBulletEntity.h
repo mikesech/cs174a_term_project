@@ -29,7 +29,7 @@ public:
 		MobileEntity::setAcc(accelMag*direction);
 		MobileEntity::setVel(initialVelMag*direction);
 
-		GameEntity::setModel(DrawableEntity(NULL,"Resources/sphere.obj",this));
+		GameEntity::setModel(DrawableEntity(NULL,"resources/sphere.obj",this));
 		getModel()->setDiffuseColor(1,.25,0);
 		scale(.35,.35,.35);
 		getModel()->setHighlightColor(.5,.25,0);

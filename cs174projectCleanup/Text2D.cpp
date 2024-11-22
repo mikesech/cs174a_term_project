@@ -18,7 +18,7 @@ namespace {
     typedef std::map<std::string, TextTexture> TextTextureCache;
     TextTextureCache cache;
 
-    const char FONT_RESOURCE_PATH[] = "Resources/FreeMonoBold.ttf";
+    const char FONT_RESOURCE_PATH[] = "resources/FreeMonoBold.ttf";
     const int FONT_PT = 128;
     const float FONT_SCALE = 0.025;
 
@@ -104,7 +104,7 @@ Text2D::drawStaticText(const char* s, vec4 color, GLfloat location_x, GLfloat lo
     setPerspectiveMatrix(currentCamera->getOrthographicMatrix());
     setCameraPosition(vec3(0,0,.5));
 
-    DrawableEntity d(NULL,"Resources/cube.obj");
+    DrawableEntity d(NULL,"resources/cube.obj");
     d.setAlpha(color.w);
     d.setTexture(textTexture.ref);
     const float aspectRatio = static_cast<float>(textTexture.width)/textTexture.height;

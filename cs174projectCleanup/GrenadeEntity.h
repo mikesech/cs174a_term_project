@@ -24,7 +24,7 @@ public:
 	{
 		MobileEntity::setVel(normalize(dir)*force);
 
-		setModel(DrawableEntity(NULL,"Resources/grenade.obj"));
+		setModel(DrawableEntity(NULL,"resources/grenade.obj"));
 		scale(.75,.75,.75);
 		getModel()->setDiffuseColor(1,0,0);
 		getModel()->scale(.75,.75,.75);

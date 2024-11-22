@@ -76,7 +76,7 @@ namespace Globals
 		//Seed the random number generator
 		std::srand(std::time(NULL));
 
-		sProgram=InitShader("Resources/PhongShader_vertex.glsl","Resources/PhongShader_fragment.glsl");
+		sProgram=InitShader("resources/PhongShader_vertex.glsl","resources/PhongShader_fragment.glsl");
 		initShaderVariables(sProgram);
 
 		glClearColor( .05f, .075f, .1f, 1.f );
@@ -287,7 +287,7 @@ NEXT_J:
 		w.translate(-(.495)*(resolution.x/resolution.y)+.095,.48,-10);
 		w.scale((Globals::getPlayer()->getHealth()/Player::MAX_HEALTH)*.5,.025,.1);
 
-		DrawableEntity d=DrawableEntity(NULL,"Resources/cube.obj");
+		DrawableEntity d=DrawableEntity(NULL,"resources/cube.obj");
 		d.translate(.5,0,0);
 		d.setAlpha(.75);
 

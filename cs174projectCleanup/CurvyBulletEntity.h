@@ -27,8 +27,8 @@ public:
 	{
 		//MobileEntity::setVel(normalize(dir)*velocityMag);
 
-		setModel(DrawableEntity(NULL,"Resources/grenade.obj"));
-		setModel(DrawableEntity(NULL,"Resources/sphere.obj"),1);
+		setModel(DrawableEntity(NULL,"resources/grenade.obj"));
+		setModel(DrawableEntity(NULL,"resources/sphere.obj"),1);
 
 		scale(.75f,.75f,.75f);
 		getModel()->setDiffuseColor(0.9f,0.3f,0.4f);
