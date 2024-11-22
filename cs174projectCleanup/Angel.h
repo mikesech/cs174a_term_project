@@ -9,7 +9,11 @@
 #  define M_PI  3.14159265358979323846f
 #endif
 
+#ifdef __EMSCRIPTEN__
+#include <GLES3/gl3.h>
+#else
 #include "GL/glew.h"
+#endif
 
 // Define a helpful macro for handling offsets into buffer objects
 #define BUFFER_OFFSET( offset )   ((GLvoid*) (offset))

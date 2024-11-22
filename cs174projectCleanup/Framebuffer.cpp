@@ -33,7 +33,7 @@ void Framebuffer::render(RenderFunc renderFunc, int width, int height) {
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _zBuffer);
 
 	//Attach texture to frame buffer object
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, _zBuffer, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture, 0);
 
 	//Render stuff as normal
 	renderFunc();

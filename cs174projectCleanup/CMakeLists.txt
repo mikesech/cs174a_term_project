@@ -14,6 +14,53 @@ set(sources
 )
 # Source files omitted: obj_loader/objTester.cpp test_main.cpp
 
+if (DEFINED EMSCRIPTEN)
+  # It might be better to patch the GLSL files using configure_file. We'd have
+  # to do that for all builds, though, and it would make the installation of
+  # resources for non-emscripten builds more complicated.
+  add_custom_command(
+    OUTPUT PhongShader_vertex.glsl
+    COMMAND sed "1s/.*/#version 300 es/" ${CMAKE_CURRENT_SOURCE_DIR}/resources/PhongShader_vertex.glsl > PhongShader_vertex.glsl
+    COMMENT "Patching PhongShader_vertex.glsl for OpenGL ES"
+    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/resources/PhongShader_vertex.glsl"
+    VERBATIM
+  )
+  add_custom_command(
+    OUTPUT PhongShader_fragment.glsl
+    COMMAND sed "1s/.*/#version 300 es/" ${CMAKE_CURRENT_SOURCE_DIR}/resources/PhongShader_fragment.glsl > PhongShader_fragment.glsl
+    COMMENT "Patching PhongShader_fragment.glsl for OpenGL ES"
+    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/resources/PhongShader_fragment.glsl"
+    VERBATIM
+  )
+
+  add_executable(${PROJECT_NAME} ${sources} PhongShader_vertex.glsl PhongShader_fragment.glsl)
+  target_compile_options(${PROJECT_NAME} PRIVATE
+    --use-port=sdl2
+    --use-port=sdl2_ttf
+    --use-port=sdl2_mixer
+    --use-port=sdl2_image:formats=png,jpg
+  )
+  target_link_options(${PROJECT_NAME} PRIVATE
+    --use-port=sdl2
+    --use-port=sdl2_ttf
+    --use-port=sdl2_mixer
+    -sSDL2_MIXER_FORMATS=wav,mp3
+    --use-port=sdl2_image:formats=png,jpg
+    -sMIN_WEBGL_VERSION=2
+    -sMAX_WEBGL_VERSION=2
+    -sOFFSCREEN_FRAMEBUFFER=1
+    -sALLOW_MEMORY_GROWTH
+    -sINITIAL_MEMORY=67108864
+    "SHELL:--preload-file ${CMAKE_BINARY_DIR}/PhongShader_vertex.glsl@/resources/PhongShader_vertex.glsl"
+    "SHELL:--preload-file ${CMAKE_BINARY_DIR}/PhongShader_fragment.glsl@/resources/PhongShader_fragment.glsl"
+    "SHELL:--preload-file ${CMAKE_SOURCE_DIR}/resources@/resources"
+  )
+  file(GLOB_RECURSE resource_files "${CMAKE_SOURCE_DIR}/resources/*")
+  # This isn't quite right; it causes main.cpp to be recompiled
+  set_source_files_properties(main.cpp OBJECT_DEPENDS "${resource_files}")
+  set(CMAKE_EXECUTABLE_SUFFIX .html)
+else ()
+
 include(FindPkgConfig)
 pkg_check_modules(SDL2       REQUIRED IMPORTED_TARGET sdl2)
 pkg_check_modules(SDL2_MIXER REQUIRED IMPORTED_TARGET SDL2_mixer)
@@ -41,6 +88,8 @@ else()
   add_compile_definitions(CMAKE_INSTALL_FULL_DATADIR="${CMAKE_INSTALL_FULL_DATADIR}")
   install(TARGETS ${PROJECT_NAME} RUNTIME)
   install(DIRECTORY resources TYPE DATA)
+endif()
+
 endif()
 
 # nix packages

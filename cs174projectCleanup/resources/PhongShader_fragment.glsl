@@ -1,5 +1,7 @@
 #version 150 core
 
+precision mediump float;
+
 //Constants: samplers
 uniform sampler2D diffuseMap;
 uniform sampler2D NormalMap;
@@ -54,7 +56,7 @@ void main(){
 	vec4 specularPass = vec4(0,0,0,0);
 
 	vec4 viewVec = camPos-fPosition_worldspace;
-	viewVec.w    = 0;
+	viewVec.w    = 0.0;
 	vec4 viewVec_tbn      = normalize(TBN * (normalize(viewVec))); //eye direction in tbn space
 	/////////
 	//viewVec_tbn      =  (normalize(viewVec)); //in tbn space
@@ -73,8 +75,8 @@ void main(){
 
 	//n=normalize(vec4(0,0,1,0)*(1.0-max(normalMapDepth,0.0)));
 
-	if(dot(normalize(viewVec),fNormal_worldspace)<0&&alpha!=1.0){
-		fColor.w=0;
+	if(dot(normalize(viewVec),fNormal_worldspace)<0.0&&alpha!=1.0){
+		fColor.w=0.0;
 		return;
 	}
 
@@ -82,7 +84,7 @@ void main(){
 	for(int i=0; i<10; i++)
 	{
 		vec4 lightVec = lightPos[i] - fPosition_worldspace;
-		lightVec.w    = 0;
+		lightVec.w    = 0.0;
 		vec4 lightVecNorm_tbn = normalize(TBN * normalize(lightVec)); //in tbn space
 
 		////////
@@ -91,15 +93,15 @@ void main(){
 		//Diffuse Pass
 		float diffuseMult = dot(n, lightVecNorm_tbn);
 		
-		diffusePass  += max(lightColor[i]* diffuseMult * (texColor + diffuseColor) * (1/pow(dot(lightVec, lightVec), lightFalloff[i]/2)) * lightBrightness[i],vec4(0,0,0,1));
+		diffusePass  += max(lightColor[i]* diffuseMult * (texColor + diffuseColor) * (1.0/pow(dot(lightVec, lightVec), lightFalloff[i]/2.0)) * lightBrightness[i],vec4(0,0,0,1));
 		//diffusePass+=vec4(1,1,1,1)*diffuseMult;
 		diffusePass   = clamp(diffusePass, 0.0, 1.0);
 		
 
 		//Specular Pass
 		float specularMult;
-		if(shininess <= 0){
-			specularMult = 0;
+		if(shininess <= 0.0){
+			specularMult = 0.0;
 		}else{
 			specularMult = pow(max(dot(viewVec_tbn, normalize(-reflect(lightVecNorm_tbn, n))) ,0.0), shininess);
 		}
@@ -119,7 +121,7 @@ void main(){
 	
 	if(hasFog){
 		vec4 fogColor=vec4(.35,.4,.375,0);
-		float fogMult=min(pow(dot(viewVec,viewVec),.8)*.00025,1);
+		float fogMult=min(pow(dot(viewVec,viewVec),.8)*.00025,1.0);
 
 		fColor=fColor+fogColor*fogMult;
 	}

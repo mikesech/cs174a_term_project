@@ -8,7 +8,11 @@
 #include<vector>
 #include<iostream>
 #include "Exception.h"
+#ifdef __EMSCRIPTEN__
+#include <GLES3/gl3.h>
+#else
 #include "GL/glew.h"
+#endif
 #include "Angel.h"
 #include "obj_loader/objLoader.h"
 #endif

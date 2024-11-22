@@ -1,5 +1,7 @@
 #version 150 core
 
+precision mediump float;
+
 //Input: vertex attributes these are in modelspace
 in vec4 vPosition;
 in vec4 vNormal;
@@ -35,19 +37,19 @@ void main(){
 
 	//normal in worldspace
 	fNormal_worldspace   = vNormal;
-	fNormal_worldspace.w = 0;
+	fNormal_worldspace.w = 0.0;
 	fNormal_worldspace   = normalize(fNormal_worldspace * vTransform);
 
 	fUV = (vUV) * uvScale+uvOffset; //texture coord
-	fUV.y=fUV.y*-1;
+	fUV.y=fUV.y*-1.0;
 
 	//normalizing TBN basis
 	o_vertexNormal_modelspace      = vNormal;
-	o_vertexNormal_modelspace.w    = 0;
+	o_vertexNormal_modelspace.w    = 0.0;
 	o_vertexTangent_modelspace     = vTangent;
-	o_vertexTangent_modelspace.w   = 0;
+	o_vertexTangent_modelspace.w   = 0.0;
 	o_vertexBitangent_modelspace   = vBitangent;
-	o_vertexBitangent_modelspace.w = 0;
+	o_vertexBitangent_modelspace.w = 0.0;
 
 	o_vertexNormal_modelspace = normalize(o_vertexNormal_modelspace*vTransform);
 	o_vertexTangent_modelspace = normalize(o_vertexTangent_modelspace*vTransform);

@@ -22,8 +22,10 @@ ErrorString( GLenum error )
 	Case( GL_INVALID_VALUE );
 	Case( GL_INVALID_ENUM );
 	Case( GL_INVALID_OPERATION );
+#ifndef __EMSCRIPTEN__
 	Case( GL_STACK_OVERFLOW );
 	Case( GL_STACK_UNDERFLOW );
+#endif
 	Case( GL_OUT_OF_MEMORY );
 #undef Case	
     }

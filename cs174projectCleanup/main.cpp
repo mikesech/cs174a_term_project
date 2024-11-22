@@ -14,6 +14,9 @@
 #include "General.h"
 #include "SDL.h"
 #include <cstring>
+#ifdef __EMSCRIPTEN__
+#	include <emscripten.h>
+#endif
 #ifdef _WIN32
 #	include <direct.h> // for chdir (deprecated, replace with _chdir)
 #else
@@ -22,6 +25,8 @@
 
 using namespace Globals;
 
+static constexpr int FRAME_INTERVAL_MS = 1000 / 30;
+
 static void eventLoop();
 
 static Uint32 mainTimerEventType;
@@ -29,9 +34,15 @@ static Uint32 onMainTimer(Uint32 interval, void*);
 
 void initSDL() {
 	SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER|SDL_INIT_EVENTS);
+#ifdef __EMSCRIPTEN__
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+#else
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+#endif
 	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
@@ -58,18 +69,25 @@ int main(int argc, char** argv){
 #endif
 
 	//initialize glew
+#ifndef __EMSCRIPTEN__
 	glewExperimental = GL_TRUE;
 	const GLenum glewStatus = glewInit();
 	if (glewStatus != GLEW_OK) {
 		std::cerr << "Error initializing GLEW library: " << glewGetErrorString(glewStatus) << '\n';
 		return 1;
 	}
+#endif
 	initApp();
 
 	SoundPlayerGuard spg;
 	if(spg.initialized) {
+#ifdef __EMSCRIPTEN__
+			if(!SoundPlayer::playBackground("resources/cl1.mp3"))
+				std::cerr<<"could not play file cl1.mp3. \n";
+#else
 			if(!SoundPlayer::playBackground("resources/cl1.midi"))
 				std::cerr<<"could not play file cl1.midi. \n";
+#endif
 			if(!SoundPlayer::loadSound("resources/curvy.wav"))
 				std::cerr<<"could not play file curvy.way. \n";
 			if(!SoundPlayer::loadSound("resources/cannon.wav"))
@@ -89,10 +107,14 @@ int main(int argc, char** argv){
 		std::cerr << "Fatal error: failed to register main timer event.\n";
 		return 1;
 	}
-	SDL_AddTimer(1000/30, onMainTimer, NULL);
+#ifdef __EMSCRIPTEN__
+	emscripten_set_main_loop(eventLoop, 0, 1);
+#else
+	SDL_AddTimer(FRAME_INTERVAL_MS, onMainTimer, NULL);
 
 	eventLoop();
 	SDL_Quit();
+#endif
 
 	return 0;
 }
@@ -112,12 +134,17 @@ Uint32 onMainTimer(Uint32 interval, void*) {
 }
 
 void eventLoop() {
+#ifdef __EMSCRIPTEN__
+	SDL_Event event;
+	while(SDL_PollEvent(&event)) {
+#else
 	while(true) {
 		SDL_Event event;
 		if (!SDL_WaitEvent(&event)) {
 			std::cerr << "error encountered: " << SDL_GetError() << '\n';
 			return;
 		}
+#endif
 
 		switch(event.type) {
 		case SDL_WINDOWEVENT:
@@ -162,4 +189,12 @@ void eventLoop() {
 			break;
 		}
 	}
+#ifdef __EMSCRIPTEN__
+	static Uint64 lastFrameTick = 0;
+	const Uint64 currentTick = SDL_GetTicks64();
+	if (currentTick - lastFrameTick >= FRAME_INTERVAL_MS) {
+		callbackTimer(0);
+		lastFrameTick = currentTick;
+	}
+#endif
 }
