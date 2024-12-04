@@ -1,0 +1,66 @@
+name: Build Emscripten
+
+on:
+  push:
+    branches:
+    - 'emscripten'
+
+env:
+  BUILD_TYPE: Release
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: emscripten
+
+    - name: Pull emsdk docker image
+      run: docker pull emscripten/emsdk
+
+    - name: Configure and build in container
+      run: >
+        docker run --rm -v ${{github.workspace}}:/src -u $(id -u):$(id -g)
+        emscripten/emsdk sh -c "
+          echo '::group::Configuring with cmake' &&
+          emcmake cmake -B /src/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} /src/cs174projectCleanup &&
+          echo '::endgroup::' &&
+          echo '::group::Building with make' &&
+          emmake make -C /src/build &&
+          echo '::endgroup::'
+        "
+
+    - name: Move artifacts
+      run: |
+        mkdir -p ${{github.workspace}}/build/output
+        mv ${{github.workspace}}/build/cs174a_term_project.data ${{github.workspace}}/build/output
+        mv ${{github.workspace}}/build/cs174a_term_project.js   ${{github.workspace}}/build/output
+        mv ${{github.workspace}}/build/cs174a_term_project.wasm ${{github.workspace}}/build/output
+        mv ${{github.workspace}}/build/cs174a_term_project.html ${{github.workspace}}/build/output/index.html
+
+    - name: Create CNAME file
+      run: echo 'cs174a.msech.com' > ${{github.workspace}}/build/output/CNAME
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ${{github.workspace}}/build/output
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup Pages
+      uses: actions/configure-pages@v5
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
