@@ -32,44 +32,41 @@
     packages.default =
       self.packages.${system}.cs174a_term_project;
 
-    packages.emscriptenPortsCache =
-      with pkgs;
-      runCommand "emscriptenPortsCache" {
-        nativeBuildInputs = [
-          emscripten
-          curl
-          cacert
-        ];
-        outputHashMode = "recursive";
-        outputHash = "sha256-B04JpZYEbLVLN6OH+5nJz12Iu5ks06/gPiOG8JCGtx8=";
-      } ''
-        mkdir cache
-        touch dummy.c
-        EM_CACHE=$(pwd)/cache emcc --use-port=sdl2 --use-port=sdl2_ttf --use-port=sdl2_mixer -sSDL2_MIXER_FORMATS=wav,mp3 --use-port=sdl2_image:formats=png,jpg -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sOFFSCREEN_FRAMEBUFFER=1 dummy.c
-
-        mkdir $out
-        mv cache/ports $out
-      '';
-
-    packages.emscriptenCache =
-      with pkgs;
-      runCommand "emscriptenCache" {
-        nativeBuildInputs = [ emscripten packages.emscriptenPortsCache ];
-      } ''
-        mkdir $out
-        ln -s ${packages.emscriptenPortsCache}/ports $out/ports
-        touch dummy.c
-        EM_CACHE=$out emcc --use-port=sdl2 --use-port=sdl2_ttf --use-port=sdl2_mixer -sSDL2_MIXER_FORMATS=wav,mp3 --use-port=sdl2_image:formats=png,jpg -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sOFFSCREEN_FRAMEBUFFER=1 dummy.c
-      '';
-
     packages.emscripten =
       with pkgs;
-      buildEmscriptenPackage {
+      let
+        emscriptenPortsCache =
+          runCommand "emscriptenPortsCache" {
+            nativeBuildInputs = [
+              emscripten
+              curl
+              cacert
+            ];
+            outputHashMode = "recursive";
+            outputHash = "sha256-B04JpZYEbLVLN6OH+5nJz12Iu5ks06/gPiOG8JCGtx8=";
+          } ''
+            mkdir cache
+            touch dummy.c
+            EM_CACHE=$(pwd)/cache emcc --use-port=sdl2 --use-port=sdl2_ttf --use-port=sdl2_mixer -sSDL2_MIXER_FORMATS=wav,mp3 --use-port=sdl2_image:formats=png,jpg -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sOFFSCREEN_FRAMEBUFFER=1 dummy.c
+
+            mkdir $out
+            mv cache/ports $out
+          '';
+        emscriptenCache =
+          runCommand "emscriptenCache" {
+            nativeBuildInputs = [ emscripten emscriptenPortsCache ];
+          } ''
+            mkdir $out
+            ln -s ${emscriptenPortsCache}/ports $out/ports
+            touch dummy.c
+            EM_CACHE=$out emcc --use-port=sdl2 --use-port=sdl2_ttf --use-port=sdl2_mixer -sSDL2_MIXER_FORMATS=wav,mp3 --use-port=sdl2_image:formats=png,jpg -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sOFFSCREEN_FRAMEBUFFER=1 dummy.c
+          '';
+      in buildEmscriptenPackage {
         name = "cs174a_term_project";
         src = ./cs174projectCleanup;
         nativeBuildInputs = [
           cmake
-          packages.emscriptenCache
+          emscriptenCache
         ];
 
         configurePhase = ''
@@ -78,7 +75,7 @@
         '';
 
         buildPhase = ''
-          cp -R ${packages.emscriptenCache} cache
+          cp -R ${emscriptenCache} cache
           chmod -R +w cache
           EM_CACHE=$(realpath cache) emmake make -C build -j
         '';
