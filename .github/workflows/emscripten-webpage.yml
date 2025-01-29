@@ -23,34 +23,25 @@ jobs:
       with:
         ref: emscripten
 
-    - name: Pull emsdk docker image
-      run: docker pull emscripten/emsdk
+    - uses: DeterminateSystems/nix-installer-action@main
+    - uses: DeterminateSystems/magic-nix-cache-action@main
+    - uses: DeterminateSystems/flake-checker-action@v4
 
-    - name: Configure and build in container
-      run: >
-        docker run --rm -v ${{github.workspace}}:/src -u $(id -u):$(id -g)
-        emscripten/emsdk sh -c "
-          echo '::group::Configuring with cmake' &&
-          emcmake cmake -B /src/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} /src/cs174projectCleanup &&
-          echo '::endgroup::' &&
-          echo '::group::Building with make' &&
-          emmake make -C /src/build &&
-          echo '::endgroup::'
-        "
+    - name: Configure and build application
+      run: nix build \#emscripten
 
     - name: Move artifacts
       run: |
-        cd ${{github.workspace}}/build
         mkdir output
-        mv cs174a_term_project.data output
-        mv cs174a_term_project.js   output
-        mv cs174a_term_project.wasm output
-        mv cs174a_term_project.html output/index.html
+        cp result/cs174a_term_project.data output
+        cp result/cs174a_term_project.js   output
+        cp result/cs174a_term_project.wasm output
+        cp result/cs174a_term_project.html output/index.html
 
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
-        path: ${{github.workspace}}/build/output
+        path: ${{github.workspace}}/output
 
   deploy:
     needs: build
