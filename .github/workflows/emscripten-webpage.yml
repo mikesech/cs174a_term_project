@@ -40,14 +40,12 @@ jobs:
 
     - name: Move artifacts
       run: |
-        mkdir -p ${{github.workspace}}/build/output
-        mv ${{github.workspace}}/build/cs174a_term_project.data ${{github.workspace}}/build/output
-        mv ${{github.workspace}}/build/cs174a_term_project.js   ${{github.workspace}}/build/output
-        mv ${{github.workspace}}/build/cs174a_term_project.wasm ${{github.workspace}}/build/output
-        mv ${{github.workspace}}/build/cs174a_term_project.html ${{github.workspace}}/build/output/index.html
-
-    - name: Create CNAME file
-      run: echo 'cs174a.msech.com' > ${{github.workspace}}/build/output/CNAME
+        cd ${{github.workspace}}/build
+        mkdir output
+        mv cs174a_term_project.data output
+        mv cs174a_term_project.js   output
+        mv cs174a_term_project.wasm output
+        mv cs174a_term_project.html output/index.html
 
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
