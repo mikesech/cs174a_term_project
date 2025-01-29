@@ -5,9 +5,14 @@
   };
 
   outputs = { self, nixpkgs, flake-utils }:
-  flake-utils.lib.eachDefaultSystem (system: rec {
+  flake-utils.lib.eachDefaultSystem (system:
+  let
+    pkgs = (nixpkgs.legacyPackages.${system}.extend (final: prev: {
+      jre = final.jre_headless;
+    }));
+  in rec {
     packages.cs174a_term_project =
-      with nixpkgs.legacyPackages.${system};
+      with pkgs;
       stdenv.mkDerivation {
         name = "cs174a_term_project";
         src = ./cs174projectCleanup;
@@ -28,7 +33,7 @@
       self.packages.${system}.cs174a_term_project;
 
     packages.emscriptenPortsCache =
-      with nixpkgs.legacyPackages.${system};
+      with pkgs;
       runCommand "emscriptenPortsCache" {
         nativeBuildInputs = [
           emscripten
@@ -47,7 +52,7 @@
       '';
 
     packages.emscriptenCache =
-      with nixpkgs.legacyPackages.${system};
+      with pkgs;
       runCommand "emscriptenCache" {
         nativeBuildInputs = [ emscripten packages.emscriptenPortsCache ];
       } ''
@@ -58,7 +63,7 @@
       '';
 
     packages.emscripten =
-      with nixpkgs.legacyPackages.${system};
+      with pkgs;
       buildEmscriptenPackage {
         name = "cs174a_term_project";
         src = ./cs174projectCleanup;
@@ -92,7 +97,7 @@
     # We provide an explicit devShells definition so that we don't
     # use the cache from above in a dev shell.
     devShells.emscripten =
-      with nixpkgs.legacyPackages.${system};
+      with pkgs;
       mkShell {
         packages = [
           cmake
@@ -104,7 +109,7 @@
 
     apps.emscripten = {
       type = "app";
-      program = with nixpkgs.legacyPackages.${system}; toString (writeShellScript "emscriptenRunWrapper" "${emscripten}/bin/emrun ${packages.emscripten}/cs174a_term_project.html \"$@\"");
+      program = with pkgs; toString (writeShellScript "emscriptenRunWrapper" "${emscripten}/bin/emrun ${packages.emscripten}/cs174a_term_project.html \"$@\"");
     };
   });
 }
