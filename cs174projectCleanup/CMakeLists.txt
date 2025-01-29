@@ -38,6 +38,7 @@ if (DEFINED EMSCRIPTEN)
     --use-port=sdl2
     --use-port=sdl2_ttf
     --use-port=sdl2_mixer
+    -sSDL2_MIXER_FORMATS=wav,mp3
     --use-port=sdl2_image:formats=png,jpg
   )
   target_link_options(${PROJECT_NAME} PRIVATE
