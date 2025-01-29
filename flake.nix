@@ -5,7 +5,7 @@
   };
 
   outputs = { self, nixpkgs, flake-utils }:
-  flake-utils.lib.eachDefaultSystem (system: {
+  flake-utils.lib.eachDefaultSystem (system: rec {
     packages.cs174a_term_project =
       with nixpkgs.legacyPackages.${system};
       stdenv.mkDerivation {
@@ -26,5 +26,85 @@
 
     packages.default =
       self.packages.${system}.cs174a_term_project;
+
+    packages.emscriptenPortsCache =
+      with nixpkgs.legacyPackages.${system};
+      runCommand "emscriptenPortsCache" {
+        nativeBuildInputs = [
+          emscripten
+          curl
+          cacert
+        ];
+        outputHashMode = "recursive";
+        outputHash = "sha256-B04JpZYEbLVLN6OH+5nJz12Iu5ks06/gPiOG8JCGtx8=";
+      } ''
+        mkdir cache
+        touch dummy.c
+        EM_CACHE=$(pwd)/cache emcc --use-port=sdl2 --use-port=sdl2_ttf --use-port=sdl2_mixer -sSDL2_MIXER_FORMATS=wav,mp3 --use-port=sdl2_image:formats=png,jpg -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sOFFSCREEN_FRAMEBUFFER=1 dummy.c
+
+        mkdir $out
+        mv cache/ports $out
+      '';
+
+    packages.emscriptenCache =
+      with nixpkgs.legacyPackages.${system};
+      runCommand "emscriptenCache" {
+        nativeBuildInputs = [ emscripten packages.emscriptenPortsCache ];
+      } ''
+        mkdir $out
+        ln -s ${packages.emscriptenPortsCache}/ports $out/ports
+        touch dummy.c
+        EM_CACHE=$out emcc --use-port=sdl2 --use-port=sdl2_ttf --use-port=sdl2_mixer -sSDL2_MIXER_FORMATS=wav,mp3 --use-port=sdl2_image:formats=png,jpg -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sOFFSCREEN_FRAMEBUFFER=1 dummy.c
+      '';
+
+    packages.emscripten =
+      with nixpkgs.legacyPackages.${system};
+      buildEmscriptenPackage {
+        name = "cs174a_term_project";
+        src = ./cs174projectCleanup;
+        nativeBuildInputs = [
+          cmake
+          packages.emscriptenCache
+        ];
+
+        configurePhase = ''
+          mkdir build
+          emcmake cmake -S . -B build
+        '';
+
+        buildPhase = ''
+          cp -R ${packages.emscriptenCache} cache
+          chmod -R +w cache
+          EM_CACHE=$(realpath cache) emmake make -C build -j
+        '';
+
+        installPhase = ''
+          mkdir $out
+          mv build/cs174a_term_project.data $out
+          mv build/cs174a_term_project.js   $out
+          mv build/cs174a_term_project.wasm $out
+          mv build/cs174a_term_project.html $out
+        '';
+
+        checkPhase = "";
+      };
+
+    # We provide an explicit devShells definition so that we don't
+    # use the cache from above in a dev shell.
+    devShells.emscripten =
+      with nixpkgs.legacyPackages.${system};
+      mkShell {
+        packages = [
+          cmake
+          emscripten
+        ];
+
+        shellHook = ''export EM_CACHE="$HOME/.emscripten_cache"'';
+      };
+
+    apps.emscripten = {
+      type = "app";
+      program = with nixpkgs.legacyPackages.${system}; toString (writeShellScript "emscriptenRunWrapper" "${emscripten}/bin/emrun ${packages.emscripten}/cs174a_term_project.html \"$@\"");
+    };
   });
 }
