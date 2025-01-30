@@ -77,7 +77,7 @@
         buildPhase = ''
           cp -R ${emscriptenCache} cache
           chmod -R +w cache
-          EM_CACHE=$(realpath cache) emmake make -C build -j
+          EM_CACHE=$(realpath cache) emmake make -C build -j$(nproc)
         '';
 
         installPhase = ''
