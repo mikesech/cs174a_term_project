@@ -28,7 +28,7 @@ jobs:
     - uses: DeterminateSystems/flake-checker-action@v4
 
     - name: Configure and build application
-      run: nix build \#emscripten
+      run: nix build -L \#emscripten
 
     - name: Move artifacts
       run: |
