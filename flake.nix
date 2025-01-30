@@ -9,6 +9,9 @@
   let
     pkgs = (nixpkgs.legacyPackages.${system}.extend (final: prev: {
       jre = final.jre_headless;
+      buildEmscriptenPackage = prev.buildEmscriptenPackage.override {
+        pkgs = final // { stdenv = final.stdenvNoCC; };
+      };
     }));
   in rec {
     packages.cs174a_term_project =
