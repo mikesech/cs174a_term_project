@@ -24,8 +24,22 @@ jobs:
         ref: emscripten
 
     - uses: DeterminateSystems/nix-installer-action@main
-    - uses: DeterminateSystems/magic-nix-cache-action@main
     - uses: DeterminateSystems/flake-checker-action@v4
+
+    - name: Get emscripten output path
+      id: get-emscripten-output-path
+      run: |
+        echo "path=$(nix derivation show .\#emscripten | jq -r '.[] | .env.nativeBuildInputs' | tr ' ' '\n' | grep '-emscriptenCache$')" >> $GITHUB_OUTPUT
+      shell: bash
+    - name: Cache emscripten closure
+      uses: actions/cache@v4
+      id: cache-emscripten-closure
+      with:
+        path: emscripten-closure.zstd
+        key: ${{ steps.get-emscripten-output-path.outputs.path }}-closure
+    - name: Import emscripten closure
+      if: steps.cache-emscripten-closure.outputs.cache-hit == 'true'
+      run: cat emscripten-closure.zstd | unzstd | sudo "$(which nix-store)" --import
 
     - name: Configure and build application
       run: nix build -L \#emscripten
@@ -42,6 +56,12 @@ jobs:
       uses: actions/upload-pages-artifact@v3
       with:
         path: ${{github.workspace}}/output
+
+    - name: Export emscripten closure
+      if: steps.cache-emscripten-closure.outputs.cache-hit != 'true'
+      env:
+        EMSCRIPTEN_OUTPUT_PATH: ${{ steps.get-emscripten-output-path.outputs.path }}
+      run: nix-store --export $(nix-store --query --requisites "$EMSCRIPTEN_OUTPUT_PATH") | zstd -9 > emscripten-closure.zstd
 
   deploy:
     needs: build
