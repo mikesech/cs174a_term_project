@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.12)
+cmake_minimum_required (VERSION 3.18)
 project (cs174a_term_project)
 
 set(sources
@@ -15,19 +15,20 @@ set(sources
 # Source files omitted: obj_loader/objTester.cpp test_main.cpp
 
 if (DEFINED EMSCRIPTEN)
+  find_program(SED sed DOC "sed is required to patch GLSL code" REQUIRED)
   # It might be better to patch the GLSL files using configure_file. We'd have
   # to do that for all builds, though, and it would make the installation of
   # resources for non-emscripten builds more complicated.
   add_custom_command(
     OUTPUT PhongShader_vertex.glsl
-    COMMAND sed "1s/.*/#version 300 es/" ${CMAKE_CURRENT_SOURCE_DIR}/resources/PhongShader_vertex.glsl > PhongShader_vertex.glsl
+    COMMAND ${SED} "1s/.*/#version 300 es/" ${CMAKE_CURRENT_SOURCE_DIR}/resources/PhongShader_vertex.glsl > PhongShader_vertex.glsl
     COMMENT "Patching PhongShader_vertex.glsl for OpenGL ES"
     DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/resources/PhongShader_vertex.glsl"
     VERBATIM
   )
   add_custom_command(
     OUTPUT PhongShader_fragment.glsl
-    COMMAND sed "1s/.*/#version 300 es/" ${CMAKE_CURRENT_SOURCE_DIR}/resources/PhongShader_fragment.glsl > PhongShader_fragment.glsl
+    COMMAND ${SED} "1s/.*/#version 300 es/" ${CMAKE_CURRENT_SOURCE_DIR}/resources/PhongShader_fragment.glsl > PhongShader_fragment.glsl
     COMMENT "Patching PhongShader_fragment.glsl for OpenGL ES"
     DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/resources/PhongShader_fragment.glsl"
     VERBATIM
