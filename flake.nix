@@ -78,9 +78,7 @@
         '';
 
         buildPhase = ''
-          cp -R ${emscriptenCache} cache
-          chmod -R +w cache
-          EM_CACHE=$(realpath cache) emmake make -C build -j$(nproc)
+          EM_CACHE=${emscriptenCache} EM_FROZEN_CACHE=1 emmake make -C build -j$(nproc)
         '';
 
         installPhase = ''
