@@ -70,7 +70,9 @@
         nativeBuildInputs = [
           cmake
           emscriptenCache
+          removeReferencesTo
         ];
+        allowedReferences = [];
 
         configurePhase = ''
           mkdir build
@@ -87,6 +89,8 @@
           mv build/cs174a_term_project.js   $out
           mv build/cs174a_term_project.wasm $out
           mv build/cs174a_term_project.html $out
+
+          remove-references-to -t ${emscripten} -t ${emscriptenCache} $out/cs174a_term_project.wasm
         '';
 
         checkPhase = "";
