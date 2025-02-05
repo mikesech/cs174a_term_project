@@ -44,7 +44,9 @@ private:
 	Framebuffer& operator=(const Framebuffer&);
 
 	GLuint _framebuffer; ///< Framebuffer handle
+	GLuint _blitFramebuffer; ///< Draw framebuffer used to blit into _texture
 	GLuint _texture; ///< Texture handle
+	GLuint _backTexture; ///< Texture rendered to and then blitted to _texture
 	GLuint _zBuffer; ///< Depth buffer handle
 	int _width; ///< Width of the texture in pixels
 	int _height; ///< Height of the texture in pixels
