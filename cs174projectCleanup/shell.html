@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Emscripten-Generated Code</title>
+    <title>G Test</title>
     <style>
       .emscripten { padding-right: 0; margin-left: auto; margin-right: auto; display: block; }
       textarea.emscripten { font-family: monospace; width: 80%; }
@@ -44,30 +44,69 @@
         to {transform: rotate(360deg);}
       }
 
+      body {
+        background-color: black;
+        color: greenyellow;
+        font-family: sans-serif;
+      }
+
     </style>
   </head>
   <body>
+    <hr/>
+    <h1 style="text-align:center; margin-bottom: 0.5ex">CS 174A Term Project</h1>
+    <div style="text-align: center">
+      by Garrett Johnson, Tarun Solanki, Michael Sechooler, and Howard Lee
+    </div>
     <hr/>
     <figure style="overflow:visible;" id="spinner"><div class="spinner"></div><center style="margin-top:0.5em"><strong>emscripten</strong></center></figure>
     <div class="emscripten" id="status">Downloading...</div>
     <div class="emscripten">
       <progress value="0" max="100" id="progress" hidden=1></progress>  
     </div>
-    <div class="emscripten_border">
-      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
-    </div>
-    <hr/>
-    <div class="emscripten">
-      <input type="checkbox" id="resize">Resize canvas
-      <input type="checkbox" id="pointerLock" checked>Lock/hide mouse pointer
-      &nbsp;&nbsp;&nbsp;
-      <input type="button" value="Fullscreen" onclick="Module.requestFullscreen(document.getElementById('pointerLock').checked, 
-                                                                                document.getElementById('resize').checked)">
+    <div style="display: flex">
+      <div style="padding: 1em">
+        <h3>Your Mission</h3>
+        <p>
+          You are a next-generation tank complete with JUMPING ABILITIES, a SHIELD, and THREE types of weapons.
+          You have been dropped off at the LANDING ZONE and must infiltrate <code>Scene_1</code> &mdash;
+          the lair of the criminal BOSS TURRET &mdash; and destroy it.
+        </p><p>
+          Be careful! Along the way, you will encounter WANDERING ENEMIES and SMALLER TURRETS.
+        </p>
+      </div>
+      <div class="emscripten_border">
+        <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+      </div>
+      <div style="padding: 1em">
+        <h3>Controls</h3>
+        <pre>
+  W               move forward
+  A               move left
+  D               move right
+  S               move back
+  
+  Q E             cycle weapon
+  SPACE           jump (with a tank?!)
+  F               toggle mouse capture
+  
+  Mouse look      direction
+  
+  Left Click      shoot
+  Right Click     enable shield
+  
+  ;               toggle full screen
+  "               toggle first-person view
+        </pre>
+        <h3>Debug Controls</h3>
+        <pre>
+  P O             increase / decrease normal map depth
+  L K             enable / disable fog layer
+        </pre>
+      </div>
     </div>
     
     <hr/>
-    <textarea class="emscripten" id="output" rows="8"></textarea>
-    <hr>
     <script type='text/javascript'>
       var statusElement = document.getElementById('status');
       var progressElement = document.getElementById('progress');
