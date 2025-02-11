@@ -56,10 +56,11 @@ if (DEFINED EMSCRIPTEN)
     "SHELL:--preload-file ${CMAKE_BINARY_DIR}/PhongShader_vertex.glsl@/resources/PhongShader_vertex.glsl"
     "SHELL:--preload-file ${CMAKE_BINARY_DIR}/PhongShader_fragment.glsl@/resources/PhongShader_fragment.glsl"
     "SHELL:--preload-file ${CMAKE_SOURCE_DIR}/resources@/resources"
+    "--shell-file=${CMAKE_CURRENT_SOURCE_DIR}/shell.html"
   )
   file(GLOB_RECURSE resource_files "${CMAKE_SOURCE_DIR}/resources/*")
   # This isn't quite right; it causes main.cpp to be recompiled
-  set_source_files_properties(main.cpp OBJECT_DEPENDS "${resource_files}")
+  set_source_files_properties(main.cpp OBJECT_DEPENDS "${resource_files};${CMAKE_CURRENT_SOURCE_DIR}/shell.html")
   set(CMAKE_EXECUTABLE_SUFFIX .html)
 else ()
 
