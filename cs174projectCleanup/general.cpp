@@ -327,7 +327,13 @@ NEXT_J:
 
 			if(wScenes[currentLevel]->_beaten){
 				Text2D::drawStaticText("You Won!!",vec4(1,1,1,1),-.025,.05);
-				Text2D::drawStaticText("Press 'esc' to quit",vec4(1,1,1,1),-.1,0);
+				const char* quitMessage =
+#ifdef __EMSCRIPTEN__
+					"Close page to quit";
+#else
+					"Press 'esc' to quit";
+#endif
+				Text2D::drawStaticText(quitMessage,vec4(1,1,1,1),-.1,0);
 			}
 		}
 
