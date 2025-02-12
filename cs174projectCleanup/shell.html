@@ -50,6 +50,34 @@
         font-family: sans-serif;
       }
 
+      table.controls {
+        border-spacing: 0px;
+      }
+
+      .controls tr td:first-child {
+        padding-left: 2ex;
+        padding-right: 5ex;
+        white-space: nowrap;
+      }
+      .controls tr {
+        vertical-align: top;
+      }
+      .controls th {
+        text-align: left;
+        padding: 0px;
+      }
+      .controls td {
+        padding-top: 0px;
+        padding-bottom: 0px;
+        font-family: monospace;
+      }
+
+      @media (max-width: 1199px) {
+        .flex-container {
+          flex-direction: column;
+        }
+      }
+
     </style>
   </head>
   <body>
@@ -64,8 +92,8 @@
     <div class="emscripten">
       <progress value="0" max="100" id="progress" hidden=1></progress>  
     </div>
-    <div style="display: flex">
-      <div style="padding: 1em">
+    <div style="display: flex" class="flex-container">
+      <div style="padding: 1em; flex: 1; text-align: justify">
         <h3>Your Mission</h3>
         <p>
           You are a next-generation tank complete with JUMPING ABILITIES, a SHIELD, and THREE types of weapons.
@@ -75,34 +103,41 @@
           Be careful! Along the way, you will encounter WANDERING ENEMIES and SMALLER TURRETS.
         </p>
       </div>
-      <div class="emscripten_border">
+      <div class="emscripten_border" style="flex: 0; width: 100%">
         <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
       </div>
-      <div style="padding: 1em">
-        <h3>Controls</h3>
-        <pre>
-  W               move forward
-  A               move left
-  D               move right
-  S               move back
-  
-  Q E             cycle weapon
-  SPACE           jump (with a tank?!)
-  F               toggle mouse capture
-  
-  Mouse look      direction
-  
-  Left Click      shoot
-  Right Click     enable shield
-  
-  ;               toggle full screen
-  "               toggle first-person view
-        </pre>
-        <h3>Debug Controls</h3>
-        <pre>
-  P O             increase / decrease normal map depth
-  L K             enable / disable fog layer
-        </pre>
+      <div style="padding: 1em; flex: 1; overflow: scroll;">
+        <table class="controls">
+          <tr>
+            <th colspan="2"><h3>Controls</h3></th>
+          </tr>
+          <tr><td>W          </td><td>move forward</td></tr>
+          <tr><td>A          </td><td>move left</td></tr>
+          <tr><td>D          </td><td>move right</td></tr>
+          <tr><td>S          </td><td>move back</td></tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><td>Q E        </td><td>cycle weapon</td></tr>
+          <tr><td>SPACE      </td><td>jump (with a tank?!)</td></tr>
+          <tr><td>F          </td><td>toggle mouse capture</td></tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><td>Mouse look </td><td>direction</td></tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><td>Left Click </td><td>shoot</td></tr>
+          <tr><td>Right Click</td><td>enable shield</td></tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><td>;          </td><td>toggle full screen</td></tr>
+          <tr><td>"          </td><td>toggle first-person view</td></tr>
+
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+        
+          <tr>
+            <th colspan="2"><h3>Debug Controls</h3></th>
+          </tr>
+          <tr><td>P O</td><td>increase / decrease normal map depth</td></tr>
+          <tr><td>L K</td><td>enable / disable fog layer</td></tr>
+        </table>
       </div>
     </div>
     
