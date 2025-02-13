@@ -87,6 +87,8 @@ namespace Globals
 	//fog variable location
 	GLuint loc_hasFog;
 
+	bool pauseAnimation = false;
+
 	void initShaderVariables(GLuint p){
 		loc_modelTransMat=glGetUniformLocation(p, "vTransform");
 		loc_camTransMat=glGetUniformLocation(p, "camTransform");

@@ -79,6 +79,11 @@ int main(int argc, char** argv){
 #endif
 	initApp();
 
+#ifdef __EMSCRIPTEN__
+	// Start emscripten builds with animation paused until user clicks.
+	pauseAnimation = true;
+#endif
+
 	SoundPlayerGuard spg;
 	if(spg.initialized) {
 #ifdef __EMSCRIPTEN__

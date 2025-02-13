@@ -335,6 +335,11 @@ NEXT_J:
 #endif
 				Text2D::drawStaticText(quitMessage,vec4(1,1,1,1),-.1,0);
 			}
+
+			if (pauseAnimation) {
+				Text2D::drawStaticText("Click to continue",vec4(1,1,0.5,1),-.0875,.05);
+				Text2D::drawStaticText("Sound is ON",vec4(1,1,0.5,1),-.045,0);
+			}
 		}
 
 		SDL_GL_SwapWindow(mainWindow);
@@ -418,6 +423,10 @@ NEXT_J:
 	}
 	void callbackMouse(int button, int state, int x, int y){
 		const bool down = (state == SDL_PRESSED);
+		if (pauseAnimation) {
+			pauseAnimation = !down;
+			return;
+		}
 		switch(button) {
 		case SDL_BUTTON_LEFT:
 			MOUSE_EDGE_LEFT = down && !MOUSE_LEFT;
@@ -439,7 +448,8 @@ NEXT_J:
 	}
 	void callbackTimer(int) // Called when the timer expires
 	{
-		animate();
+		if (!pauseAnimation)
+			animate();
 		// Unlike with GLUT, SDL doesn't seem to have the concept of
 		// requesting a redisplay. Instead, we call the display callback
 		// directly.

@@ -73,6 +73,8 @@ namespace Globals
 
 	extern GLuint loc_hasFog;
 
+	extern bool pauseAnimation;
+
 	//initializes the uniform variables
 	void initShaderVariables(GLuint p);
 
