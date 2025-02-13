@@ -28,6 +28,7 @@ using namespace Globals;
 static constexpr int FRAME_INTERVAL_MS = 1000 / 30;
 
 static void eventLoop();
+static void playBackgroundMusic();
 
 static Uint32 mainTimerEventType;
 static Uint32 onMainTimer(Uint32 interval, void*);
@@ -86,13 +87,8 @@ int main(int argc, char** argv){
 
 	SoundPlayerGuard spg;
 	if(spg.initialized) {
-#ifdef __EMSCRIPTEN__
-			if(!SoundPlayer::playBackground("resources/cl1.mp3"))
-				std::cerr<<"could not play file cl1.mp3. \n";
-#else
-			if(!SoundPlayer::playBackground("resources/cl1.midi"))
-				std::cerr<<"could not play file cl1.midi. \n";
-#endif
+			if (!pauseAnimation)
+				playBackgroundMusic();
 			if(!SoundPlayer::loadSound("resources/curvy.wav"))
 				std::cerr<<"could not play file curvy.way. \n";
 			if(!SoundPlayer::loadSound("resources/cannon.wav"))
@@ -176,6 +172,10 @@ void eventLoop() {
 		}
 		case SDL_MOUSEBUTTONDOWN:
 		case SDL_MOUSEBUTTONUP:
+			if (pauseAnimation && event.button.state == SDL_PRESSED && SoundPlayer::isInitialized()) {
+				// Putting this here is kind of a hack, but whatever.
+				playBackgroundMusic();
+			}
 			callbackMouse(event.button.button, event.button.state, event.button.x, event.button.y);
 			break;
 		case SDL_MOUSEMOTION:
@@ -202,4 +202,17 @@ void eventLoop() {
 		lastFrameTick = currentTick;
 	}
 #endif
+}
+
+void playBackgroundMusic() {
+	if (SoundPlayer::isBackgroundPlaying())
+		return;
+#ifdef __EMSCRIPTEN__
+#	define BGM_FILE "cl1.mp3"
+#else
+#	define BGM_FILE "cl1.midi"
+#endif
+	if(!SoundPlayer::playBackground("resources/" BGM_FILE))
+		std::cerr<<"could not play file " BGM_FILE ". \n";
+#undef BGM_FILE
 }

@@ -24,6 +24,13 @@ namespace SoundPlayer {
 	  */
 	void quit();
 
+	/**
+	 * Determines if the subsystem has been successfully initialized.
+	 * 
+	 * @return True if @c init() returned true without a call to quit().
+	 */
+	bool isInitialized();
+
 	/** Plays a background song, stopping the previous one
 	  * if applicable. By default, the song is played in a
 	  * continuous loop. The background song is not cached;
@@ -38,6 +45,11 @@ namespace SoundPlayer {
 	bool playBackground(const char* path, int loop = -1);
 	/** Stops the background song, if applicable. */
 	void stopBackground();
+	/** Determines if a backgrond song is currently playing.
+	 * 
+	 *  @return True if a background song is playing; false otherwise.
+	 */
+	bool isBackgroundPlaying();
 
 	/** Loads a sound effect file into the cache, but does
 	  * not play it. Since loading a file on-demand may cause
