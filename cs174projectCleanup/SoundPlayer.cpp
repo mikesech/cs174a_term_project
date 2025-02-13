@@ -49,6 +49,8 @@ namespace SoundPlayer {
 		///< need these two to be disabled otherwise the release verion of code fails here(debug works fines).
 		Mix_CloseAudio();   
 		SDL_QuitSubSystem(SDL_INIT_AUDIO);
+
+		initialized = false;
 	}
 
 	bool playBackground(const char* path, int loop) {
