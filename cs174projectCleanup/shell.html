@@ -76,6 +76,9 @@
         .flex-container {
           flex-direction: column;
         }
+        #video {
+          order: -1;
+        }
       }
 
     </style>
@@ -103,7 +106,7 @@
           Be careful! Along the way, you will encounter WANDERING ENEMIES and SMALLER TURRETS.
         </p>
       </div>
-      <div class="emscripten_border" style="flex: 0; width: 100%">
+      <div id="video" class="emscripten_border" style="flex: 0; width: 100%">
         <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
       </div>
       <div style="padding: 1em; flex: 1; overflow: auto;">
