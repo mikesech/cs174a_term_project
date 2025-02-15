@@ -72,6 +72,18 @@
         font-family: monospace;
       }
 
+      #video {
+        position: relative;
+      }
+      #loading-overlay {
+        position: absolute;
+        display: flex;
+        width: 100%;
+        height: 100%;
+        flex-direction: column;
+        justify-content: center;
+      }
+
       @media (max-width: 1199px) {
         .flex-container {
           flex-direction: column;
@@ -90,11 +102,6 @@
       by Garrett Johnson, Tarun Solanki, Michael Sechooler, and Howard Lee
     </div>
     <hr/>
-    <figure style="overflow:visible;" id="spinner"><div class="spinner"></div><center style="margin-top:0.5em"><strong>emscripten</strong></center></figure>
-    <div class="emscripten" id="status">Downloading...</div>
-    <div class="emscripten">
-      <progress value="0" max="100" id="progress" hidden=1></progress>  
-    </div>
     <div style="display: flex" class="flex-container">
       <div style="padding: 1em; flex: 1; text-align: justify">
         <h3>Your Mission</h3>
@@ -106,8 +113,18 @@
           Be careful! Along the way, you will encounter WANDERING ENEMIES and SMALLER TURRETS.
         </p>
       </div>
-      <div id="video" class="emscripten_border" style="flex: 0; width: 100%">
-        <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+      <div id="video">
+        <div id="loading-overlay">
+          <figure style="overflow:visible;" id="spinner"><div class="spinner"></div><center style="margin-top:0.5em"><strong>emscripten</strong></center></figure>
+          <div class="emscripten" id="status">Downloading...</div>
+          <div class="emscripten">
+            <progress value="0" max="100" id="progress" hidden=1></progress>  
+          </div>
+        </div>
+        <div class="emscripten_border">
+          <!-- width and height must match the call to SDL_CreateWindow() in main.cpp -->
+          <canvas width="600px" height="600px" class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+        </div>
       </div>
       <div style="padding: 1em; flex: 1; overflow: auto;">
         <table class="controls">
