@@ -82,7 +82,10 @@
         height: 100%;
         flex-direction: column;
         justify-content: center;
-        z-index: -1;
+        pointer-events: none;
+      }
+      #loading-overlay > * {
+        pointer-events: auto;
       }
 
       @media (max-width: 1199px) {
