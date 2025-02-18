@@ -3,8 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <!-- 618px = 600px canvas + 1px*2 emscripten_border border + 8px*2 body margin-->
-    <meta name="viewport" content="width=618px">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>G Test</title>
     <style>
       .emscripten { padding-right: 0; margin-left: auto; margin-right: auto; display: block; }
@@ -76,6 +75,9 @@
 
       #video {
         position: relative;
+      }
+      #video canvas {
+        max-width: 100%;
       }
       #loading-overlay {
         position: absolute;
