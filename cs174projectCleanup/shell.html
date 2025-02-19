@@ -90,6 +90,10 @@
       #loading-overlay > * {
         pointer-events: auto;
       }
+      /* Prevent canvas from collapsing to 0 width on return from fullscreen in Safari */
+      #video, div.emscripten_border {
+        min-width: fit-content;
+      }
 
       @media (max-width: 1199px) {
         .flex-container {
