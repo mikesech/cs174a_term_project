@@ -2,7 +2,6 @@
 <html lang="en-us">
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>G Test</title>
     <style>
@@ -55,7 +54,7 @@
         border-spacing: 0px;
       }
 
-      .controls tr td:first-child {
+      .controls tr td:not(.table-header):first-child {
         padding-left: 2ex;
         padding-right: 5ex;
         white-space: nowrap;
@@ -63,11 +62,11 @@
       .controls tr {
         vertical-align: top;
       }
-      .controls th {
+      .controls td.table-header {
         text-align: left;
         padding: 0px;
       }
-      .controls td {
+      .controls td:not(.table-header) {
         padding-top: 0px;
         padding-bottom: 0px;
         font-family: monospace;
@@ -104,12 +103,12 @@
     </style>
   </head>
   <body>
-    <hr/>
+    <hr>
     <h1 style="text-align:center; margin-bottom: 0.5ex">CS 174A Term Project</h1>
     <div style="text-align: center">
       by Garrett Johnson, Tarun Solanki, Michael Sechooler, and Howard Lee
     </div>
-    <hr/>
+    <hr>
     <div style="display: flex" class="flex-container">
       <div style="padding: 1em; flex: 1; text-align: justify">
         <h3>Your Mission</h3>
@@ -123,44 +122,44 @@
       </div>
       <div id="video">
         <div id="loading-overlay">
-          <figure style="overflow:visible;" id="spinner"><div class="spinner"></div><center style="margin-top:0.5em"><strong>emscripten</strong></center></figure>
+          <figure style="overflow:visible;" id="spinner"><div class="spinner"></div><div style="text-align:center;margin-top:0.5em"><strong>emscripten</strong></div></figure>
           <div class="emscripten" id="status">Downloading...</div>
           <div class="emscripten">
-            <progress value="0" max="100" id="progress" hidden=1></progress>  
+            <progress value="0" max="100" id="progress" hidden></progress>
           </div>
         </div>
         <div class="emscripten_border">
           <!-- width and height must match the call to SDL_CreateWindow() in main.cpp -->
-          <canvas width="600px" height="600px" class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+          <canvas width="600" height="600" class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
         </div>
       </div>
       <div style="padding: 1em; flex: 1; overflow: auto;">
         <table class="controls">
           <tr>
-            <th colspan="2"><h3>Controls</h3></th>
+            <td class="table-header" colspan="2"><h3>Controls</h3></td>
           </tr>
           <tr><td>W          </td><td>move forward</td></tr>
           <tr><td>A          </td><td>move left</td></tr>
           <tr><td>D          </td><td>move right</td></tr>
           <tr><td>S          </td><td>move back</td></tr>
-          <tr><td>&nbsp;</td></tr>
+          <tr><td>&nbsp;</td><td></td></tr>
           <tr><td>Q E        </td><td>cycle weapon</td></tr>
           <tr><td>SPACE      </td><td>jump (with a tank?!)</td></tr>
-          <tr><td>&nbsp;</td></tr>
+          <tr><td>&nbsp;</td><td></td></tr>
           <tr><td>Mouse look </td><td>direction</td></tr>
-          <tr><td>&nbsp;</td></tr>
+          <tr><td>&nbsp;</td><td></td></tr>
           <tr><td>Left Click </td><td>shoot</td></tr>
           <tr><td>Right Click</td><td>enable shield</td></tr>
-          <tr><td>&nbsp;</td></tr>
+          <tr><td>&nbsp;</td><td></td></tr>
           <tr><td>;          </td><td>toggle full screen</td></tr>
           <tr><td>"          </td><td>toggle first-person view</td></tr>
 
           <tr>
-            <td>&nbsp;</td>
+            <td>&nbsp;</td><td></td>
           </tr>
         
           <tr>
-            <th colspan="2"><h3>Debug Controls</h3></th>
+            <td class="table-header" colspan="2"><h3>Debug Controls</h3></td>
           </tr>
           <tr><td>P O</td><td>increase / decrease normal map depth</td></tr>
           <tr><td>L K</td><td>enable / disable fog layer</td></tr>
@@ -168,7 +167,7 @@
       </div>
     </div>
     
-    <hr/>
+    <hr>
     <script type='text/javascript'>
       var statusElement = document.getElementById('status');
       var progressElement = document.getElementById('progress');
