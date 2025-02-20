@@ -100,7 +100,7 @@
     # use the cache from above in a dev shell.
     devShells.emscripten =
       with pkgs;
-      mkShell {
+      mkShellNoCC {
         packages = [
           cmake
           emscripten
