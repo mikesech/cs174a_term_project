@@ -38,32 +38,12 @@
     packages.emscripten =
       with pkgs;
       let
-        emscriptenPortsCache =
-          runCommand "emscriptenPortsCache" {
-            nativeBuildInputs = [
-              emscripten
-              curl
-              cacert
-            ];
-            outputHashMode = "recursive";
-            outputHash = "sha256-B04JpZYEbLVLN6OH+5nJz12Iu5ks06/gPiOG8JCGtx8=";
-          } ''
-            mkdir cache
-            touch dummy.c
-            EM_CACHE=$(pwd)/cache emcc --use-port=sdl2 --use-port=sdl2_ttf --use-port=sdl2_mixer -sSDL2_MIXER_FORMATS=wav,mp3 --use-port=sdl2_image:formats=png,jpg -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sOFFSCREEN_FRAMEBUFFER=1 dummy.c
-
-            mkdir $out
-            mv cache/ports $out
-          '';
-        emscriptenCache =
-          runCommand "emscriptenCache" {
-            nativeBuildInputs = [ emscripten emscriptenPortsCache ];
-          } ''
-            mkdir $out
-            ln -s ${emscriptenPortsCache}/ports $out/ports
-            touch dummy.c
-            EM_CACHE=$out emcc --use-port=sdl2 --use-port=sdl2_ttf --use-port=sdl2_mixer -sSDL2_MIXER_FORMATS=wav,mp3 --use-port=sdl2_image:formats=png,jpg -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sOFFSCREEN_FRAMEBUFFER=1 dummy.c
-          '';
+        emscriptenCache = import ./emscripten-cache.nix {
+          inherit pkgs;
+          fetchTargets = "sdl2_image-jpg sdl2_image-png sdl2_ttf sdl2_mixer_mp3";
+          fetchHash = "sha256-1iiGqOrDesdGKC2xTHIM1+2LZfP0IgUBKamihool6qQ=";
+          buildArguments = "--use-port=sdl2 --use-port=sdl2_ttf --use-port=sdl2_mixer -sSDL2_MIXER_FORMATS=wav,mp3 --use-port=sdl2_image:formats=png,jpg -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sOFFSCREEN_FRAMEBUFFER=1";
+        };
       in buildEmscriptenPackage {
         name = "cs174a_term_project";
         src = ./cs174projectCleanup;
