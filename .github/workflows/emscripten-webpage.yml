@@ -35,11 +35,11 @@ jobs:
       uses: actions/cache@v4
       id: cache-emscripten-closure
       with:
-        path: emscripten-closure.zstd
-        key: ${{ steps.get-emscripten-output-path.outputs.path }}-closure
+        path: emscripten.closure
+        key: ${{ steps.get-emscripten-output-path.outputs.path }}.closure
     - name: Import emscripten closure
       if: steps.cache-emscripten-closure.outputs.cache-hit == 'true'
-      run: cat emscripten-closure.zstd | unzstd | sudo "$(which nix-store)" --import
+      run: cat emscripten.closure | sudo "$(which nix-store)" --import
 
     - name: Configure and build application
       run: nix build -L \#emscripten
@@ -61,7 +61,7 @@ jobs:
       if: steps.cache-emscripten-closure.outputs.cache-hit != 'true'
       env:
         EMSCRIPTEN_OUTPUT_PATH: ${{ steps.get-emscripten-output-path.outputs.path }}
-      run: nix-store --export $(nix-store --query --requisites "$EMSCRIPTEN_OUTPUT_PATH") | zstd -9 > emscripten-closure.zstd
+      run: nix-store --export $(nix-store --query --requisites "$EMSCRIPTEN_OUTPUT_PATH") > emscripten.closure
 
   deploy:
     needs: build
