@@ -44,14 +44,12 @@ let
         outputHash = fetchHash;
       }
       ''
-        mkdir cache
+        mkdir cache $out $out/ports
+        ln -s $out/ports cache/ports
         export EM_CACHE="$PWD/cache"
         export PYTHONPATH="$(dirname $(command -v emcc))/../share/emscripten"
 
         fetchScript.py build ${fetchTargets}
-
-        mkdir $out
-        mv cache/ports $out/
       '';
 in
 runCommand "emscriptenCache"
