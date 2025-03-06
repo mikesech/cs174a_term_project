@@ -97,12 +97,21 @@
         min-width: fit-content;
       }
 
+      .side-panel {
+        padding: 1em;
+        flex: 1;
+      }
       @media (max-width: 1199px) {
         .flex-container {
-          flex-direction: column;
+          flex-wrap: wrap;
+        }
+        .side-panel {
+          max-width: fit-content;
+          flex-basis: calc((602px - 4em)/2);
         }
         #video {
           order: -1;
+          width: 100%;
         }
       }
 
@@ -116,7 +125,7 @@
     </div>
     <hr>
     <div style="display: flex" class="flex-container">
-      <div style="padding: 1em; flex: 1; text-align: justify">
+      <div class="side-panel" style="text-align: justify">
         <h3>Your Mission</h3>
         <p>
           You are a next-generation tank complete with JUMPING ABILITIES, a SHIELD, and THREE types of weapons.
@@ -139,7 +148,7 @@
           <canvas width="600" height="600" class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
         </div>
       </div>
-      <div style="padding: 1em; flex: 1; overflow: auto;">
+      <div class="side-panel" style="overflow: auto;">
         <table class="controls">
           <tr>
             <td class="table-header" colspan="2"><h3>Controls</h3></td>
