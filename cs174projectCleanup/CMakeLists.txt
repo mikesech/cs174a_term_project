@@ -59,7 +59,10 @@ if (DEFINED EMSCRIPTEN)
     "--shell-file=${CMAKE_CURRENT_SOURCE_DIR}/shell.html"
   )
   file(GLOB_RECURSE resource_files "${CMAKE_SOURCE_DIR}/resources/*")
-  set_target_properties(${PROJECT_NAME} PROPERTIES LINK_DEPENDS "${resource_files};${CMAKE_CURRENT_SOURCE_DIR}/shell.html")
+  set_target_properties(${PROJECT_NAME} PROPERTIES
+    LINK_DEPENDS "${resource_files};${CMAKE_CURRENT_SOURCE_DIR}/shell.html"
+    ADDITIONAL_CLEAN_FILES "${PROJECT_NAME}.data;${PROJECT_NAME}.js;${PROJECT_NAME}.wasm"
+  )
   set(CMAKE_EXECUTABLE_SUFFIX .html)
 else ()
 
