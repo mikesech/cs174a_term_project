@@ -59,8 +59,7 @@ if (DEFINED EMSCRIPTEN)
     "--shell-file=${CMAKE_CURRENT_SOURCE_DIR}/shell.html"
   )
   file(GLOB_RECURSE resource_files "${CMAKE_SOURCE_DIR}/resources/*")
-  # This isn't quite right; it causes main.cpp to be recompiled
-  set_source_files_properties(main.cpp OBJECT_DEPENDS "${resource_files};${CMAKE_CURRENT_SOURCE_DIR}/shell.html")
+  set_target_properties(${PROJECT_NAME} PROPERTIES LINK_DEPENDS "${resource_files};${CMAKE_CURRENT_SOURCE_DIR}/shell.html")
   set(CMAKE_EXECUTABLE_SUFFIX .html)
 else ()
 
