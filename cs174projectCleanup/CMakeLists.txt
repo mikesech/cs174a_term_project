@@ -53,6 +53,7 @@ if (DEFINED EMSCRIPTEN)
     -sOFFSCREEN_FRAMEBUFFER=1
     -sALLOW_MEMORY_GROWTH
     -sINITIAL_MEMORY=67108864
+    -sNO_MINIFY_HTML # Minification doesn't work out-of-the-box with Nix's emscripten
     "SHELL:--preload-file ${CMAKE_BINARY_DIR}/PhongShader_vertex.glsl@/resources/PhongShader_vertex.glsl"
     "SHELL:--preload-file ${CMAKE_BINARY_DIR}/PhongShader_fragment.glsl@/resources/PhongShader_fragment.glsl"
     "SHELL:--preload-file ${CMAKE_SOURCE_DIR}/resources@/resources"
