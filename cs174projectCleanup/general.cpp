@@ -302,9 +302,14 @@ NEXT_J:
 
 		//Draw UI Text
 		if(useText) {
+			const GLfloat xStart = -0.495*(resolution.x/resolution.y);
+			const GLfloat yStart = 0.4725;
+			const GLfloat yStep = 0.449 - 0.4725;
+			auto nextY = [&, row = 0]() mutable { return yStart + (row++) * yStep; };
+
 			Globals::setModelTransMatrix(mat4());
-			Text2D::drawStaticText("HEALTH",vec4(1,1,1,1), -0.495*(resolution.x/resolution.y), .4725 );
-			Text2D::drawStaticText("SHIELD",vec4(1,1,1,1), -0.495*(resolution.x/resolution.y), .449 );
+			Text2D::drawStaticText("HEALTH",vec4(1,1,1,1), xStart, nextY());
+			Text2D::drawStaticText("SHIELD",vec4(1,1,1,1), xStart, nextY());
 
 			const char* weaponText="";
 			switch(getPlayer()->getWeapon()){
@@ -319,11 +324,11 @@ NEXT_J:
 				break;
 
 			}
-			Text2D::drawStaticText(weaponText,vec4(1,1,1,1), -0.495*(resolution.x/resolution.y), .449-(.4725-.449) );
+			Text2D::drawStaticText(weaponText,vec4(1,1,1,1), xStart, nextY());
 
 			static FPSCounter fpsCounter;
 			const Uint32 framesLastSecond = fpsCounter.recordFrame();
-			Text2D::drawStaticText(("FPS: " + std::to_string(framesLastSecond) + " [target: " + std::to_string(1000/(1000/30)) + ']').c_str(), vec4(1, 0.5, 1, 1), -0.495 * (resolution.x / resolution.y), .449 - 2* (.4725 - .449));
+			Text2D::drawStaticText(("FPS: " + std::to_string(framesLastSecond) + " [target: " + std::to_string(1000/(1000/30)) + ']').c_str(), vec4(1, 0.5, 1, 1), xStart, nextY());
 
 			if(wScenes[currentLevel]->_beaten){
 				Text2D::drawStaticText("You Won!!",vec4(1,1,1,1),-.025,.05);
