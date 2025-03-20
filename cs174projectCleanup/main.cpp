@@ -198,8 +198,8 @@ void eventLoop() {
 	static Uint64 lastFrameTick = 0;
 	const Uint64 currentTick = SDL_GetTicks64();
 	if (currentTick - lastFrameTick >= FRAME_INTERVAL_MS) {
-		callbackTimer(0);
 		lastFrameTick = currentTick;
+		callbackTimer(0);
 	}
 #endif
 }
