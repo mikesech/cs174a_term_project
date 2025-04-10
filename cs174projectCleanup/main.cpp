@@ -27,6 +27,8 @@
 using namespace Globals;
 
 static constexpr int FRAME_INTERVAL_MS = 1000 / 30;
+static constexpr int WINDOW_WIDTH  = 600;
+static constexpr int WINDOW_HEIGHT = 600;
 
 static void eventLoop();
 static void updateAndDraw();
@@ -51,7 +53,7 @@ void initSDL() {
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	mainWindow = SDL_CreateWindow("G Test", 100, 50, 600, 600, SDL_WINDOW_OPENGL);
+	mainWindow = SDL_CreateWindow("G Test", 100, 50, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL);
 	SDL_GLContext glcontext = SDL_GL_CreateContext(mainWindow);
 	SDL_GL_MakeCurrent(mainWindow, glcontext);
 }
@@ -154,8 +156,17 @@ void eventLoop() {
 
 		switch(event.type) {
 		case SDL_WINDOWEVENT:
-			if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+			if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+#ifdef __EMSCRIPTEN__
+				// HACK: The browser expects the canvas to always render at a constant size
+				//       when not in fullscreen mode.
+				if (!(SDL_GetWindowFlags(mainWindow) & SDL_WINDOW_FULLSCREEN)) {
+					callbackReshape(WINDOW_WIDTH, WINDOW_HEIGHT);
+					break;
+				}
+#endif				
 				callbackReshape(event.window.data1, event.window.data2);
+			}
 			break;
 		case SDL_KEYDOWN: {
 			int mouseX, mouseY;
