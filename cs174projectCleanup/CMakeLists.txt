@@ -10,7 +10,7 @@ set(sources
   RenderObject.cpp            RenderObjectManager.cpp   SoundPlayer.cpp
   Teleporter.cpp              Text2D.cpp                Texture.cpp
   TextureManager.cpp          TVScreen.cpp              WanderingEnemy.cpp
-  world.cpp                   WorldEntity.cpp
+  world.cpp                   WorldEntity.cpp           Gamepad.cpp
 )
 # Source files omitted: obj_loader/objTester.cpp test_main.cpp
 

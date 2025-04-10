@@ -12,6 +12,7 @@
 //#include "GL\glut.h"
 #include "SoundPlayer.h"
 #include "General.h"
+#include "Gamepad.h"
 #include "SDL.h"
 #include <cstring>
 #ifdef __EMSCRIPTEN__
@@ -28,13 +29,14 @@ using namespace Globals;
 static constexpr int FRAME_INTERVAL_MS = 1000 / 30;
 
 static void eventLoop();
+static void updateAndDraw();
 static void playBackgroundMusic();
 
 static Uint32 mainTimerEventType;
 static Uint32 onMainTimer(Uint32 interval, void*);
 
 void initSDL() {
-	SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER|SDL_INIT_EVENTS);
+	SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER|SDL_INIT_EVENTS|SDL_INIT_GAMECONTROLLER);
 #ifdef __EMSCRIPTEN__
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
@@ -79,6 +81,9 @@ int main(int argc, char** argv){
 	}
 #endif
 	initApp();
+
+	//initialize game controller
+	Gamepad::initializeGamepad();
 
 #ifdef __EMSCRIPTEN__
 	// Start emscripten builds with animation paused until user clicks.
@@ -185,12 +190,16 @@ void eventLoop() {
 				callbackPassiveMotion(event.motion.xrel, event.motion.yrel);
 			break;
 		case SDL_QUIT:
+			Gamepad::shutdownGamepad();
 			return;
 		default:
+			if (Gamepad::processEvent(event))
+				break;
 			// We check user events here. Because their type IDs are determined at runtime,
 			// we can't check them directly with the switch construct.
-			if (event.type == mainTimerEventType)
-				callbackTimer(0);
+			if (event.type == mainTimerEventType) {
+				updateAndDraw();
+			}
 			break;
 		}
 	}
@@ -199,9 +208,29 @@ void eventLoop() {
 	const Uint64 currentTick = SDL_GetTicks64();
 	if (currentTick - lastFrameTick >= FRAME_INTERVAL_MS) {
 		lastFrameTick = currentTick;
-		callbackTimer(0);
+		updateAndDraw();
 	}
 #endif
+}
+
+void updateAndDraw() {
+	Gamepad::tick();
+	callbackTimer(0);
+
+	// Rumble the gamepad when the player's health has changed
+	// (i.e., when they're damaged or killed).
+	if (Gamepad::hasGamepad()) {
+		auto player = Globals::getPlayer();
+		if (player) {
+			auto health = player->getHealth();
+			static auto prevHealth = health;
+
+			if (health != prevHealth) {
+				prevHealth = health;
+				Gamepad::rumble();
+			}
+		}
+	}
 }
 
 void playBackgroundMusic() {
