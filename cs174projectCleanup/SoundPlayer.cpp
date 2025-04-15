@@ -72,6 +72,17 @@ namespace SoundPlayer {
 		}
 	}
 
+	void pauseBackground() {
+		if (background) {
+			Mix_PauseMusic();
+		}
+	}
+	void unpauseBackground() {
+		if (background) {
+			Mix_ResumeMusic();
+		}
+	}
+
 	bool loadSound(const std::string& path) {
 		if(!initialized) return false;
 

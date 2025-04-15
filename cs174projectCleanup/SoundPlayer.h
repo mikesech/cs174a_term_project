@@ -38,6 +38,16 @@ namespace SoundPlayer {
 	bool playBackground(const char* path, int loop = -1);
 	/** Stops the background song, if applicable. */
 	void stopBackground();
+	/** Pauses the background song, if applicable.
+	 *
+	 * This is an inexpensive call; it can be called every frame.
+	 */
+	void pauseBackground();
+	/** Unpauses the background song, if applicable.
+	 *
+	 * This is an inexpensive call; it can be called every frame.
+	 */
+	void unpauseBackground();
 
 	/** Loads a sound effect file into the cache, but does
 	  * not play it. Since loading a file on-demand may cause
