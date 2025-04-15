@@ -227,6 +227,30 @@
         }
       }
 
+      function checkGamepadLoop() {
+        if (gameStarted) {
+          return;
+        }
+        let gamepad = navigator.getGamepads().find(x => x?.connected);
+        if (!gamepad) {
+          addEventListener('gamepadconnected', checkGamepadLoop, { once: true });
+          return;
+        }
+        if (gamepad.mapping == 'standard') {
+          // TODO: Display a toast if the user pressed a button but that
+          //       doesn't consitute user activation in this browser
+          if (navigator.userActivation?.hasBeenActive &&
+            gamepad.buttons[9].pressed /* start button */) {
+            Module.canvas.dispatchEvent(new PointerEvent('click'));
+          }
+        }
+
+        if (!gameStarted) {
+          requestAnimationFrame(checkGamepadLoop);
+        }
+      }
+      addEventListener('gamepadconnected', checkGamepadLoop, { once: true });
+
       var Module = {
         noInitialRun: true,
         onRuntimeInitialized: () => {
