@@ -19,6 +19,7 @@ using Globals::callbackKeyboard;
 using Globals::callbackKeyboardUp;
 using Globals::callbackMouse;
 using Globals::callbackPassiveMotion;
+using Globals::pauseAnimation;
 
 // mouseX and mouseY are required by the relevant callbacks (which derive their
 // signatures from GLUT), but they aren't actually used. As a result, we just pass
@@ -204,6 +205,10 @@ namespace Gamepad {
 						break;
 					case SDL_CONTROLLER_BUTTON_Y:
 						convertButtonToClick(SDL_BUTTON_RIGHT, state);
+						break;
+					case SDL_CONTROLLER_BUTTON_START:
+						if (state == SDL_PRESSED)
+							pauseAnimation = !pauseAnimation;
 						break;
 				}
 			}

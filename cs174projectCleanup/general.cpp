@@ -3,6 +3,7 @@
 #include "Engine.h"
 #include "BulletEntity.h"
 #include "TVScreen.h"
+#include "Gamepad.h"
 #include "SDL_mouse.h"
 #include "SDL_events.h"
 #include "SDL_timer.h"
@@ -330,7 +331,7 @@ NEXT_J:
 			const Uint32 framesLastSecond = fpsCounter.recordFrame();
 			Text2D::drawStaticText(("FPS: " + std::to_string(framesLastSecond) + " [target: " + std::to_string(1000/(1000/30)) + ']').c_str(), vec4(1, 0.5, 1, 1), xStart, nextY());
 
-			if(wScenes[currentLevel]->_beaten){
+			if(wScenes[currentLevel]->_beaten && !pauseAnimation){
 				Text2D::drawStaticText("You Won!!",vec4(1,1,1,1),-.025,.05);
 				const char* quitMessage =
 #ifdef __EMSCRIPTEN__
@@ -342,7 +343,10 @@ NEXT_J:
 			}
 
 			if (pauseAnimation) {
-				Text2D::drawStaticText("Click to continue",vec4(1,1,0.5,1),-.0875,.05);
+				if (Gamepad::hasGamepad())
+					Text2D::drawStaticText("Press START to continue",vec4(1,1,0.5,1),-.135,.05);
+				else
+					Text2D::drawStaticText("Click to continue",vec4(1,1,0.5,1),-.0875,.05);
 				Text2D::drawStaticText("Sound is ON",vec4(1,1,0.5,1),-.045,0);
 			}
 		}
