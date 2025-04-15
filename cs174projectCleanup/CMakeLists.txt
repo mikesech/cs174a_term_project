@@ -68,12 +68,20 @@ if (DEFINED EMSCRIPTEN)
   )
   set(CMAKE_EXECUTABLE_SUFFIX .html)
 
-  include(GNUInstallDirs)
-  install(TARGETS ${PROJECT_NAME} DESTINATION "${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}")
-  install(
-    FILES "$<LIST:TRANSFORM,.wasm;.js;.data,PREPEND,${CMAKE_BINARY_DIR}/${PROJECT_NAME}>"
-    DESTINATION "${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}"
-  )
+  # TODO: Move the web resources out of the resources directory so that they aren't
+  #       delivered in the data file unnecessarily.
+  if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    file(CREATE_LINK "${CMAKE_SOURCE_DIR}/resources/favicon.png" "favicon.png" SYMBOLIC)
+  else()
+    include(GNUInstallDirs)
+    install(TARGETS ${PROJECT_NAME} DESTINATION "${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}")
+    install(
+      FILES
+        "$<LIST:TRANSFORM,.wasm;.js;.data,PREPEND,${CMAKE_BINARY_DIR}/${PROJECT_NAME}>"
+        "resources/favicon.png"
+      DESTINATION "${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}"
+    )
+  endif()
 else ()
 
 include(FindPkgConfig)
