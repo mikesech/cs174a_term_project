@@ -205,6 +205,12 @@ void eventLoop() {
 			callbackMouse(event.button.button, event.button.state, event.button.x, event.button.y);
 			break;
 		case SDL_MOUSEMOTION:
+#ifdef __EMSCRIPTEN__
+			// Suppress mouse motion events from the first two frames
+			// In the browser, there might be an even generated before the mouse is centered,
+			// which would cause the game to start with the tank facing some other direction.
+			if (Globals::frameCount <= 1) { break; }
+#endif
 			if (event.motion.state)
 				callbackMotion(event.motion.xrel, event.motion.yrel);
 			else
