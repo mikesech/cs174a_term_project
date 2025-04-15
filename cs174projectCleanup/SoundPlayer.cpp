@@ -53,10 +53,6 @@ namespace SoundPlayer {
 		initialized = false;
 	}
 
-	bool isInitialized() {
-		return initialized;
-	}
-
 	bool playBackground(const char* path, int loop) {
 		if(!initialized) return false;
 
@@ -74,10 +70,6 @@ namespace SoundPlayer {
 			Mix_FreeMusic(background);
 			background = NULL;
 		}
-	}
-
-	bool isBackgroundPlaying() {
-		return Mix_PlayingMusic() != 0;
 	}
 
 	bool loadSound(const std::string& path) {
