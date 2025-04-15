@@ -81,9 +81,9 @@
         max-width: 100%;
         min-width: 40.816vw;
 
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover;
+        background-position: top left, center;
+        background-repeat: no-repeat, no-repeat;
+        background-size: auto 8%, cover;
       }
       #loading-overlay {
         position: absolute;
@@ -230,17 +230,22 @@
       var Module = {
         noInitialRun: true,
         onRuntimeInitialized: () => {
-          // This seems kind of silly just to avoid having to ship another separate file
-          const contents = FS.readFile('resources/intro_screen.jpg', { encoding: 'binary' });
-          const blob = new Blob([contents], { type: 'image/jpeg' });
-          const backgroundURL = URL.createObjectURL(blob);
-
-          Module.canvas.style['background-image'] = `url(${backgroundURL})`;
+          // This seems kind of silly just to avoid having to ship some separate files
+          const loadImage = (path, mime) => {
+            const contents = FS.readFile(path, { encoding: 'binary' });
+            const blob = new Blob([contents], { type: mime });
+            return URL.createObjectURL(blob);
+          };
+          const backgroundURLs = [
+            loadImage('resources/hud.png', 'image/png'),
+            loadImage('resources/intro_screen.jpg', 'image/jpeg')
+          ];
+          Module.canvas.style['background-image'] = backgroundURLs.map(x => `url(${x})`).join(', ');
 
           Module.canvas.addEventListener('click', () => {
             startGame();
             Module.canvas.style.removeProperty('background-image');
-            URL.revokeObjectURL(backgroundURL);
+            backgroundURLs.forEach(URL.revokeObjectURL);
           }, { once: true });
           gameReady = true;
 
