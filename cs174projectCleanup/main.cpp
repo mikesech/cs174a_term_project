@@ -128,6 +128,12 @@ extern "C" {
 		const char* argv[] = { "cs174a_term_project" };
 		main(1, argv);
 	}
+	// This is called when the program first starts if the intro screen
+	// was already put into fullscreen.
+	void setFullscreen() {
+		std::cerr << "Attempting to set fullscreen\n";
+		Globals::viewFullscreen();
+	}
 }
 #endif
 

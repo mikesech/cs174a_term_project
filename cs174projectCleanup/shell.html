@@ -207,7 +207,25 @@
           }
         }
         gameStarted = true
+
+        // If we're fullscreen, We have to tell the game to go to fullscreen;
+        // otherwise the browser will stay in fullscreen but the canvas will
+        // be improperly sized and trying to exit fullscreen won't work at
+        // first.
+        // XXX: We're assuming the canvas must be the fullscreen element.
+        if (document.fullscreenElement) {
+          // The canvas is already fullscreen, so there's no need to delay
+          // until there's a transient user activation event. Let's temporarily
+          // bypass the check.
+          let oldCanPerformEvent = JSEvents.canPerformEventHandlerRequests;
+          JSEvents.canPerformEventHandlerRequests = () => true;
+          try {
+            _setFullscreen();
+          } finally {
+            JSEvents.canPerformEventHandlerRequests = oldCanPerformEvent;
+          }
         }
+      }
 
       var Module = {
         noInitialRun: true,
@@ -225,6 +243,20 @@
             URL.revokeObjectURL(backgroundURL);
           }, { once: true });
           gameReady = true;
+
+          window.addEventListener(
+            'keydown',
+            (event) => {
+              if (!gameStarted && event.key === ';') {
+                if (document.fullscreenElement) {
+                  document.exitFullscreen();
+                } else {
+                  Module.canvas.requestFullscreen();
+                }
+              }
+            },
+            true
+          );
         },
         print: (function() {
           var element = document.getElementById('output');
