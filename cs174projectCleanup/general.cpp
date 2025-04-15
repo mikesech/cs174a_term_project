@@ -284,7 +284,7 @@ NEXT_J:
 		setCameraPosition(vec3(0,0,.5));
 
 		Wall w=Wall();
-		w.translate(-(.495)*(resolution.x/resolution.y)+.095,.48,-10);
+		w.translate(-(.5)*(resolution.x/resolution.y)+.1,.48,-10);
 		w.scale((Globals::getPlayer()->getHealth()/Player::MAX_HEALTH)*.5,.025,.1);
 
 		DrawableEntity d=DrawableEntity(NULL,"resources/cube.obj");
@@ -302,7 +302,7 @@ NEXT_J:
 
 		//Draw UI Text
 		if(useText) {
-			const GLfloat xStart = -0.495*(resolution.x/resolution.y);
+			const GLfloat xStart = -0.5*(resolution.x/resolution.y) + 0.005;
 			const GLfloat yStart = 0.4725;
 			const GLfloat yStep = 0.449 - 0.4725;
 			auto nextY = [&, row = 0]() mutable { return yStart + (row++) * yStep; };
