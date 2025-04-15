@@ -80,6 +80,10 @@
       #video canvas {
         max-width: 100%;
         min-width: 40.816vw;
+
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
       }
       #loading-overlay {
         position: absolute;
@@ -94,10 +98,11 @@
         pointer-events: auto;
       }
       /* Prevent canvas from collapsing to 0 width on return from fullscreen in Safari */
-      #video, div.emscripten_border {
-        min-width: fit-content;
+      #video .emscripten_border {
+        line-height: 0px;
+        text-align: center;
+        canvas { display: inline; }
       }
-
       .side-panel {
         padding: 1em;
         flex: 1;
@@ -189,7 +194,38 @@
       var progressElement = document.getElementById('progress');
       var spinnerElement = document.getElementById('spinner');
 
+      var gameReady = false;
+      var gameStarted = false;
+      function startGame() {
+        if (!gameReady || gameStarted)
+          return;
+        try {
+          _invokeMain();
+        } catch(error) {
+          if (error !== 'unwind') {
+            throw error;
+          }
+        }
+        gameStarted = true
+        }
+
       var Module = {
+        noInitialRun: true,
+        onRuntimeInitialized: () => {
+          // This seems kind of silly just to avoid having to ship another separate file
+          const contents = FS.readFile('resources/intro_screen.jpg', { encoding: 'binary' });
+          const blob = new Blob([contents], { type: 'image/jpeg' });
+          const backgroundURL = URL.createObjectURL(blob);
+
+          Module.canvas.style['background-image'] = `url(${backgroundURL})`;
+
+          Module.canvas.addEventListener('click', () => {
+            startGame();
+            Module.canvas.style.removeProperty('background-image');
+            URL.revokeObjectURL(backgroundURL);
+          }, { once: true });
+          gameReady = true;
+        },
         print: (function() {
           var element = document.getElementById('output');
           if (element) element.value = ''; // clear browser cache

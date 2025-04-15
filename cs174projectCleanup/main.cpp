@@ -58,7 +58,7 @@ void initSDL() {
 	SDL_GL_MakeCurrent(mainWindow, glcontext);
 }
 
-int main(int argc, char** argv){
+int main(int argc, const char** argv){
 	initSDL();
 
 #ifdef CMAKE_INSTALL_FULL_DATADIR
@@ -86,11 +86,6 @@ int main(int argc, char** argv){
 
 	//initialize game controller
 	Gamepad::initializeGamepad();
-
-#ifdef __EMSCRIPTEN__
-	// Start emscripten builds with animation paused until user clicks.
-	pauseAnimation = true;
-#endif
 
 	SoundPlayerGuard spg;
 	if(spg.initialized) {
@@ -126,6 +121,15 @@ int main(int argc, char** argv){
 
 	return 0;
 }
+
+#ifdef __EMSCRIPTEN__
+extern "C" {
+	void invokeMain() {
+		const char* argv[] = { "cs174a_term_project" };
+		main(1, argv);
+	}
+}
+#endif
 
 Uint32 onMainTimer(Uint32 interval, void*) {
 	// This callback is called on a separate thread. We have to push an

@@ -53,6 +53,8 @@ if (DEFINED EMSCRIPTEN)
     -sOFFSCREEN_FRAMEBUFFER=1
     -sALLOW_MEMORY_GROWTH
     -sINITIAL_MEMORY=67108864
+    -sEXPORTED_FUNCTIONS=_invokeMain
+    -Wno-unused-main # We don't invoke main directly from JS
     -sNO_MINIFY_HTML # Minification doesn't work out-of-the-box with Nix's emscripten
     "SHELL:--preload-file ${CMAKE_BINARY_DIR}/PhongShader_vertex.glsl@/resources/PhongShader_vertex.glsl"
     "SHELL:--preload-file ${CMAKE_BINARY_DIR}/PhongShader_fragment.glsl@/resources/PhongShader_fragment.glsl"
