@@ -56,7 +56,7 @@
 
         configurePhase = ''
           mkdir build
-          emcmake cmake -DCMAKE_BUILD_TYPE=Release -S . -B build
+          emcmake cmake -DCMAKE_BUILD_TYPE=Release -S . -B build -DCMAKE_INSTALL_PREFIX="$out"
         '';
 
         buildPhase = ''
@@ -64,13 +64,11 @@
         '';
 
         installPhase = ''
-          mkdir $out
-          mv build/cs174a_term_project.data $out
-          mv build/cs174a_term_project.js   $out
-          mv build/cs174a_term_project.wasm $out
-          mv build/cs174a_term_project.html $out
+          make -C build install
+        '';
 
-          remove-references-to -t ${emscripten} -t ${emscriptenCache} $out/cs174a_term_project.wasm
+        fixupPhase = ''
+          remove-references-to -t ${emscripten} -t ${emscriptenCache} "$out"/share/cs174a_term_project/cs174a_term_project.wasm
         '';
 
         checkPhase = "";
@@ -91,7 +89,7 @@
 
     apps.emscripten = {
       type = "app";
-      program = with pkgs; toString (writeShellScript "emscriptenRunWrapper" "${emscripten}/bin/emrun ${packages.emscripten}/cs174a_term_project.html \"$@\"");
+      program = with pkgs; toString (writeShellScript "emscriptenRunWrapper" "${emscripten}/bin/emrun ${packages.emscripten}/share/cs174a_term_project/cs174a_term_project.html \"$@\"");
     };
   });
 }

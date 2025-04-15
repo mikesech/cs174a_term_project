@@ -47,10 +47,8 @@ jobs:
     - name: Move artifacts
       run: |
         mkdir output
-        cp result/cs174a_term_project.data output
-        cp result/cs174a_term_project.js   output
-        cp result/cs174a_term_project.wasm output
-        cp result/cs174a_term_project.html output/index.html
+        (cd output && cp -s ../result/share/cs174a_term_project/* .)
+        mv output/cs174a_term_project.html output/index.html
 
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
