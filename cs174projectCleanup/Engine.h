@@ -48,6 +48,16 @@ namespace Globals
 	void viewFullscreen();
 	void toggleFullscreen();
 
+	void pause();
+	void unpause();
+	extern const bool& pauseAnimation;
+	inline void setPause(bool pause) {
+		pause ? Globals::pause() : Globals::unpause();
+	}
+	inline void togglePause() {
+		setPause(!pauseAnimation);
+	}
+
 	extern vec3 _ambColor;
 	
 	//transformation matrix locations
@@ -72,8 +82,6 @@ namespace Globals
 	extern GLuint loc_lightBrightness;
 
 	extern GLuint loc_hasFog;
-
-	extern bool pauseAnimation;
 
 	//initializes the uniform variables
 	void initShaderVariables(GLuint p);

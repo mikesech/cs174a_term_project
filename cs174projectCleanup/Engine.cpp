@@ -1,5 +1,6 @@
 #include "Engine.h"
 #include "SDL_video.h"
+#include "SoundPlayer.h"
 
 namespace Globals
 {	
@@ -87,7 +88,18 @@ namespace Globals
 	//fog variable location
 	GLuint loc_hasFog;
 
-	bool pauseAnimation = false;
+	static bool _pauseAnimation = false;
+	const bool& pauseAnimation = _pauseAnimation;
+
+	void pause() {
+		_pauseAnimation = true;
+		SoundPlayer::pauseBackground();
+	}
+	void unpause() {
+		_pauseAnimation = false;
+		SoundPlayer::unpauseBackground();
+	}
+
 
 	void initShaderVariables(GLuint p){
 		loc_modelTransMat=glGetUniformLocation(p, "vTransform");

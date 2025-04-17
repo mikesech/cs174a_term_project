@@ -208,7 +208,7 @@ namespace Gamepad {
 						break;
 					case SDL_CONTROLLER_BUTTON_START:
 						if (state == SDL_PRESSED)
-							pauseAnimation = !pauseAnimation;
+							Globals::togglePause();
 						break;
 				}
 			}

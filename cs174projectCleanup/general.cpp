@@ -4,7 +4,6 @@
 #include "BulletEntity.h"
 #include "TVScreen.h"
 #include "Gamepad.h"
-#include "SoundPlayer.h"
 #include "SDL_mouse.h"
 #include "SDL_events.h"
 #include "SDL_timer.h"
@@ -434,7 +433,7 @@ NEXT_J:
 	void callbackMouse(int button, int state, int x, int y){
 		const bool down = (state == SDL_PRESSED);
 		if (pauseAnimation) {
-			pauseAnimation = !down;
+			unpause();
 			return;
 		}
 		switch(button) {
@@ -456,19 +455,10 @@ NEXT_J:
 		Globals::mouseX += x;
 		Globals::mouseY += y;
 	}
-	static void syncAnimationStateWithMusic() {
-		if (pauseAnimation) {
-			SoundPlayer::pauseBackground();
-		} else {
-			SoundPlayer::unpauseBackground();
-		}
-	}
 	void callbackTimer(int) // Called when the timer expires
 	{
 		if (!pauseAnimation)
 			animate();
-
-		syncAnimationStateWithMusic();
 
 		// Unlike with GLUT, SDL doesn't seem to have the concept of
 		// requesting a redisplay. Instead, we call the display callback
