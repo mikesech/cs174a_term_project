@@ -209,6 +209,9 @@
         }
         gameStarted = true
 
+        document.addEventListener("focus", () => { _setPause(false); });
+        document.addEventListener("blur", () => { _setPause(true); });
+
         // If we're fullscreen, We have to tell the game to go to fullscreen;
         // otherwise the browser will stay in fullscreen but the canvas will
         // be improperly sized and trying to exit fullscreen won't work at

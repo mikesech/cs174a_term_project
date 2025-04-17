@@ -138,6 +138,9 @@ extern "C" {
 		std::cerr << "Attempting to set fullscreen\n";
 		Globals::viewFullscreen();
 	}
+	void setPause(bool pause) {
+		Globals::setPause(pause);
+	}
 }
 #endif
 
