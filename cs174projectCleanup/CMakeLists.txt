@@ -34,6 +34,10 @@ if (DEFINED EMSCRIPTEN)
     tvcube.obj                wall.obj                  wanderingBase.obj
     wanderingTexture.png      wanderingTop.obj
   )
+  # These resources are made available alongside the HTML, WASM, etc. files.
+  set(web_resources
+    favicon.png
+  )
 
   find_program(SED sed DOC "sed is required to patch GLSL code" REQUIRED)
   # It might be better to patch the GLSL files using configure_file. We'd have
@@ -98,14 +102,16 @@ if (DEFINED EMSCRIPTEN)
   set(CMAKE_EXECUTABLE_SUFFIX .html)
 
   if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    file(CREATE_LINK "${CMAKE_SOURCE_DIR}/resources/favicon.png" "favicon.png" SYMBOLIC)
+    foreach(r IN LISTS web_resources)
+      file(CREATE_LINK "${CMAKE_CURRENT_SOURCE_DIR}/resources/${r}" "${r}" SYMBOLIC)
+    endforeach()
   else()
     include(GNUInstallDirs)
     install(TARGETS ${PROJECT_NAME} DESTINATION "${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}")
     install(
       FILES
         "$<LIST:TRANSFORM,.wasm;.js;.data,PREPEND,${CMAKE_BINARY_DIR}/${PROJECT_NAME}>"
-        "resources/favicon.png"
+        "$<LIST:TRANSFORM,${web_resources},PREPEND,${CMAKE_CURRENT_SOURCE_DIR}/resources/>"
       DESTINATION "${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}"
     )
   endif()
