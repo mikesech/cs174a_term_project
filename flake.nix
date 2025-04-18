@@ -40,9 +40,9 @@
       let
         emscriptenCache = import ./emscripten-cache.nix {
           inherit pkgs;
-          fetchTargets = "sdl2_image-jpg sdl2_image-png sdl2_ttf sdl2_mixer_mp3";
-          fetchHash = "sha256-1iiGqOrDesdGKC2xTHIM1+2LZfP0IgUBKamihool6qQ=";
-          buildArguments = "-O3 --use-port=sdl2 --use-port=sdl2_ttf --use-port=sdl2_mixer -sSDL2_MIXER_FORMATS=wav,mp3 --use-port=sdl2_image:formats=png,jpg -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sOFFSCREEN_FRAMEBUFFER=1";
+          fetchTargets = "sdl2_image-jpg sdl2_image-png sdl2_mixer_mp3";
+          fetchHash = "sha256-egsX0zyaAKVlmdCOI11EIY6R6K84mScgLgZyY62fV14=";
+          buildArguments = "-O3 --use-port=sdl2 --use-port=sdl2_mixer -sSDL2_MIXER_FORMATS=wav,mp3 --use-port=sdl2_image:formats=png,jpg -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sOFFSCREEN_FRAMEBUFFER=1";
         };
       in buildEmscriptenPackage {
         name = "cs174a_term_project";

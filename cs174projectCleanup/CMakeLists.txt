@@ -61,7 +61,6 @@ if (DEFINED EMSCRIPTEN)
   add_executable(${PROJECT_NAME} ${sources} PhongShader_vertex.glsl PhongShader_fragment.glsl)
   target_compile_options(${PROJECT_NAME} PRIVATE
     --use-port=sdl2
-    --use-port=sdl2_ttf
     --use-port=sdl2_mixer
     -sSDL2_MIXER_FORMATS=wav,mp3
     --use-port=sdl2_image:formats=png,jpg
@@ -73,7 +72,6 @@ if (DEFINED EMSCRIPTEN)
   )
   target_link_options(${PROJECT_NAME} PRIVATE
     --use-port=sdl2
-    --use-port=sdl2_ttf
     --use-port=sdl2_mixer
     -sSDL2_MIXER_FORMATS=wav,mp3
     --use-port=sdl2_image:formats=png,jpg
@@ -83,6 +81,7 @@ if (DEFINED EMSCRIPTEN)
     -sALLOW_MEMORY_GROWTH
     -sINITIAL_MEMORY=67108864
     -sEXPORTED_FUNCTIONS=_invokeMain,_setFullscreen,_setPause
+    -sEXPORTED_RUNTIME_METHODS=setValue
     -Wno-unused-main # We don't invoke main directly from JS
     -sNO_MINIFY_HTML # Minification doesn't work out-of-the-box with Nix's emscripten
     "SHELL:--preload-file ${CMAKE_BINARY_DIR}/PhongShader_vertex.glsl@/resources/PhongShader_vertex.glsl"

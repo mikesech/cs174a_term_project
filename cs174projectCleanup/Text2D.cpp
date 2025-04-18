@@ -1,9 +1,14 @@
 #include "Text2D.h"
 #include "SDL.h"
-#include "SDL_ttf.h"
 #include <map>
 #include <string>
 #include <cassert>
+
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#else
+#include "SDL_ttf.h"
+#endif
 
 #include "General.h"
 using namespace Globals;
@@ -22,25 +27,72 @@ namespace {
     const int FONT_PT = 128;
     const float FONT_SCALE = 0.025;
 
-    // SDL_TTF must be inited before calling this!
-    TTF_Font* ttf_font() {
-        static TTF_Font* f = TTF_OpenFont(FONT_RESOURCE_PATH, FONT_PT);
-        return f;
+#ifdef __EMSCRIPTEN__
+    TextTexture renderTextToTexture(const char* s) {
+        static bool init = []() {
+            EM_ASM({
+                const fontPath = UTF8ToString($0);
+                const contents = FS.readFile(fontPath, {encoding: 'binary'});
+                const fontFace = new FontFace('text2d-font', contents);
+                document.fonts.add(fontFace);
+            }, FONT_RESOURCE_PATH);
+            return true;
+        }();
+
+        TextTexture textTexture;
+        int32_t width, height;
+
+        glGenTextures(1,&textTexture.ref);
+        glBindTexture(GL_TEXTURE_2D,textTexture.ref);
+
+        EM_ASM({
+            const text = UTF8ToString($0);
+            const font = `${$1}px "text2d-font"`;
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            const setCtxProps = (ctx) => {
+                ctx.font = font;
+                ctx.textRendering = 'geometricPrecision';
+                ctx.fontKerning = 'none';
+                ctx.fillStyle = '#000000FF';
+                // ctx.fillStyle = '#FF0000FF';
+            };
+            setCtxProps(ctx);
+            const metrics = ctx.measureText(text);
+
+            const width = Math.ceil(metrics.width);
+            const height = Math.ceil(metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent);
+
+            canvas.width = width;
+            canvas.height = height;
+            setCtxProps(ctx);
+
+            ctx.fillText(text, 0, Math.ceil(metrics.fontBoundingBoxAscent));
+            const gl = Module.canvas.getContext('webgl2');
+            gl.texImage2D(
+                gl.TEXTURE_2D, 0, gl.RGBA8, width, height,
+                0, gl.RGBA, gl.UNSIGNED_BYTE, canvas
+            );
+            Module.setValue($2, width, 'i32');
+            Module.setValue($3, height, 'i32');
+        }, s, FONT_PT, &width, &height);
+        textTexture.width = width;
+        textTexture.height = height;
+        glGenerateMipmap(GL_TEXTURE_2D);
+        // Edge is less than ideal, but it'll do.
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        return textTexture;
     }
-}
+#else
+    TextTexture renderTextToTexture(const char* s) {
+        if (!TTF_WasInit())
+            TTF_Init();
 
-void
-Text2D::drawStaticText(const char* s, vec4 color, GLfloat location_x, GLfloat location_y )
-{
-    if (!(s && *s))
-        return;
-    if (!TTF_WasInit())
-        TTF_Init();
-
-    TextTexture textTexture;
-    TextTextureCache::iterator i = cache.find(s);
-    if (i == cache.end()) {
-        TTF_Font* const font = ttf_font();
+        TextTexture textTexture;
+        static TTF_Font* const font = TTF_OpenFont(FONT_RESOURCE_PATH, FONT_PT);
         if (!font) throw "no font";
         // Color is implemented by setting the ambient light accordingly when rendering.
         // The final color of a fragment is the ambient color plus the object's specular
@@ -83,22 +135,25 @@ Text2D::drawStaticText(const char* s, vec4 color, GLfloat location_x, GLfloat lo
             glGenerateMipmap(GL_TEXTURE_2D);
             // Clamping prevents an effect where one of the edges wraps to the
             // other side, probably due to min/mag sampling.
-#ifdef __EMSCRIPTEN__
-            // Edge is less than ideal, but it'll do.
-            constexpr auto wrapParameter = GL_CLAMP_TO_EDGE;
-#else
-            constexpr auto wrapParameter = GL_CLAMP_TO_BORDER;
-#endif
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapParameter);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapParameter);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
         }
         SDL_UnlockSurface(surface);
         SDL_FreeSurface(surface);
-        
-        cache[s] = textTexture; // TODO: use insert and not the subscript operator, which causes an initial default initialization
-    } else {
-        textTexture = i->second;
+
+        return textTexture;
     }
+#endif
+}
+
+void
+Text2D::drawStaticText(const char* s, vec4 color, GLfloat location_x, GLfloat location_y )
+{
+    if (!(s && *s))
+        return;
+
+    TextTextureCache::iterator i = cache.find(s);
+    TextTexture textTexture = i == cache.end() ? (cache[s] = renderTextToTexture(s)) : i->second;
 
     // The implementation of this routine borrows from the "UI Hack" in general.cpp/callbackDisplay().
     // That function uses the cube.obj object with a orthographic matrix to render objects in screen
