@@ -15,6 +15,26 @@ set(sources
 # Source files omitted: obj_loader/objTester.cpp test_main.cpp
 
 if (DEFINED EMSCRIPTEN)
+  # It turns out that the resources directory contains 8.17 MB of unused data.
+  # Instead of preloading the whole thing, we'll preload just the files we need.
+  #
+  # The shaders are omitted here because they are patched and not taken directly
+  # from the resources directory.
+  set(bundled_resources
+    ClosedDoorTex.png         FreeMonoBold.ttf          cannon.wav
+    cl1.mp3                   cube.obj                  curvy.wav
+    death.wav                 diamondPlateNormal.jpg    fireball.wav
+    floorNormal.jpg           grassTexture.jpg          grenade.obj
+    hud.png                   intro_screen.jpg          jump.wav
+    mechNormal2.jpg           mechTexture.png           plane.obj
+    rockFlat.obj              rockMed.obj               rockTall.obj
+    sphere.obj                tankBase.obj              tankTexture.png
+    tankTop.obj               treesTest.png             turretBarrel.obj
+    turretBase.obj            turretTexture.png         turretTop.obj
+    tvcube.obj                wall.obj                  wanderingBase.obj
+    wanderingTexture.png      wanderingTop.obj
+  )
+
   find_program(SED sed DOC "sed is required to patch GLSL code" REQUIRED)
   # It might be better to patch the GLSL files using configure_file. We'd have
   # to do that for all builds, though, and it would make the installation of
@@ -42,6 +62,11 @@ if (DEFINED EMSCRIPTEN)
     -sSDL2_MIXER_FORMATS=wav,mp3
     --use-port=sdl2_image:formats=png,jpg
   )
+  list(
+    TRANSFORM bundled_resources
+    REPLACE "^(.+)$" "SHELL:--preload-file ${CMAKE_CURRENT_SOURCE_DIR}/resources/\\0@/resources/\\0"
+    OUTPUT_VARIABLE preload_file_args
+  )
   target_link_options(${PROJECT_NAME} PRIVATE
     --use-port=sdl2
     --use-port=sdl2_ttf
@@ -58,18 +83,20 @@ if (DEFINED EMSCRIPTEN)
     -sNO_MINIFY_HTML # Minification doesn't work out-of-the-box with Nix's emscripten
     "SHELL:--preload-file ${CMAKE_BINARY_DIR}/PhongShader_vertex.glsl@/resources/PhongShader_vertex.glsl"
     "SHELL:--preload-file ${CMAKE_BINARY_DIR}/PhongShader_fragment.glsl@/resources/PhongShader_fragment.glsl"
-    "SHELL:--preload-file ${CMAKE_SOURCE_DIR}/resources@/resources"
+    ${preload_file_args}
     "--shell-file=${CMAKE_CURRENT_SOURCE_DIR}/shell.html"
   )
-  file(GLOB_RECURSE resource_files "${CMAKE_SOURCE_DIR}/resources/*")
+  list(
+    TRANSFORM bundled_resources
+    PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/resources/"
+    OUTPUT_VARIABLE absolute_bundled_resources
+  )
   set_target_properties(${PROJECT_NAME} PROPERTIES
-    LINK_DEPENDS "${resource_files};${CMAKE_CURRENT_SOURCE_DIR}/shell.html"
+    LINK_DEPENDS "${absolute_bundled_resources};${CMAKE_CURRENT_SOURCE_DIR}/shell.html"
     ADDITIONAL_CLEAN_FILES "${PROJECT_NAME}.data;${PROJECT_NAME}.js;${PROJECT_NAME}.wasm"
   )
   set(CMAKE_EXECUTABLE_SUFFIX .html)
 
-  # TODO: Move the web resources out of the resources directory so that they aren't
-  #       delivered in the data file unnecessarily.
   if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     file(CREATE_LINK "${CMAKE_SOURCE_DIR}/resources/favicon.png" "favicon.png" SYMBOLIC)
   else()
