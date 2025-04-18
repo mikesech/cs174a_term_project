@@ -81,6 +81,16 @@ Text2D::drawStaticText(const char* s, vec4 color, GLfloat location_x, GLfloat lo
             glPixelStorei(GL_UNPACK_ROW_LENGTH, oldGLUnpackRowLength);
             
             glGenerateMipmap(GL_TEXTURE_2D);
+            // Clamping prevents an effect where one of the edges wraps to the
+            // other side, probably due to min/mag sampling.
+#ifdef __EMSCRIPTEN__
+            // Edge is less than ideal, but it'll do.
+            constexpr auto wrapParameter = GL_CLAMP_TO_EDGE;
+#else
+            constexpr auto wrapParameter = GL_CLAMP_TO_BORDER;
+#endif
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapParameter);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapParameter);
         }
         SDL_UnlockSurface(surface);
         SDL_FreeSurface(surface);
@@ -123,7 +133,10 @@ Text2D::drawStaticText(const char* s, vec4 color, GLfloat location_x, GLfloat lo
     d.setUVScale(4,4);
     // For some reason, the texture vertices assigned in cube.obj have an X offset of 0.125 normalized.
     // Scaled by 4, to reverse that offset, we have to add an offset of -0.5.
-    d.setUVOffset(-0.5, 0);
+    //
+    // The -1 offsets are so that the side facing the camera lines up with the texture.
+    // The values were determined empirically.
+    d.setUVOffset(-0.5 - 1, -1);
 
     d.draw();
 
