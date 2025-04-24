@@ -25,7 +25,7 @@ if (DEFINED EMSCRIPTEN)
     cl1.mp3                   cube.obj                  curvy.wav
     death.wav                 diamondPlateNormal.jpg    fireball.wav
     floorNormal.jpg           grassTexture.jpg          grenade.obj
-    hud.png                   intro_screen.jpg          jump.wav
+    jump.wav
     mechNormal2.jpg           mechTexture.png           plane.obj
     rockFlat.obj              rockMed.obj               rockTall.obj
     sphere.obj                tankBase.obj              tankTexture.png
@@ -36,7 +36,7 @@ if (DEFINED EMSCRIPTEN)
   )
   # These resources are made available alongside the HTML, WASM, etc. files.
   set(web_resources
-    favicon.png
+    favicon.png               hud.png                   intro_screen.jpg
   )
 
   find_program(SED sed DOC "sed is required to patch GLSL code" REQUIRED)

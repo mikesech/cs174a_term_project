@@ -81,10 +81,10 @@
       #video canvas {
         max-width: 100%;
         min-width: 40.816vw;
-
-        background-position: top left, center;
-        background-repeat: no-repeat, no-repeat;
-        background-size: auto 8%, cover;
+      }
+      .intro-screen {
+        background: no-repeat top left / auto 8% url("hud.png"),
+                    no-repeat center / cover url("intro_screen.jpg");
       }
       #loading-overlay {
         position: absolute;
@@ -208,6 +208,7 @@
           }
         }
         gameStarted = true
+        Module.canvas.classList.remove("intro-screen");
 
         document.addEventListener("focus", () => { _setPause(false); });
         document.addEventListener("blur", () => { _setPause(true); });
@@ -245,7 +246,7 @@
           //       doesn't consitute user activation in this browser
           if (navigator.userActivation?.hasBeenActive &&
             gamepad.buttons[9].pressed /* start button */) {
-            Module.canvas.dispatchEvent(new PointerEvent('click'));
+            startGame();
           }
         }
 
@@ -258,23 +259,9 @@
       var Module = {
         noInitialRun: true,
         onRuntimeInitialized: () => {
-          // This seems kind of silly just to avoid having to ship some separate files
-          const loadImage = (path, mime) => {
-            const contents = FS.readFile(path, { encoding: 'binary' });
-            const blob = new Blob([contents], { type: mime });
-            return URL.createObjectURL(blob);
-          };
-          const backgroundURLs = [
-            loadImage('resources/hud.png', 'image/png'),
-            loadImage('resources/intro_screen.jpg', 'image/jpeg')
-          ];
-          Module.canvas.style['background-image'] = backgroundURLs.map(x => `url(${x})`).join(', ');
+          Module.canvas.classList.add("intro-screen");
 
-          Module.canvas.addEventListener('click', () => {
-            startGame();
-            Module.canvas.style.removeProperty('background-image');
-            backgroundURLs.forEach(URL.revokeObjectURL);
-          }, { once: true });
+          Module.canvas.addEventListener('click', startGame, { once: true });
           gameReady = true;
 
           window.addEventListener(
