@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>cs174a_term_project: 404 error</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <style>
+    html, body, div#wrapper {
+      width: 100%;
+      height: 100%;
+    }
+    body {
+      color: greenyellow;
+      background-color: black;
+      text-wrap: balance;
+      font-family: monospace;
+      font-size: 16pt;
+
+      margin: 0px;
+    }
+    div#wrapper {
+      container-type: size;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    p {
+      margin: 0px;
+    }
+    a {
+      color: inherit;
+      font-weight: bold;
+    }
+    code {
+      font-variant: small-caps;
+    }
+    p.warning-symbol {
+      color: red;
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.4em;
+      gap: 1ch;
+    }
+    p.warning-symbol svg {
+      stroke: red;
+      fill: transparent;
+
+      height: 1em;
+      width: auto;
+    }
+    p.warning-symbol svg path {
+      stroke-width: 8px;
+    }
+    p.warning-symbol svg text {
+      font-size: 62px;
+      text-anchor: middle;
+      dominant-baseline: central;
+      user-select: none;
+      fill: red;
+    }
+    @container(max-width: 56ch) {
+      p + p { margin-top: 0.4em; }
+      div#box { width: min-content; }
+    }
+  </style>
+</head>
+
+<body>
+<div id="wrapper">
+<div id="box">
+  <p class="warning-symbol">
+    <svg width="100" height="100" viewBox="9 9 82 82" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 90 50 L 78.28 78.28 L 50 90 L 21.72 78.28 L 10 50 L 21.72 21.72 L 50 10 L 78.28 21.72 Z" />
+      <text x="50" y="50">!</text>
+    </svg>
+    Caution
+  </p>
+  <p>This is not a valid address for <code>cs174a_term_project</code>.</p>
+  <p>Please return to the <a href="/">start page</a>.</p>
+</div>
+</div>
+</body>
+</html>
