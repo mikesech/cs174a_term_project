@@ -6,6 +6,9 @@
   <title>cs174a_term_project: 404 error</title>
   <link rel="icon" type="image/png" href="favicon.png">
   <style>
+    html, body {
+      overflow: hidden;
+    }
     html, body, div#wrapper {
       width: 100%;
       height: 100%;
@@ -18,15 +21,19 @@
       font-size: 16pt;
 
       margin: 0px;
+      padding: 2em;
+      box-sizing: border-box;
     }
     div#wrapper {
-      container-type: size;
       display: flex;
       justify-content: center;
       align-items: center;
     }
     p {
       margin: 0px;
+    }
+    .interspaced p:not(:first-child) {
+      margin-top: 0.4em;
     }
     a {
       color: inherit;
@@ -37,10 +44,14 @@
     }
     p.warning-symbol {
       color: red;
-      display: flex;
-      align-items: center;
       margin-bottom: 0.4em;
+      line-height: 0px;
+    }
+    p.warning-symbol span.mm {
+      display: inline-flex;
+      align-items: center;
       gap: 1ch;
+      line-height: initial;
     }
     p.warning-symbol svg {
       stroke: red;
@@ -59,10 +70,6 @@
       user-select: none;
       fill: red;
     }
-    @container(max-width: 56ch) {
-      p + p { margin-top: 0.4em; }
-      div#box { width: min-content; }
-    }
   </style>
 </head>
 
@@ -70,15 +77,52 @@
 <div id="wrapper">
 <div id="box">
   <p class="warning-symbol">
+  <span class="mm">
     <svg width="100" height="100" viewBox="9 9 82 82" xmlns="http://www.w3.org/2000/svg">
       <path d="M 90 50 L 78.28 78.28 L 50 90 L 21.72 78.28 L 10 50 L 21.72 21.72 L 50 10 L 78.28 21.72 Z" />
       <text x="50" y="50">!</text>
     </svg>
     Caution
+  </span>
   </p>
-  <p>This is not a valid address for <code>cs174a_term_project</code>.</p>
-  <p>Please return to the <a href="/">start page</a>.</p>
+  <p><span class="mm">This is not a valid address for <code>cs174a_term_project</code>.</span></p>
+  <p><span class="mm">Please return to the <a href="/">start page</a>.</span></p>
 </div>
 </div>
+
+<script>
+  (() => {
+    const isSpanWrapped = (span) => {
+      const rects = span.getClientRects();
+      const firstY = rects[0]?.y;
+      for (let i = 1; i < rects.length; i++) {
+        if (rects[i].y !== firstY) {
+          return true;
+        }
+      }
+      return false;
+    };
+    const box = document.getElementById('box');
+    const mmSpans = Array.from(document.querySelectorAll('#box .mm'));
+    const resizeObserver = new ResizeObserver((entries) => {
+      if (mmSpans.some(isSpanWrapped)) {
+        // Center box
+        const event = entries[0];
+        const boxWidth = event.contentBoxSize[0].inlineSize;
+        const fitWidth = Math.max(...mmSpans.map(x => x.getBoundingClientRect().width));
+        const diff = Math.max(0, boxWidth - fitWidth);
+        box.style.transform = `translateX(${diff / 2}px)`;
+
+        // Add inter-paragraph spacing
+        box.classList.add('interspaced');
+      } else {
+        box.style.transform = 'translateX(0px)';
+
+        box.classList.remove('interspaced');
+      }
+    });
+    resizeObserver.observe(box);
+  })();
+</script>
 </body>
 </html>
