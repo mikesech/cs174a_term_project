@@ -64,7 +64,7 @@ if (DEFINED EMSCRIPTEN)
     --use-port=sdl2
     --use-port=sdl2_mixer
     -sSDL2_MIXER_FORMATS=wav,mp3
-    --use-port=sdl2_image:formats=png,jpg
+    --use-port=sdl2_image
   )
   list(
     TRANSFORM bundled_resources
@@ -75,7 +75,7 @@ if (DEFINED EMSCRIPTEN)
     --use-port=sdl2
     --use-port=sdl2_mixer
     -sSDL2_MIXER_FORMATS=wav,mp3
-    --use-port=sdl2_image:formats=png,jpg
+    --use-port=sdl2_image
     -sMIN_WEBGL_VERSION=2
     -sMAX_WEBGL_VERSION=2
     -sOFFSCREEN_FRAMEBUFFER=1
@@ -86,6 +86,7 @@ if (DEFINED EMSCRIPTEN)
     -sEXPORTED_RUNTIME_METHODS=setValue
     -Wno-unused-main # We don't invoke main directly from JS
     -sNO_MINIFY_HTML # Minification doesn't work out-of-the-box with Nix's emscripten
+    --use-preload-plugins
     "SHELL:--preload-file ${CMAKE_BINARY_DIR}/PhongShader_vertex.glsl@/resources/PhongShader_vertex.glsl"
     "SHELL:--preload-file ${CMAKE_BINARY_DIR}/PhongShader_fragment.glsl@/resources/PhongShader_fragment.glsl"
     ${preload_file_args}
