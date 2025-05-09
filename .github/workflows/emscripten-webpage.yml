@@ -29,16 +29,22 @@ jobs:
     - name: Get emscripten output path
       id: get-emscripten-output-path
       run: |
-        echo "path=$(nix derivation show .\#emscripten | jq -r '.[] | .env.nativeBuildInputs' | tr ' ' '\n' | grep '-emscriptenCache$')" >> $GITHUB_OUTPUT
+        path="$(nix derivation show .\#emscripten | jq -r '.[] | .env.nativeBuildInputs' | tr ' ' '\n' | grep '-emscriptenCache$')"
+        hash="$(echo "$path" | sed -nE 's,^/nix/store/([^-]+)-.*$,\1,p')"
+
+        echo "path=$path" >> $GITHUB_OUTPUT
+        echo "hash=$hash" >> $GITHUB_OUTPUT
       shell: bash
     - name: Cache emscripten closure
       uses: actions/cache@v4
       id: cache-emscripten-closure
       with:
         path: emscripten.closure
-        key: ${{ steps.get-emscripten-output-path.outputs.path }}.closure
+        key: nix-closure:emscriptenCache-${{ steps.get-emscripten-output-path.outputs.hash }}
+        # If there's no match, get the latest cached closure, if available
+        restore-keys: nix-closure:emscriptenCache-
     - name: Import emscripten closure
-      if: steps.cache-emscripten-closure.outputs.cache-hit == 'true'
+      if: steps.cache-emscripten-closure.outputs.cache-hit != ''
       run: cat emscripten.closure | sudo "$(which nix-store)" --import
 
     - name: Configure and build application
