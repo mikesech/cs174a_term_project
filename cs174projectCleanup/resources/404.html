@@ -70,6 +70,19 @@
       user-select: none;
       fill: red;
     }
+
+    @media print {
+      #box {
+        transform: initial !important;
+      }
+      p:not(:first-child) {
+        margin-top: 0.4em;
+      }
+      body {
+        background-color: initial;
+        color: initial;
+      }
+    }
   </style>
 </head>
 
