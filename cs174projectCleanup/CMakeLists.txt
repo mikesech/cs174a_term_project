@@ -81,6 +81,7 @@ if (DEFINED EMSCRIPTEN)
     -sOFFSCREEN_FRAMEBUFFER=1
     -sALLOW_MEMORY_GROWTH
     -sINITIAL_MEMORY=67108864
+    -sLZ4=1 # GitHub Pages doesn't use HTTP compression for the .data file
     -sEXPORTED_FUNCTIONS=_invokeMain,_setFullscreen,_setPause
     -sEXPORTED_RUNTIME_METHODS=setValue
     -Wno-unused-main # We don't invoke main directly from JS
