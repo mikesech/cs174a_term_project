@@ -28,7 +28,11 @@ CTexture::~CTexture()
 void CTexture::LoadFile(const std::string& strFileName)
 {
 	// Load the file data.
+#ifdef USE_WEBP_TEXTURES
+	SDL_Surface* surface = IMG_Load((strFileName + ".webp").c_str());
+#else
 	SDL_Surface* surface = IMG_Load(strFileName.c_str());
+#endif
         if (!surface)
 	{
 		printf("The image failed to load\n" ) ;

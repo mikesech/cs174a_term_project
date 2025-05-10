@@ -59,7 +59,45 @@ if (DEFINED EMSCRIPTEN)
     VERBATIM
   )
 
-  add_executable(${PROJECT_NAME} ${sources} PhongShader_vertex.glsl PhongShader_fragment.glsl)
+  set(USE_WEBP_TEXTURES OFF CACHE BOOL "If ON, compresses all textures with cwebp before bundling")
+  if(USE_WEBP_TEXTURES)
+    add_compile_definitions(USE_WEBP_TEXTURES)
+    find_program(CWEBP cwebp DOC "cwebp is required to recompress textures" REQUIRED)
+    macro(partition_out src regex output)
+      set(${output} ${${src}})
+      list(FILTER ${output} INCLUDE REGEX ${regex})
+      list(FILTER ${src}    EXCLUDE REGEX ${regex})
+    endmacro()
+    partition_out(bundled_resources "\\.png$" bundled_pngs)
+    partition_out(bundled_resources "\\.jpg$" bundled_jpgs)
+
+    file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/compressed_resources")
+    foreach(r IN LISTS bundled_pngs)
+      add_custom_command(
+        OUTPUT compressed_resources/${r}.webp
+        COMMAND ${CWEBP} -lossless -q 100 "${CMAKE_CURRENT_SOURCE_DIR}/resources/${r}" -o compressed_resources/${r}.webp
+        COMMENT "Compressing ${r} with cwebp"
+        DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/resources/${r}"
+        VERBATIM
+      )
+    endforeach()
+    foreach(r IN LISTS bundled_jpgs)
+      add_custom_command(
+        OUTPUT compressed_resources/${r}.webp
+        COMMAND ${CWEBP} -q 85 "${CMAKE_CURRENT_SOURCE_DIR}/resources/${r}" -o compressed_resources/${r}.webp
+        COMMENT "Compressing ${r} with cwebp"
+        DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/resources/${r}"
+        VERBATIM
+      )
+    endforeach()
+    set(compressed_resources ${bundled_pngs};${bundled_jpgs})
+    list(
+      TRANSFORM compressed_resources
+      REPLACE "^(.+)$" "compressed_resources/\\0.webp"
+    )
+  endif()
+
+  add_executable(${PROJECT_NAME} ${sources} PhongShader_vertex.glsl PhongShader_fragment.glsl ${compressed_resources})
   target_compile_options(${PROJECT_NAME} PRIVATE
     --use-port=sdl2
     --use-port=sdl2_mixer
@@ -70,6 +108,11 @@ if (DEFINED EMSCRIPTEN)
     TRANSFORM bundled_resources
     REPLACE "^(.+)$" "SHELL:--preload-file ${CMAKE_CURRENT_SOURCE_DIR}/resources/\\0@/resources/\\0"
     OUTPUT_VARIABLE preload_file_args
+  )
+  list(
+    TRANSFORM compressed_resources
+    REPLACE "^compressed_resources/(.+)$" "SHELL:--preload-file ${CMAKE_BINARY_DIR}/compressed_resources/\\1@/resources/\\1"
+    OUTPUT_VARIABLE preload_file_args2
   )
   target_link_options(${PROJECT_NAME} PRIVATE
     --use-port=sdl2
@@ -90,6 +133,7 @@ if (DEFINED EMSCRIPTEN)
     "SHELL:--preload-file ${CMAKE_BINARY_DIR}/PhongShader_vertex.glsl@/resources/PhongShader_vertex.glsl"
     "SHELL:--preload-file ${CMAKE_BINARY_DIR}/PhongShader_fragment.glsl@/resources/PhongShader_fragment.glsl"
     ${preload_file_args}
+    ${preload_file_args2}
     "--shell-file=${CMAKE_CURRENT_SOURCE_DIR}/shell.html"
   )
   list(

@@ -51,12 +51,13 @@
           cmake
           emscriptenCache
           removeReferencesTo
+          libwebp
         ];
         allowedReferences = [];
 
         configurePhase = ''
           mkdir build
-          emcmake cmake -DCMAKE_BUILD_TYPE=Release -S . -B build -DCMAKE_INSTALL_PREFIX="$out"
+          emcmake cmake -DCMAKE_BUILD_TYPE=Release -S . -B build -DCMAKE_INSTALL_PREFIX="$out" -DUSE_WEBP_TEXTURES=ON
         '';
 
         buildPhase = ''
