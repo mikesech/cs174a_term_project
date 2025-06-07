@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.18)
+cmake_minimum_required (VERSION 3.27)
 project (cs174a_term_project)
 
 set(sources
