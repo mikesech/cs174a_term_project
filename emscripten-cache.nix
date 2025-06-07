@@ -60,9 +60,11 @@ runCommand "emscriptenCache"
     ];
   }
   ''
-    # We cannot link the ports cache here because the build process
-    # actually changes some configuration headers.
-    cp -R ${emscriptenPortsCache} $out
+    mkdir $out
+    cp -Rs \
+      ${emscriptenPortsCache}/ports \
+      ${emscripten}/share/emscripten/cache/{symbol_lists,sysroot,sysroot_install.stamp} \
+      $out
     chmod -R +w $out
 
     touch dummy.c
