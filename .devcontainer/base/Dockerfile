@@ -20,6 +20,7 @@ sleep 1
 . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 cd /workspace
 nix profile install .#dev-environment
+nix registry pin nixpkgs "$(nix flake metadata --json | jq -r '.locks.nodes.nixpkgs.locked | "\(.type):\(.owner)/\(.repo)/\(.rev)"')"
 nix store gc
 sudo service nix-daemon stop
 EOF
