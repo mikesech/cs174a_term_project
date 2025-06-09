@@ -1,0 +1,24 @@
+{
+    "buildPresets": [
+        {
+            "configurePreset": "emscripten",
+            "description": "Builds project",
+            "displayName": "Build project using Nix",
+            "name": "emscripten"
+        }
+    ],
+    "configurePresets": [
+        {
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}"
+            },
+            "description": "Sets Unix Makefiles generator, build and install directory",
+            "displayName": "Configure preset using Nix",
+            "generator": "Unix Makefiles",
+            "name": "emscripten"
+        }
+    ],
+    "version": 8
+}

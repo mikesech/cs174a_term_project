@@ -73,6 +73,9 @@
         '';
 
         checkPhase = "";
+
+        # For the benefit of packages.dev-environment
+        passthru.emscriptenCache = emscriptenCache;
       };
 
     # We provide an explicit devShells definition so that we don't
@@ -92,5 +95,25 @@
       type = "app";
       program = with pkgs; toString (writeShellScript "emscriptenRunWrapper" "${emscripten}/bin/emrun ${packages.emscripten}/share/cs174a_term_project/cs174a_term_project.html \"$@\"");
     };
+
+    # DevContainer stuff
+    packages.dev-environment = let
+      emscriptenCache = pkgs.linkFarm "emscriptenCache" [{
+        name = "share/emscriptenCache";
+        path = packages.emscripten.emscriptenCache;
+      }];
+      # This seems kind of hacky
+      python = pkgs.lib.lists.findFirst (x: x.pname or "" == "python3") "" pkgs.emscripten.buildInputs;
+    in
+    pkgs.buildEnv {
+      name = "cs174a_term_project-emscripten-dev-environment";
+      paths = [
+        emscriptenCache
+        python
+        pkgs.cmake
+        pkgs.emscripten
+      ];
+    };
+
   });
 }
