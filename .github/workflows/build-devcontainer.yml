@@ -1,0 +1,36 @@
+name: Build devcontainer
+
+on:
+  push:
+    branches:
+      - emscripten
+    paths:
+      - flake.nix
+      - flake.lock
+      - emscripten-cache.nix
+      - .devcontainer/base/**
+      - .github/workflows/build-devcontainer.yml
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and push base image
+      uses: docker/build-push-action@v6
+      with:
+        push: true
+        tags: ghcr.io/mikesech/cs174a_term_project-devcontainer-base:latest
+        cache-from: ghcr.io/mikesech/cs174a_term_project-devcontainer-base:latest
+        file: .devcontainer/base/Dockerfile

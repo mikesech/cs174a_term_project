@@ -1,0 +1,5 @@
+#!/bin/sh /lib/init/init-d-script
+
+DAEMON=/nix/var/nix/profiles/default/bin/nix-daemon
+START_ARGS='-b --make-pidfile'
+STOP_ARGS='--remove-pidfile --pidfile /run/nix-daemon.pid'

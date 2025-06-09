@@ -1,13 +1,8 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
-  "features": {
-    "ghcr.io/devcontainers/features/nix:1": {
-      "extraNixConfig": "experimental-features = nix-command flakes, download-buffer-size = 1073741824",
-      "useAttributePath": true
-    }
-  },
+  "image": "ghcr.io/mikesech/cs174a_term_project-devcontainer-base",
 
-  "onCreateCommand": "sudo apt-get install -y acl && sudo setfacl -k /tmp && nix profile install .#dev-environment && (ln -s ../.devcontainer/CMakeUserPresets.json cs174projectCleanup/ && echo cs174projectCleanup/CMakeUserPresets.json >> .git/info/exclude ; true)",
+  "onCreateCommand": "(ln -s ../.devcontainer/CMakeUserPresets.json cs174projectCleanup/ && echo cs174projectCleanup/CMakeUserPresets.json >> .git/info/exclude ; true)",
+  "postStartCommand": "sudo service nix-daemon start",
   "customizations": {
     "vscode": {
       "extensions": [
