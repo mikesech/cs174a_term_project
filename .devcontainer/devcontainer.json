@@ -1,7 +1,7 @@
 {
   "image": "ghcr.io/mikesech/cs174a_term_project-devcontainer-base",
 
-  "onCreateCommand": "(ln -s ../.devcontainer/CMakeUserPresets.json cs174projectCleanup/ && echo cs174projectCleanup/CMakeUserPresets.json >> .git/info/exclude ; true)",
+  "onCreateCommand": "(ln -s ../.devcontainer/CMakeUserPresets.json cs174projectCleanup/ && echo 'cs174projectCleanup/CMakeUserPresets.json\ncs174projectCleanup/out' >> .git/info/exclude ; true)",
   "postStartCommand": "sudo service nix-daemon start",
   "customizations": {
     "vscode": {
