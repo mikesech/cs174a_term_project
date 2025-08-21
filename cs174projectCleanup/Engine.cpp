@@ -3,7 +3,9 @@
 #include "SoundPlayer.h"
 
 namespace Globals
-{	
+{
+	bool debugDraw = false;
+	GLint debugDrawModeOverride = 0;
 	SDL_Window* mainWindow;
 	bool useText = false;
 

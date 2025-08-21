@@ -23,6 +23,8 @@ namespace Globals
 	extern float universalNormalMapDepthMult;
 
 	//Key States
+	extern bool debugDraw;
+	extern GLint debugDrawModeOverride;
 	extern bool KEY_W;
 	extern bool KEY_A;
 	extern bool KEY_S;

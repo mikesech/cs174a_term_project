@@ -225,6 +225,21 @@ NEXT_J:
 		}
 	}
 
+	static void drawBoundingBoxes(const GameEntityList& list) {
+		const GLint oldOverride = debugDrawModeOverride;
+		debugDrawModeOverride = GL_LINE_STRIP;
+
+		DrawableEntity boundingBox(nullptr, "resources/cube.obj");
+		for (auto i : list) {
+			const auto& hitbox = i->getHitBox();
+			boundingBox.setTranslate(hitbox.getCenter());
+			boundingBox.setScale(hitbox.getDimensions());
+			boundingBox.draw();
+		}
+
+		debugDrawModeOverride = oldOverride;
+	}
+
 	static void render()
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //clear the draw buffer
@@ -244,6 +259,18 @@ NEXT_J:
 		drawOpaqueEntities(wEntities, transparencyQueue); //Draw Every GameEntity
 		drawOpaqueEntities(wWalls, transparencyQueue); //Draw Every Wall
 		drawOpaqueEntities(wSoftEntities, transparencyQueue);
+
+
+		if (debugDraw) {
+
+			drawBoundingBoxes(wEntities);
+
+			drawBoundingBoxes(wWalls);
+
+			drawBoundingBoxes(wSoftEntities);
+
+		}
+
 
 		//Draw transparent models, furthest from camera first
 		//Disable updating the z-buffer, but still conduct the
