@@ -4,8 +4,6 @@
 
 namespace Globals
 {
-	bool debugDraw = false;
-	GLint debugDrawModeOverride = 0;
 	SDL_Window* mainWindow;
 	bool useText = false;
 
@@ -20,6 +18,9 @@ namespace Globals
 	float lightFalloff[10];
 	vec3 lightColors[10];
 
+	//Debug states
+	bool debugDrawCollisionBoxes = false;
+	bool debugDrawWireframe = false;
 
 	//Key States
 	bool KEY_W=false;
@@ -184,7 +185,12 @@ namespace Globals
 	}
 
 	void drawModel(const char* m){
-		CRenderObjectManager::GetInstance()->GetRenderObject(m)->draw();
+		CRenderObject* robj = CRenderObjectManager::GetInstance()->GetRenderObject(m);
+		if (debugDrawWireframe) {
+			robj->draw(GL_LINE_STRIP);
+		} else {
+			robj->draw();
+		}
 	}
 
 

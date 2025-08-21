@@ -22,9 +22,11 @@ namespace Globals
 	extern unsigned int frameCount;
 	extern float universalNormalMapDepthMult;
 
+	//Debug states
+	extern bool debugDrawCollisionBoxes;
+	extern bool debugDrawWireframe;
+
 	//Key States
-	extern bool debugDraw;
-	extern GLint debugDrawModeOverride;
 	extern bool KEY_W;
 	extern bool KEY_A;
 	extern bool KEY_S;

@@ -277,7 +277,7 @@ void CRenderObject::draw(GLuint type) const
 	glBindVertexArray(this->getVaoId());
 	//glDrawArrays( type, 0, this->numPointsToDraw);
 	glDrawElements(
-			(Globals::debugDrawModeOverride) ? Globals::debugDrawModeOverride : type,
+			type,
 			indices.size(),    // count
 			GL_UNSIGNED_SHORT, // type
 			(void*)0           // element array buffer offset

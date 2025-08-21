@@ -22,6 +22,8 @@ Right Click: Enable shield
 'L' 'l': enable fog layer
 'K' 'k': disable fog layer
 
+'B' 'b': toggle hitbox visibility
+
 ';' : enter full screen (cannot get out, must exit with 'esc')
 '"' : Enter first person view
 

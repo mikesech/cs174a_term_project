@@ -225,19 +225,21 @@ NEXT_J:
 		}
 	}
 
-	static void drawBoundingBoxes(const GameEntityList& list) {
-		const GLint oldOverride = debugDrawModeOverride;
-		debugDrawModeOverride = GL_LINE_STRIP;
+	static void drawCollisionBoxes(const GameEntityList& list) {
+		const bool oldWireframe = debugDrawWireframe;
+		debugDrawWireframe = true;
 
-		DrawableEntity boundingBox(nullptr, "resources/cube.obj");
+		DrawableEntity collisionBox(nullptr, "resources/cube.obj");
+		collisionBox.setDiffuseColor(vec3(1, 0, 0));
 		for (auto i : list) {
 			const auto& hitbox = i->getHitBox();
-			boundingBox.setTranslate(hitbox.getCenter());
-			boundingBox.setScale(hitbox.getDimensions());
-			boundingBox.draw();
+			collisionBox.setTranslate(hitbox.getTranslate());
+			auto dims = hitbox.getDimensions();
+			collisionBox.setScale(dims.x, dims.y, dims.z);
+			collisionBox.draw();
 		}
 
-		debugDrawModeOverride = oldOverride;
+		debugDrawWireframe = oldWireframe;
 	}
 
 	static void render()
@@ -260,17 +262,11 @@ NEXT_J:
 		drawOpaqueEntities(wWalls, transparencyQueue); //Draw Every Wall
 		drawOpaqueEntities(wSoftEntities, transparencyQueue);
 
-
-		if (debugDraw) {
-
-			drawBoundingBoxes(wEntities);
-
-			drawBoundingBoxes(wWalls);
-
-			drawBoundingBoxes(wSoftEntities);
-
+		if (debugDrawCollisionBoxes) {
+			drawCollisionBoxes(wEntities);
+			drawCollisionBoxes(wWalls);
+			drawCollisionBoxes(wSoftEntities);
 		}
-
 
 		//Draw transparent models, furthest from camera first
 		//Disable updating the z-buffer, but still conduct the
@@ -436,6 +432,11 @@ NEXT_J:
 		case 'l':
 		case 'L':
 			setHasFog(true);
+			break;
+		case 'b':
+		case 'B':
+			if (!val)
+				debugDrawCollisionBoxes = !debugDrawCollisionBoxes;
 			break;
 		}
 	}
