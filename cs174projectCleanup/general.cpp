@@ -12,6 +12,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <ctime>
+#include <cmath>
 #include "Text2D.h"
 
 /** This anonymous namespace holds definitions and declarations
@@ -225,13 +226,33 @@ NEXT_J:
 		}
 	}
 
+	static vec3 hueToFullColor(float hue) {
+		float h = fmodf(hue, 360.0f);
+		if (h < 0) h += 360.0f; // Ensure hue is positive
+		float x = 1 - fabsf(fmodf(h / 60.0f, 2) - 1);
+		float r = 0, g = 0, b = 0;
+
+		if      (  0 <= h && h <  60) { r = 1; g = x; b = 0; }
+		else if ( 60 <= h && h < 120) { r = x; g = 1; b = 0; }
+		else if (120 <= h && h < 180) { r = 0; g = 1; b = x; }
+		else if (180 <= h && h < 240) { r = 0; g = x; b = 1; }
+		else if (240 <= h && h < 300) { r = x; g = 0; b = 1; }
+		else if (300 <= h && h < 360) { r = 1; g = 0; b = x; }
+
+		return {r, g, b};
+	}
+
 	static void drawCollisionBoxes(const GameEntityList& list) {
 		const bool oldWireframe = debugDrawWireframe;
 		debugDrawWireframe = true;
 
 		DrawableEntity collisionBox(nullptr, "resources/cube.obj");
-		collisionBox.setDiffuseColor(vec3(1, 0, 0));
 		for (auto i : list) {
+			auto hue = std::hash<GameEntity*>{}(i);
+			auto color = hueToFullColor(hue);
+			collisionBox.setDiffuseColor(color);
+			collisionBox.setHighlightColor(color);
+
 			const auto& hitbox = i->getHitBox();
 			collisionBox.setTranslate(hitbox.getTranslate());
 			auto dims = hitbox.getDimensions();
