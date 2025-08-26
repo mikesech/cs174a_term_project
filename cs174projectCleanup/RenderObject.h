@@ -41,6 +41,8 @@ private:
 	/** @brief send the fata to gpu */
 	void sendDataToGPU();
 
+	void activateObject(GLuint linkedShaderProgram, GLuint currentVao, GLuint currentVbo) const;
+
 	/** @brief  Calculates the tangents and bitangents. These two, along with normals, form the basis
 	* vectors of TBN space.
 	*/
@@ -63,6 +65,7 @@ private:
 		std::vector<vec3> & out_normals,
 		std::vector<vec3> & out_tangents,
 		std::vector<vec3> & out_bitangents );
+	static std::vector<unsigned short> repackTriangleIndicesForLines(std::vector<unsigned short>& indices);
 	/** @brief helper struct and function to find same vertex fast
 	*/
 	struct PackedVertex{
@@ -95,6 +98,9 @@ private:
 	GLuint buffer; ///< vbo id of the model
 	GLuint vao_indices; ///< vao id associated with the stride or indices array
 	GLuint buffer_indices; ///< vbo id associated with stried or indices array
+
+	GLuint vao_lines;    ///< vao id of the model for lines
+	GLuint buffer_lines_indices; ///< vbo id associated with stried or indices array for lines
 
 	std::string m_strTextName;	///< The filename from which the texture was loaded from.
 	//

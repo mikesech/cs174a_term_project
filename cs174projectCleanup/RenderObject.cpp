@@ -121,12 +121,39 @@ void CRenderObject::sendDataToGPU()
 	glGenBuffers(1, &buffer_indices);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_indices);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned short), &indices[0], GL_STATIC_DRAW);
+
+	std::vector<unsigned short> lines_indices = repackTriangleIndicesForLines(indices);
+	glGenVertexArrays(1, &vao_lines);
+	glBindVertexArray(vao_lines);
+	glGenBuffers(1, &buffer_lines_indices);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_lines_indices);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, lines_indices.size() * sizeof(unsigned short), &lines_indices[0], GL_STATIC_DRAW);
+}
+std::vector<unsigned short> CRenderObject::repackTriangleIndicesForLines(std::vector<unsigned short>& indices) {
+	std::vector<unsigned short> retval;
+	for (int i = 0; i + 2 < indices.size(); i += 3){
+		retval.push_back(indices[i]);
+		retval.push_back(indices[i+1]);
+
+		retval.push_back(indices[i+1]);
+		retval.push_back(indices[i+2]);
+
+		retval.push_back(indices[i+2]);
+		retval.push_back(indices[i]);
+	}
+	return retval;
 }
 void CRenderObject::activateObject(GLuint linkedShaderProgram) const
 {
+	activateObject(linkedShaderProgram, vao, buffer);
+	activateObject(linkedShaderProgram, vao_lines, buffer);
+}
+// XXX: I think that calling this const is morally incorrect
+void CRenderObject::activateObject(GLuint linkedShaderProgram, GLuint currentVao, GLuint currentVbo) const
+{
 	//make the vao and bo the current ones
-	glBindVertexArray(vao);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBindVertexArray(currentVao);
+	glBindBuffer(GL_ARRAY_BUFFER, currentVbo);
 
 	//define the position of vertex in buffer and enable the attribute
 	GLuint vPosition   = glGetAttribLocation(linkedShaderProgram, "vPosition");
@@ -274,11 +301,20 @@ std::string CRenderObject::getName() const
 void CRenderObject::draw(GLuint type) const
 {
 	//std::cout<<numPointsToDraw<<std::endl;
-	glBindVertexArray(this->getVaoId());
+	GLuint vao;
+	GLsizei count;
+	if (type == GL_LINES) {
+		vao = vao_lines;
+		count = (indices.size() / 3) * 6;
+	} else {
+		vao = this->getVaoId();
+		count = indices.size();
+	}
+	glBindVertexArray(vao);
 	//glDrawArrays( type, 0, this->numPointsToDraw);
 	glDrawElements(
 			type,
-			indices.size(),    // count
+			count,
 			GL_UNSIGNED_SHORT, // type
 			(void*)0           // element array buffer offset
 			); //it works (surprisingly) even with subbuffer.
