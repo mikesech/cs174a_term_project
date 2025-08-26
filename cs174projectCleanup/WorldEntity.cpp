@@ -1,50 +1,70 @@
 #include "WorldEntity.h"
 #include "Engine.h"
 
+unsigned long long WorldEntity::globalOrderingCount = 0;
+
 WorldEntity::WorldEntity(const WorldEntity* parent)
 {
 	_parent = parent;
+	if (_parent != NULL)
+		_parent->_isParent = true;
 	_position = vec3(0, 0, 0);
 	_rotation = vec3(0, 0, 0);
 	_scale    = vec3(1, 1, 1);
-	_positionFrameCount = 0;
+	_totalOrderingCount = 0;
+}
+
+void WorldEntity::invalidateCache()
+{
+	if(_isParent) {
+		++globalOrderingCount;
+	} else {
+		_totalOrderingCount = globalOrderingCount - 1;
+	}
 }
 
 //Translation
 void WorldEntity::translate(vec3 v)
 {
 	_position += v;
+	invalidateCache();
 }
 
 void WorldEntity::translate(float x, float y, float z)
 {
 	_position += vec3(x, y, z);
+	invalidateCache();
 }
 
 void WorldEntity::setTranslate(float x, float y, float z)
 {
 	_position = vec3(x, y, z);	
+	invalidateCache();
 }
 void WorldEntity::setTranslate(vec3 v){
 	_position=v;
+	invalidateCache();
 }
 
 void WorldEntity::setTranslateX(float x)
 {
 	_position.x=x;
+	invalidateCache();
 }
 void WorldEntity::setTranslateY(float y)
 {
 	_position.y=y;
+	invalidateCache();
 }
 void WorldEntity::setTranslateZ(float z)
 {
 	_position.z = z;
+	invalidateCache();
 }
 vec3 WorldEntity::getTranslate() const
 {
-	if(Globals::frameCount != _positionFrameCount) {
-		_positionFrameCount = Globals::frameCount;
+	if(_totalOrderingCount != globalOrderingCount) {
+		_totalOrderingCount = globalOrderingCount;
 
 		if (_parent == NULL){
 			_worldPosition = _position;
@@ -62,10 +82,12 @@ vec3 WorldEntity::getTranslate() const
 void WorldEntity::rotate(float x, float y, float z)
 {
 	_rotation += vec3(x, y, z);
+	invalidateCache();
 }
 void WorldEntity::setRotate(float x, float y, float z)
 {
 	_rotation = vec3(x, y, z);
+	invalidateCache();
 }
 vec3 WorldEntity::getRotate() const
 {
@@ -85,10 +107,12 @@ void WorldEntity::scale(float x, float y, float z)
 	_scale.x*=x;
 	_scale.y*=y;
 	_scale.z*=z;
+	invalidateCache();
 }
 void WorldEntity::setScale(float x, float y, float z)
 {
 	_scale = vec3(x, y, z);
+	invalidateCache();
 }
 vec3 WorldEntity::getScale() const
 {

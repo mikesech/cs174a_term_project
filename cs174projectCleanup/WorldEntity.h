@@ -21,9 +21,21 @@ private:
 	//They can only be used for optimization purposes (like caching or memoization)
 	//and cannot ultimately affect the external behavior of the class.
 	mutable vec3 _worldPosition; ///< The last calcuated world position.
-	mutable unsigned int _positionFrameCount; ///< The frame count at the last time position was calculated.
+	/** @brief The global ordering count at the last time position was calculated. */
+	mutable unsigned long long _totalOrderingCount;
+	/** @brief A global counter incremented each time any object's position,
+	 *         rotation, scale, or parentage is changed.
+	 */
+	static unsigned long long globalOrderingCount;
+	/** @brief Invalidates the cached transformation data.
+	 * 
+	 *  If this object has or ever had children, then the global cache is completely
+	 *  invalidated. Otherwise, only this object's cached data is invalidated.
+	 */
+	void invalidateCache();
 
 	const WorldEntity* _parent; ///< The object's parent or NULL if none.
+	mutable bool _isParent; ///< True if this object ever had children.
 
 public:
 	/** @brief Constructs a new WorldEntity object.
@@ -62,15 +74,14 @@ public:
 	  * @return The local translation vector concatenated with the
 	  *         ancestors'.
 	  * 
-	  * @warning This function's return value is computed once per frame
-	  *      and cached for subsequent calls. However, it's totally possible
-	  *      for the object's position to change in between calls to this function
-	  *      during the same frame. That is to say, this function will return the
-	  *      entity's location from some time between the beginning of this frame
-	  *      until this function's call.
-	  * 
-	  *      It might make sense to rename this function to @c getApproximateTranslate
-	  *      or @c getCachedTranslate and provide a new, non-cached function if needed.
+	  * This function uses memoization to avoid recomputing the
+	  * world position. The cache is invalidated for @b all WorldEntity
+	  * instances whenever @b any that has or once had children has its
+	  * position, rotation, scale, or parentage changed. (We cannot limit
+	  * invalidation to just the object's descendants because parents
+	  * do not have any pointers to their children.) For changes to those
+	  * that do not and never had children, only the cached value for those
+	  * particular instances are invalidated.
 	  */
 	vec3 getTranslate() const;
 	/** @brief Gets the local translation vector. */
@@ -125,7 +136,13 @@ public:
 	//Parent
 	/** @brief Returns the parent object or NULL if none. */
 	inline const WorldEntity* getParent() const { return _parent; }
-	inline void setParent(const WorldEntity* p){_parent=p;}
+	inline void setParent(const WorldEntity* p)
+	{
+		_parent=p;
+		if(_parent)
+			_parent->_isParent = true;
+		invalidateCache();
+	}
 
 
 	//TransformationMatrix
