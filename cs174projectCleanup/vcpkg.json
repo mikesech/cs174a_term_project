@@ -1,0 +1,21 @@
+{
+  "dependencies": [
+    "glew",
+    "sdl2",
+    {
+      "name": "sdl2-image",
+      "default-features": false,
+      "features": [
+        "libjpeg-turbo"
+      ]
+    },
+    {
+      "name": "sdl2-mixer",
+      "default-features": false,
+      "features": [
+        "mpg123"
+      ]
+    },
+    "sdl2-ttf"
+  ]
+}

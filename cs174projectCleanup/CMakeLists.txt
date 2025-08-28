@@ -235,3 +235,10 @@ endif()
 #   sdl2_ttf
 #   sdl2_image
 #   glew
+
+# vcpkg packages
+#   sdl2
+#   sdl2_mixer[core,mpg123]
+#   sdl2_ttf
+#   sdl2_image[core,libjpeg-turbo]
+#   glew
