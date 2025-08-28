@@ -88,13 +88,14 @@ extern "C" int main(int argc, char** argv){
 
 	SoundPlayerGuard spg;
 	if(spg.initialized) {
-#ifdef __EMSCRIPTEN__
+#ifndef __EMSCRIPTEN__
+			if (SoundPlayer::playBackground("resources/cl1.midi"))
+				goto after_background; // on success
+			std::cerr << "could not play file cl1.midi; trying mp3 \n";
+#endif
 			if(!SoundPlayer::playBackground("resources/cl1.mp3"))
 				std::cerr<<"could not play file cl1.mp3. \n";
-#else
-			if(!SoundPlayer::playBackground("resources/cl1.midi"))
-				std::cerr<<"could not play file cl1.midi. \n";
-#endif
+after_background:
 			if(!SoundPlayer::loadSound("resources/curvy.wav"))
 				std::cerr<<"could not play file curvy.way. \n";
 			if(!SoundPlayer::loadSound("resources/cannon.wav"))
