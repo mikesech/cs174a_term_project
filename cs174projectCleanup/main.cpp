@@ -57,7 +57,7 @@ void initSDL() {
 	SDL_GL_MakeCurrent(mainWindow, glcontext);
 }
 
-int main(int argc, const char** argv){
+extern "C" int main(int argc, char** argv){
 	initSDL();
 
 #ifdef CMAKE_INSTALL_FULL_DATADIR
@@ -130,7 +130,7 @@ int main(int argc, const char** argv){
 extern "C" {
 	void invokeMain() {
 		const char* argv[] = { "cs174a_term_project" };
-		main(1, argv);
+		main(1, const_cast<char**>(argv));
 	}
 	// This is called when the program first starts if the intro screen
 	// was already put into fullscreen.
