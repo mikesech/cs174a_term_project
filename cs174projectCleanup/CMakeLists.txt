@@ -163,24 +163,23 @@ if (DEFINED EMSCRIPTEN)
   endif()
 else ()
 
-include(FindPkgConfig)
-pkg_check_modules(SDL2       REQUIRED IMPORTED_TARGET sdl2)
-pkg_check_modules(SDL2_MIXER REQUIRED IMPORTED_TARGET SDL2_mixer)
-pkg_check_modules(SDL2_TTF   REQUIRED IMPORTED_TARGET SDL2_ttf)
-pkg_check_modules(SDL2_IMAGE REQUIRED IMPORTED_TARGET SDL2_image)
-pkg_check_modules(GLEW       REQUIRED IMPORTED_TARGET glew)
-find_package     (OpenGL     REQUIRED)
+find_package(GLEW       REQUIRED)
+find_package(SDL2       CONFIG REQUIRED)
+find_package(SDL2_image CONFIG REQUIRED)
+find_package(SDL2_mixer CONFIG REQUIRED)
+find_package(SDL2_ttf   CONFIG REQUIRED)
+find_package(OpenGL     REQUIRED)
 
 set(CMAKE_BUILD_TYPE RelWithDebInfo) # add debugging information, optimize
 
 add_executable(${PROJECT_NAME} ${sources})
-target_link_libraries(${PROJECT_NAME}
-  OpenGL::GL
-  PkgConfig::SDL2
-  PkgConfig::SDL2_MIXER
-  PkgConfig::SDL2_TTF
-  PkgConfig::SDL2_IMAGE
-  PkgConfig::GLEW
+target_link_libraries(${PROJECT_NAME} PRIVATE
+  GLEW::GLEW
+  $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+  $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+  $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
+  $<IF:$<TARGET_EXISTS:SDL2_mixer::SDL2_mixer>,SDL2_mixer::SDL2_mixer,SDL2_mixer::SDL2_mixer-static>
+  $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
 )
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
@@ -196,7 +195,6 @@ endif()
 
 # nix packages
 #   cmake
-#   pkg-config
 #   glew
 #   SDL2
 #   SDL2_mixer
@@ -205,7 +203,6 @@ endif()
 
 # apt-get packages
 #   cmake
-#   pkg-config
 #   libglew-dev
 #   libsdl2-dev
 #   libsdl2-mixer-dev
@@ -214,7 +211,6 @@ endif()
 
 # brew packages
 #   cmake
-#   pkg-config
 #   sdl2
 #   sdl2_mixer
 #   sdl2_ttf
