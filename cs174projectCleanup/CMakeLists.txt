@@ -188,6 +188,25 @@ else()
   include(GNUInstallDirs)
   add_compile_definitions(CMAKE_INSTALL_FULL_DATADIR="${CMAKE_INSTALL_FULL_DATADIR}")
   install(TARGETS ${PROJECT_NAME} RUNTIME)
+  if(WIN32)
+    install(FILES $<TARGET_RUNTIME_DLLS:${PROJECT_NAME}> TYPE BIN)
+    # While some transitive dependencies are included in TARGET_RUNTIME_DLLS,
+    # many aren't. We can use the install-time GET_RUNTIME_DEPENDENCIES tool to
+    # get their dependencies. (This will be a bit redundant, but that's okay.)
+    install(CODE "
+      message(CHECK_START [[Detecting additional runtime library dependencies]])
+      file(GET_RUNTIME_DEPENDENCIES
+        RESOLVED_DEPENDENCIES_VAR resolved_dlls
+        UNRESOLVED_DEPENDENCIES_VAR unresolved_dlls
+        LIBRARIES $<TARGET_RUNTIME_DLLS:${PROJECT_NAME}>
+        POST_EXCLUDE_REGEXES [[[/\\\\]system32[/\\\\].*\\.dll]]
+      )
+      list(REMOVE_ITEM resolved_dlls $<TARGET_RUNTIME_DLLS:${PROJECT_NAME}>)
+      list(LENGTH resolved_dlls resolved_dlls_count)
+      message(CHECK_PASS \"done (\${resolved_dlls_count} found)\")
+      file(INSTALL \${resolved_dlls} DESTINATION \"${CMAKE_INSTALL_FULL_BINDIR}\")
+    ")
+  endif()
   install(DIRECTORY resources TYPE DATA)
 endif()
 
