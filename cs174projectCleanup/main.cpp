@@ -20,6 +20,8 @@
 #endif
 #ifdef _WIN32
 #	include <direct.h> // for chdir (deprecated, replace with _chdir)
+#	include <windows.h> // for AttachConsole
+#	include <cstdio> // for std::freopen
 #else
 #	include <unistd.h> // for chdir
 #endif
@@ -57,7 +59,22 @@ void initSDL() {
 	SDL_GL_MakeCurrent(mainWindow, glcontext);
 }
 
+void attachConsole() {
+#ifdef WIN32
+	// On Windows, we compile as a graphical application to suppress the creating of a terminal
+	// window when launching it. However, if the app was started via a terminal, this prevents
+	// stdout/stderr from reaching it. Here, if we were started in a terminal, we'll attach
+	// the app to its console so we can write to it.
+	if (AttachConsole(ATTACH_PARENT_PROCESS)) {
+		std::freopen("CONOUT$", "w", stdout);
+		std::freopen("CONOUT$", "w", stderr);
+	}
+#endif
+	// This isn't neccesary on other platforms, where it's a no-op.
+}
+
 extern "C" int main(int argc, char** argv){
+	attachConsole();
 	initSDL();
 
 #ifdef CMAKE_INSTALL_FULL_DATADIR
