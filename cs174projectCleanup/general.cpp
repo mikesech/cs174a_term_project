@@ -352,6 +352,9 @@ NEXT_J:
 
 		//Draw UI Text
 		if(useText) {
+			const bool oldDebugDrawWireframe = debugDrawWireframe;
+			debugDrawWireframe = false;
+
 			const GLfloat xStart = -0.5*(resolution.x/resolution.y) + 0.005;
 			const GLfloat yStart = 0.4725;
 			const GLfloat yStep = 0.449 - 0.4725;
@@ -398,6 +401,8 @@ NEXT_J:
 					Text2D::drawStaticText("Click to continue",vec4(1,1,0.5,1),-.0875,.05);
 				Text2D::drawStaticText("Sound is ON",vec4(1,1,0.5,1),-.045,0);
 			}
+
+			debugDrawWireframe = oldDebugDrawWireframe;
 		}
 
 		SDL_GL_SwapWindow(mainWindow);
