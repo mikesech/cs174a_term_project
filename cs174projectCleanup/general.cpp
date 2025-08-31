@@ -464,6 +464,11 @@ NEXT_J:
 			if (!val)
 				debugDrawCollisionBoxes = !debugDrawCollisionBoxes;
 			break;
+		case 'n':
+		case 'N':
+			if (!val)
+				debugDrawWireframe = !debugDrawWireframe;
+			break;
 		}
 	}
 	void callbackKeyboard(unsigned char key, int x, int y){
