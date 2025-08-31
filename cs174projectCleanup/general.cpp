@@ -87,6 +87,11 @@ namespace Globals
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);
 
+#ifndef __EMSCRIPTEN__
+		glEnable(GL_PRIMITIVE_RESTART);
+		glPrimitiveRestartIndex(0xFFFF);
+#endif
+
 		//INIT THE LIGHTS
 		for(int i=0;i<LIGHT_COUNT;i++){
 			wLights[i]=NULL;

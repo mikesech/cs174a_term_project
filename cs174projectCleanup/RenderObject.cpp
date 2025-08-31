@@ -230,6 +230,17 @@ void CRenderObject::indexVBO_TBN(
 	// For each input vertex
 	for ( unsigned int i=0; i<in_vertices.size(); i++ ){
 
+		// XXX: This is a hack that, when primitive reset is enabled, allows us to use
+		//      the same element array for GL_TRIANGLES and GL_LINE_LOOP. Each triangle
+		//      is recorded as a loop of three points, using the primitive reset index
+		//      of 0xFFFF to separate the loops. When using GL_TRIANGLES, the reset
+		//      is unnecessary and becomes a no-op.
+		//
+		//      This probably isn't the ideal way, which is probably to have separate
+		//      VAOs.
+		if (i % 3 == 0 && i > 0)
+			out_indices.push_back(0xFFFF);
+
 		// Try to find a similar vertex in the vertextooutindex map
 		unsigned short index;
 		PackedVertex packed = {in_vertices[i], in_uvs[i], in_normals[i]};

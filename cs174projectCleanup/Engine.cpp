@@ -187,7 +187,7 @@ namespace Globals
 	void drawModel(const char* m){
 		CRenderObject* robj = CRenderObjectManager::GetInstance()->GetRenderObject(m);
 		if (debugDrawWireframe) {
-			robj->draw(GL_LINE_STRIP);
+			robj->draw(GL_LINE_LOOP);
 		} else {
 			robj->draw();
 		}
