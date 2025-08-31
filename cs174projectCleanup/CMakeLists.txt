@@ -172,7 +172,7 @@ find_package(OpenGL     REQUIRED)
 
 set(CMAKE_BUILD_TYPE RelWithDebInfo) # add debugging information, optimize
 
-add_executable(${PROJECT_NAME} ${sources})
+add_executable(${PROJECT_NAME} WIN32 ${sources})
 target_link_libraries(${PROJECT_NAME} PRIVATE
   GLEW::GLEW
   $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
