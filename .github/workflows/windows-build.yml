@@ -1,0 +1,33 @@
+name: Windows Build
+
+on:
+  push:
+    branches:
+      - windows
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: windows
+
+      - name: Set up vcpkg
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git
+          cd vcpkg
+          .\vcpkg\bootstrap-vcpkg.bat
+          echo "VCPKG_ROOT=$(pwd)" >> $env:GITHUB_ENV
+        shell: pwsh
+
+      - name: Configure with CMake
+        run: |
+          cmake -B build -S cs174projectCleanup `
+            -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
+        shell: pwsh
+
+      - name: Build with CMake
+        run: cmake --build build --config Release
+        shell: pwsh
