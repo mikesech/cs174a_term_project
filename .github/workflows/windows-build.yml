@@ -18,7 +18,7 @@ jobs:
         run: |
           git clone https://github.com/microsoft/vcpkg.git
           cd vcpkg
-          .\vcpkg\bootstrap-vcpkg.bat
+          cmd /c ".\vcpkg\bootstrap-vcpkg.bat"
           echo "VCPKG_ROOT=$(pwd)" >> $env:GITHUB_ENV
         shell: pwsh
 
