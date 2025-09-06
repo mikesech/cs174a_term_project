@@ -39,7 +39,7 @@ jobs:
       - name: Prepare for artifact upload
         run: |
           $tempDirName = "artifact"
-          $outdir = "$(tempDirName)/cs174a_term_project"
+          $outdir = "$tempDirName/cs174a_term_project"
           New-Item -ItemType Directory -Path $tempDirName -ErrorAction Stop
           New-Item -ItemType Directory -Path $outdir -ErrorAction Stop
 
