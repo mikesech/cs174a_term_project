@@ -30,3 +30,11 @@ jobs:
       - name: Build with CMake
         run: cmake --build build --config Release
         shell: pwsh
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cs174a_term_project-windows
+          path: |
+            build/cs174a_term_project
+            build/resources
