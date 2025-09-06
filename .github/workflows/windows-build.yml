@@ -31,10 +31,16 @@ jobs:
         run: cmake --build build --config Release
         shell: pwsh
 
+      - name: Prepare for artifact upload
+        run: |
+          $tempDirName = "cs174a_term_project"
+          New-Item -ItemType Directory -Path $tempDirName -ErrorAction Stop
+          Copy-Item -Path "cs174a_term_project.exe" -Destination $tempDirName -ErrorAction Stop
+          Copy-Item -Path "resources" -Destination $tempDirName -Recurse -ErrorAction Stop
+        shell: pwsh
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: cs174a_term_project-windows
-          path: |
-            build/cs174a_term_project
-            build/resources
+          path: cs174a_term_project
