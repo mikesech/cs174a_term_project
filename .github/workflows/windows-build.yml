@@ -24,23 +24,31 @@ jobs:
       - name: Configure with CMake
         run: |
           cmake -B build -S cs174projectCleanup `
-            -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
+            -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" `
+            -DCMAKE_INSTALL_PREFIX="$(pwd)/build/out"
         shell: pwsh
 
       - name: Build with CMake
         run: cmake --build build --config Release
         shell: pwsh
 
+      - name: Install with CMake
+        run: cmake --install build --config Release
+        shell: pwsh
+
       - name: Prepare for artifact upload
         run: |
-          $tempDirName = "cs174a_term_project"
+          $tempDirName = "artifact"
+          $outdir = "$(tempDirName)/cs174a_term_project"
           New-Item -ItemType Directory -Path $tempDirName -ErrorAction Stop
-          Copy-Item -Path "cs174a_term_project.exe" -Destination $tempDirName -ErrorAction Stop
-          Copy-Item -Path "resources" -Destination $tempDirName -Recurse -ErrorAction Stop
+          New-Item -ItemType Directory -Path $outdir -ErrorAction Stop
+
+          Copy-Item -Path "build/out/bin/*" -Destination $outdir -Recurse -ErrorAction Stop
+          Copy-Item -Path "build/out/share/*" -Destination $outdir -Recurse -ErrorAction Stop
         shell: pwsh
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: cs174a_term_project-windows
-          path: cs174a_term_project
+          path: artifact
