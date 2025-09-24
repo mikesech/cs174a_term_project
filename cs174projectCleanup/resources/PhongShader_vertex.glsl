@@ -28,6 +28,8 @@ out vec4 o_vertexNormal_modelspace;
 out vec4 o_vertexTangent_modelspace;
 out vec4 o_vertexBitangent_modelspace;
 
+out vec3 baryCoord;
+
 void main(){
 	// Position of the vertex, in worldspace
 	fPosition_worldspace = vPosition*vTransform;
@@ -55,5 +57,11 @@ void main(){
 	o_vertexTangent_modelspace = normalize(o_vertexTangent_modelspace*vTransform);
 	o_vertexBitangent_modelspace = normalize(o_vertexBitangent_modelspace*vTransform);
 	
+	if (gl_VertexID % 3 == 0)
+        baryCoord = vec3(1.0, 0.0, 0.0);
+    else if (gl_VertexID % 3 == 1)
+        baryCoord = vec3(0.0, 1.0, 0.0);
+    else
+        baryCoord = vec3(0.0, 0.0, 1.0);
 }
 

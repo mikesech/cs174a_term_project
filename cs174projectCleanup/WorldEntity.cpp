@@ -63,15 +63,35 @@ void WorldEntity::setTranslateZ(float z)
 }
 vec3 WorldEntity::getTranslate() const
 {
+	static unsigned int frame = Globals::frameCount;
+	static int memoHitSimple = 0, memoHitComplex = 0, memoMissSimple = 0, memoMissComplex = 0;
+	if(Globals::frameCount != frame) {
+		if (frame % (30*5) == 0) {
+			std::cerr << "Memoization stats for frame " << frame << ":\n";
+			std::cerr << "  Hit (simple): " << memoHitSimple << "\n";
+			std::cerr << "  Hit (complex): " << memoHitComplex << "\n";
+			std::cerr << "  Miss (simple): " << memoMissSimple << "\n";
+			std::cerr << "  Miss (complex): " << memoMissComplex << "\n";
+			std::cerr << "  Percent hit: " << 100.0*(memoHitSimple + memoHitComplex)/(memoHitSimple + memoHitComplex + memoMissSimple + memoMissComplex) << "%\n";
+			std::cerr << "  Global ordering count: " << globalOrderingCount << "\n";
+		}
+		memoHitSimple = memoHitComplex = memoMissSimple = memoMissComplex = 0;
+		frame = Globals::frameCount;
+	}
+
 	if(_totalOrderingCount != globalOrderingCount) {
 		_totalOrderingCount = globalOrderingCount;
 
 		if (_parent == NULL){
+			memoMissSimple++;
 			_worldPosition = _position;
 		}else{
+			memoMissComplex++;
 			vec4 temp = _parent->getTransformationMatrix()*vec4(_position,1.0);
 			_worldPosition=vec3(temp.x,temp.y,temp.z);
 		}
+	} else {
+		_parent == NULL ? memoHitSimple++ : memoHitComplex++;
 	}
 	return _worldPosition;
 }

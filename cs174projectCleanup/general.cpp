@@ -87,6 +87,11 @@ namespace Globals
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);
 
+#ifndef __EMSCRIPTEN__
+		glEnable(GL_PRIMITIVE_RESTART);
+		glPrimitiveRestartIndex(0xFFFF);
+#endif
+
 		//INIT THE LIGHTS
 		for(int i=0;i<LIGHT_COUNT;i++){
 			wLights[i]=NULL;
@@ -242,24 +247,51 @@ NEXT_J:
 		return {r, g, b};
 	}
 
+	static bool hbStyle = true;
+
 	static void drawCollisionBoxes(const GameEntityList& list) {
 		const bool oldWireframe = debugDrawWireframe;
-		debugDrawWireframe = true;
+		debugDrawWireframe = hbStyle; // = true;
 
-		DrawableEntity collisionBox(nullptr, "resources/cube.obj");
+		const auto oldAmbientLightColor = Globals::getAmbientColor();
+
+		static auto var = glGetUniformLocation(sProgram, "infiniteDepthOnTranslucent");
+		glUniform1i(var, hbStyle ? 0 : 1);
+
+		static bool x = []() {
+			auto x = CTextureManager::GetInstance()->GetTexture("resources/rectangle.png");
+			x->Bind();
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
+			// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			return true;
+		}();
+
+		DrawableEntity collisionBox("resources/rectangle.png", "resources/cube.obj");
+		collisionBox.setAlphaRequired(true);
+		collisionBox.setUVScale(4,4);
+		// float factor = 4.5/4;
+		collisionBox.setUVOffset(-0.5 - 1, 0 - 1);
+		collisionBox.setShininess(0);
 		for (auto i : list) {
 			auto hue = std::hash<GameEntity*>{}(i);
 			auto color = hueToFullColor(hue);
-			collisionBox.setDiffuseColor(color);
-			collisionBox.setHighlightColor(color);
+			if (hbStyle)
+				collisionBox.setDiffuseColor(color);
+			// collisionBox.setHighlightColor(color);
+			Globals::setAmbientLightColor(color);
 
 			const auto& hitbox = i->getHitBox();
-			collisionBox.setTranslate(hitbox.getTranslate());
-			auto dims = hitbox.getDimensions();
-			collisionBox.setScale(dims.x, dims.y, dims.z);
+			// WorldEntity::performIsolatedOperations([&]{
+				collisionBox.setTranslate(hitbox.getTranslate());
+				auto dims = hitbox.getDimensions();
+				collisionBox.setScale(dims.x, dims.y, dims.z);
+			// }, &collisionBox);
 			collisionBox.draw();
 		}
 
+		Globals::setAmbientLightColor(oldAmbientLightColor);
+		glUniform1i(var, 0);
 		debugDrawWireframe = oldWireframe;
 	}
 
@@ -283,7 +315,13 @@ NEXT_J:
 		drawOpaqueEntities(wWalls, transparencyQueue); //Draw Every Wall
 		drawOpaqueEntities(wSoftEntities, transparencyQueue);
 
+		// Ideally, we'd sort the collision boxes into the transparency queue,
+		// but that'd be kind of annoying to do. For a debug functionality, it's
+		// not important that we get the transparency exactly right anyway.
 		if (debugDrawCollisionBoxes) {
+			// std::cerr << "Drawing collision boxes for "
+			//           << (wEntities.size() + wWalls.size() + wSoftEntities.size())
+			// 		  << " entities\n";
 			drawCollisionBoxes(wEntities);
 			drawCollisionBoxes(wWalls);
 			drawCollisionBoxes(wSoftEntities);
@@ -347,6 +385,9 @@ NEXT_J:
 
 		//Draw UI Text
 		if(useText) {
+			const bool originalDebugDrawWireframe = debugDrawWireframe;
+			debugDrawWireframe = false;
+
 			const GLfloat xStart = -0.5*(resolution.x/resolution.y) + 0.005;
 			const GLfloat yStart = 0.4725;
 			const GLfloat yStep = 0.449 - 0.4725;
@@ -393,6 +434,8 @@ NEXT_J:
 					Text2D::drawStaticText("Click to continue",vec4(1,1,0.5,1),-.0875,.05);
 				Text2D::drawStaticText("Sound is ON",vec4(1,1,0.5,1),-.045,0);
 			}
+
+			debugDrawWireframe = originalDebugDrawWireframe;
 		}
 
 		SDL_GL_SwapWindow(mainWindow);
@@ -458,6 +501,12 @@ NEXT_J:
 		case 'B':
 			if (!val)
 				debugDrawCollisionBoxes = !debugDrawCollisionBoxes;
+			break;
+
+		case '1':
+			if (!val) {
+				hbStyle = !hbStyle;
+			}
 			break;
 		}
 	}

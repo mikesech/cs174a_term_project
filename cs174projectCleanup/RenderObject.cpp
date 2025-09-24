@@ -134,12 +134,8 @@ std::vector<unsigned short> CRenderObject::repackTriangleIndicesForLines(std::ve
 	for (int i = 0; i + 2 < indices.size(); i += 3){
 		retval.push_back(indices[i]);
 		retval.push_back(indices[i+1]);
-
-		retval.push_back(indices[i+1]);
 		retval.push_back(indices[i+2]);
-
-		retval.push_back(indices[i+2]);
-		retval.push_back(indices[i]);
+		retval.push_back(0xFFFF);
 	}
 	return retval;
 }
@@ -257,6 +253,10 @@ void CRenderObject::indexVBO_TBN(
 	// For each input vertex
 	for ( unsigned int i=0; i<in_vertices.size(); i++ ){
 
+		if (i % 3 == 0 && i > 0) {
+			out_indices.push_back(0xFFFF);
+		}
+
 		// Try to find a similar vertex in the vertextooutindex map
 		unsigned short index;
 		PackedVertex packed = {in_vertices[i], in_uvs[i], in_normals[i]};
@@ -303,13 +303,16 @@ void CRenderObject::draw(GLuint type) const
 	//std::cout<<numPointsToDraw<<std::endl;
 	GLuint vao;
 	GLsizei count;
-	if (type == GL_LINES) {
-		vao = vao_lines;
-		count = (indices.size() / 3) * 6;
-	} else {
+	if (type == GL_LINES)
+		type = GL_LINE_LOOP;
+	// if (type == GL_LINES) {
+	// 	vao = vao_lines;
+	// 	type = GL_LINE_LOOP;
+	// 	count = (indices.size() / 3) * 4;
+	// } else {
 		vao = this->getVaoId();
 		count = indices.size();
-	}
+	// }
 	glBindVertexArray(vao);
 	//glDrawArrays( type, 0, this->numPointsToDraw);
 	glDrawElements(

@@ -32,7 +32,8 @@ if (DEFINED EMSCRIPTEN)
     tankTop.obj               treesTest.png             turretBarrel.obj
     turretBase.obj            turretTexture.png         turretTop.obj
     tvcube.obj                wall.obj                  wanderingBase.obj
-    wanderingTexture.png      wanderingTop.obj
+    wanderingTexture.png      wanderingTop.obj          rectangle.png
+    test_square.png
   )
   # These resources are made available alongside the HTML, WASM, etc. files.
   set(web_resources

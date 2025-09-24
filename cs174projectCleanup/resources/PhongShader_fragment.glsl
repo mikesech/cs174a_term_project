@@ -19,6 +19,7 @@ uniform float alpha;
 //Constants:
 uniform vec2 uvScale;
 uniform vec2 uvOffset; //what is this?
+uniform bool infiniteDepthOnTranslucent;
 
 //Constants: lighting
 uniform vec4 ambientColor;
@@ -39,13 +40,42 @@ in vec2 fUV;
 in vec4 o_vertexNormal_modelspace;
 in vec4 o_vertexTangent_modelspace;
 in vec4 o_vertexBitangent_modelspace;
+in vec3 baryCoord;
 
 
 
 //Output: pixel color output
 out vec4 fColor;
 
+vec4 hueToFullColor(float hue) {
+	float h = mod(hue, 360.0f);
+	if (h < 0.0) h += 360.0f; // Ensure hue is positive
+	float x = 1.0 - abs(mod(h / 60.0f, 2.0) - .0);
+	float r = 0.0, g = 0.0, b = 0.0;
+
+	if      (  0.0 <= h && h <  60.0) { r = 1.0; g = x; b = 0.0; }
+	else if ( 60.0 <= h && h < 120.0) { r = x; g = 1.0; b = 0.0; }
+	else if (120.0 <= h && h < 180.0) { r = 0.0; g = 1.0; b = x; }
+	else if (180.0 <= h && h < 240.0) { r = 0.0; g = x; b = 1.0; }
+	else if (240.0 <= h && h < 300.0) { r = x; g = 0.0; b = 1.0; }
+	else if (300.0 <= h && h < 360.0) { r = 1.0; g = 0.0; b = x; }
+
+	return vec4(r, g, b, 1.0);
+}
+
 void main(){
+	gl_FragDepth = gl_FragCoord.z;
+	float edgeDist = min(min(baryCoord.x, baryCoord.y), baryCoord.z);
+	float pixelDist = edgeDist / (fwidth(edgeDist));  // approximate distance in pixels
+	
+	//if (pixelDist <= 1.0) {
+	//	fColor = vec4(1.0, 1.0, 1.0, 1.0);
+	//}
+	//float edgeAlpha = 1.0 - smoothstep(0.0, 1.0, pixelDist); // Smooth transition: fade in the wire near edges (1–2 px)
+	// step(2.0, pixelDist); for hard cutoff
+    // edgeAlpha = pow(edgeAlpha, 1.5); // Optional: sharpen by clamping or boosting contrast
+    //fColor = mix(vec4(0.0, 0.0, 0.0, 0.2), vec4(1.0), edgeAlpha);
+	//return;
 
 	mat4 TBN = transpose(mat4(o_vertexTangent_modelspace,
 							  o_vertexBitangent_modelspace,
@@ -118,6 +148,12 @@ void main(){
 
 
 	fColor = vec4(ambientColor.xyz,0)+diffusePass+specularPass;
+	if (infiniteDepthOnTranslucent && fColor.w >= 0.75) {
+		fColor.w = 1.0;
+	}
+	if (infiniteDepthOnTranslucent && fColor.w < 1.0) {
+		gl_FragDepth = 1000000000000000000000000.0;
+	}
 	
 	if(hasFog){
 		vec4 fogColor=vec4(.35,.4,.375,0);
